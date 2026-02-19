@@ -18,30 +18,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class ASRModelInput(SingleOutputGraphNode[types.ASRModel], GraphNode[types.ASRModel]):
     """
 
-    Accepts an automatic speech recognition model as a parameter for workflows.
-    input, parameter, model, asr, transcription, speech
+        Accepts an automatic speech recognition model as a parameter for workflows.
+        input, parameter, model, asr, transcription, speech
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.ASRModel | OutputHandle[types.ASRModel] = connect_field(
-        default=types.ASRModel(
-            type="asr_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-        ),
-        description="The speech recognition model to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.ASRModel | OutputHandle[types.ASRModel] = connect_field(default=types.ASRModel(type='asr_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None), description='The speech recognition model to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -58,28 +44,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class AssetFolderInput(
-    SingleOutputGraphNode[types.FolderRef], GraphNode[types.FolderRef]
-):
+class AssetFolderInput(SingleOutputGraphNode[types.FolderRef], GraphNode[types.FolderRef]):
     """
 
-    Accepts an asset folder as a parameter for workflows.
-    input, parameter, folder, path, folderpath, local_folder, filesystem
+        Accepts an asset folder as a parameter for workflows.
+        input, parameter, folder, path, folderpath, local_folder, filesystem
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(
-            type="folder", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The folder to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None, metadata=None), description='The folder to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -96,26 +70,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class AudioInput(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-    Accepts a reference to an audio asset for workflows, specified by an 'AudioRef'.  An 'AudioRef' points to audio data that can be used for playback, transcription, analysis, or processing by audio-capable models.
-    input, parameter, audio, sound, voice, speech, asset
+        Accepts a reference to an audio asset for workflows, specified by an 'AudioRef'.  An 'AudioRef' points to audio data that can be used for playback, transcription, analysis, or processing by audio-capable models.
+        input, parameter, audio, sound, voice, speech, asset
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The audio to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -132,25 +96,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class AudioListInput(
-    SingleOutputGraphNode[list[types.AudioRef]], GraphNode[list[types.AudioRef]]
-):
+class AudioListInput(SingleOutputGraphNode[list[types.AudioRef]], GraphNode[list[types.AudioRef]]):
     """
 
-    Accepts a list of audio references as a parameter for workflows.
-    input, parameter, audio, sound, voice, speech, asset, list
+        Accepts a list of audio references as a parameter for workflows.
+        input, parameter, audio, sound, voice, speech, asset, list
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: list[types.AudioRef] | OutputHandle[list[types.AudioRef]] = connect_field(
-        default=[], description="The list of audio files to use as input."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: list[types.AudioRef] | OutputHandle[list[types.AudioRef]] = connect_field(default=[], description='The list of audio files to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -167,21 +122,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class BooleanInput(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Accepts a boolean (true/false) value as a parameter for workflows.  This input is used for binary choices, enabling or disabling features, or controlling conditional logic paths.
-    input, parameter, boolean, bool, toggle, switch, flag
+        Accepts a boolean (true/false) value as a parameter for workflows.  This input is used for binary choices, enabling or disabling features, or controlling conditional logic paths.
+        input, parameter, boolean, bool, toggle, switch, flag
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
     value: bool | OutputHandle[bool] = connect_field(default=False, description=None)
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -198,24 +148,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class ColorInput(SingleOutputGraphNode[types.ColorRef], GraphNode[types.ColorRef]):
     """
 
-    Accepts a color value as a parameter for workflows.
-    input, parameter, color, color_picker, color_input
+        Accepts a color value as a parameter for workflows.
+        input, parameter, color, color_picker, color_input
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
-        default=types.ColorRef(type="color", value=None),
-        description="The color to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value=None), description='The color to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -232,33 +174,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class DataframeInput(
-    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
-):
+class DataframeInput(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
 
-    Accepts a reference to a dataframe asset for workflows.
-    input, parameter, dataframe, table, data
+        Accepts a reference to a dataframe asset for workflows.
+        input, parameter, dataframe, table, data
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
-        default=types.DataframeRef(
-            type="dataframe",
-            uri="",
-            asset_id=None,
-            data=None,
-            metadata=None,
-            columns=None,
-        ),
-        description="The dataframe to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(default=types.DataframeRef(type='dataframe', uri='', asset_id=None, data=None, metadata=None, columns=None), description='The dataframe to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -275,25 +200,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class DocumentFileInput(
-    GraphNode[nodetool.nodes.nodetool.input.DocumentFileInput.OutputType]
-):
+class DocumentFileInput(GraphNode[nodetool.nodes.nodetool.input.DocumentFileInput.OutputType]):
     """
 
-    Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.
-    input, parameter, document, file, path, local_file, load
+        Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.
+        input, parameter, document, file, path, local_file, load
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: str | OutputHandle[str] = connect_field(
-        default="", description="The path to the document file."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: str | OutputHandle[str] = connect_field(default='', description='The path to the document file.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @property
     def out(self) -> "DocumentFileInputOutputs":
@@ -307,15 +223,14 @@ class DocumentFileInput(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class DocumentFileInputOutputs(OutputsProxy):
     @property
     def document(self) -> OutputHandle[types.DocumentRef]:
-        return typing.cast(OutputHandle[types.DocumentRef], self["document"])
+        return typing.cast(OutputHandle[types.DocumentRef], self['document'])
 
     @property
     def path(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["path"])
+        return typing.cast(OutputHandle[str], self['path'])
 
 
 import typing
@@ -324,34 +239,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class DocumentInput(
-    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
-):
+class DocumentInput(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
 
-    Accepts a reference to a document asset for workflows, specified by a 'DocumentRef'.  A 'DocumentRef' points to a structured document (e.g., PDF, DOCX, TXT) which can be processed or analyzed. This node is used when the workflow needs to operate on a document as a whole entity, potentially including its structure and metadata, rather than just raw text.
-    input, parameter, document, file, asset, reference
+        Accepts a reference to a document asset for workflows, specified by a 'DocumentRef'.  A 'DocumentRef' points to a structured document (e.g., PDF, DOCX, TXT) which can be processed or analyzed. This node is used when the workflow needs to operate on a document as a whole entity, potentially including its structure and metadata, rather than just raw text.
+        input, parameter, document, file, asset, reference
 
-    Use cases:
-    - Load a specific document (e.g., PDF, Word, text file) for content extraction or analysis.
-    - Pass a document to models that are designed to process specific document formats.
-    - Manage documents as distinct assets within a workflow.
-    - If you have a local file path and need to convert it to a 'DocumentRef', consider using 'DocumentFileInput'.
+        Use cases:
+        - Load a specific document (e.g., PDF, Word, text file) for content extraction or analysis.
+        - Pass a document to models that are designed to process specific document formats.
+        - Manage documents as distinct assets within a workflow.
+        - If you have a local file path and need to convert it to a 'DocumentRef', consider using 'DocumentFileInput'.
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The document to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The document to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -368,32 +271,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class EmbeddingModelInput(
-    SingleOutputGraphNode[types.EmbeddingModel], GraphNode[types.EmbeddingModel]
-):
+class EmbeddingModelInput(SingleOutputGraphNode[types.EmbeddingModel], GraphNode[types.EmbeddingModel]):
     """
 
-    Accepts an embedding model as a parameter for workflows.
-    input, parameter, model, embedding, vector
+        Accepts an embedding model as a parameter for workflows.
+        input, parameter, model, embedding, vector
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.EmbeddingModel | OutputHandle[types.EmbeddingModel] = connect_field(
-        default=types.EmbeddingModel(
-            type="embedding_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            dimensions=0,
-        ),
-        description="The embedding model to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.EmbeddingModel | OutputHandle[types.EmbeddingModel] = connect_field(default=types.EmbeddingModel(type='embedding_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', dimensions=0), description='The embedding model to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -410,23 +297,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class FilePathInput(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Accepts a local filesystem path (to a file or directory) as input for workflows.
-    input, parameter, path, filepath, directory, local_file, filesystem
+        Accepts a local filesystem path (to a file or directory) as input for workflows.
+        input, parameter, path, filepath, directory, local_file, filesystem
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: str | OutputHandle[str] = connect_field(
-        default="", description="The path to use as input."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: str | OutputHandle[str] = connect_field(default='', description='The path to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -443,21 +323,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class FloatInput(SingleOutputGraphNode[float], GraphNode[float]):
     """
 
-    Accepts a floating-point number as a parameter for workflows, typically constrained by a minimum and maximum value.  This input allows for precise numeric settings, such as adjustments, scores, or any value requiring decimal precision.
-    input, parameter, float, number, decimal, range
+        Accepts a floating-point number as a parameter for workflows, typically constrained by a minimum and maximum value.  This input allows for precise numeric settings, such as adjustments, scores, or any value requiring decimal precision.
+        input, parameter, float, number, decimal, range
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
     value: float | OutputHandle[float] = connect_field(default=0.0, description=None)
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
     min: float | OutputHandle[float] = connect_field(default=0, description=None)
     max: float | OutputHandle[float] = connect_field(default=99999, description=None)
 
@@ -476,23 +351,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class FolderPathInput(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Accepts a folder path as a parameter for workflows.
-    input, parameter, folder, path, folderpath, local_folder, filesystem
+        Accepts a folder path as a parameter for workflows.
+        input, parameter, folder, path, folderpath, local_folder, filesystem
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: str | OutputHandle[str] = connect_field(
-        default="", description="The folder path to use as input."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: str | OutputHandle[str] = connect_field(default='', description='The folder path to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -509,35 +377,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class HuggingFaceModelInput(
-    SingleOutputGraphNode[types.HuggingFaceModel], GraphNode[types.HuggingFaceModel]
-):
+class HuggingFaceModelInput(SingleOutputGraphNode[types.HuggingFaceModel], GraphNode[types.HuggingFaceModel]):
     """
 
-    Accepts a Hugging Face model as a parameter for workflows.
-    input, parameter, model, huggingface, hugging_face, model_name
+        Accepts a Hugging Face model as a parameter for workflows.
+        input, parameter, model, huggingface, hugging_face, model_name
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.HuggingFaceModel | OutputHandle[types.HuggingFaceModel] = (
-        connect_field(
-            default=types.HuggingFaceModel(
-                type="hf.model",
-                repo_id="",
-                path=None,
-                variant=None,
-                allow_patterns=None,
-                ignore_patterns=None,
-            ),
-            description="The Hugging Face model to use as input.",
-        )
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.HuggingFaceModel | OutputHandle[types.HuggingFaceModel] = connect_field(default=types.HuggingFaceModel(type='hf.model', repo_id='', path=None, variant=None, allow_patterns=None, ignore_patterns=None), description='The Hugging Face model to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -554,26 +403,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class ImageInput(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Accepts a reference to an image asset for workflows, specified by an 'ImageRef'.  An 'ImageRef' points to image data that can be used for display, analysis, or processing by vision models.
-    input, parameter, image, picture, graphic, visual, asset
+        Accepts a reference to an image asset for workflows, specified by an 'ImageRef'.  An 'ImageRef' points to image data that can be used for display, analysis, or processing by vision models.
+        input, parameter, image, picture, graphic, visual, asset
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -590,25 +429,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class ImageListInput(
-    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
-):
+class ImageListInput(SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]):
     """
 
-    Accepts a list of image references as a parameter for workflows.
-    input, parameter, image, picture, graphic, visual, asset, list
+        Accepts a list of image references as a parameter for workflows.
+        input, parameter, image, picture, graphic, visual, asset, list
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(
-        default=[], description="The list of images to use as input."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(default=[], description='The list of images to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -625,33 +455,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class ImageModelInput(
-    SingleOutputGraphNode[types.ImageModel], GraphNode[types.ImageModel]
-):
+class ImageModelInput(SingleOutputGraphNode[types.ImageModel], GraphNode[types.ImageModel]):
     """
 
-    Accepts an image generation model as a parameter for workflows.
-    input, parameter, model, image, generation
+        Accepts an image generation model as a parameter for workflows.
+        input, parameter, model, image, generation
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(
-        default=types.ImageModel(
-            type="image_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="The image generation model to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(default=types.ImageModel(type='image_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, supported_tasks=[]), description='The image generation model to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -668,25 +481,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class ImageSizeInput(
-    SingleOutputGraphNode[types.ImageSize], GraphNode[types.ImageSize]
-):
+class ImageSizeInput(SingleOutputGraphNode[types.ImageSize], GraphNode[types.ImageSize]):
     """
 
-    Accepts image dimensions as a parameter for workflows.
-    input, parameter, image_size, resolution, width, height, dimensions
+        Accepts image dimensions as a parameter for workflows.
+        input, parameter, image_size, resolution, width, height, dimensions
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.ImageSize | OutputHandle[types.ImageSize] = connect_field(
-        default=PydanticUndefined, description="The image size to use as input."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.ImageSize | OutputHandle[types.ImageSize] = connect_field(default=PydanticUndefined, description='The image size to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -703,21 +507,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class IntegerInput(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
-    Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.
-    input, parameter, integer, number, count, index, whole_number
+        Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.
+        input, parameter, integer, number, count, index, whole_number
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
     value: int | OutputHandle[int] = connect_field(default=0, description=None)
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
     min: int | OutputHandle[int] = connect_field(default=0, description=None)
     max: int | OutputHandle[int] = connect_field(default=99999, description=None)
 
@@ -736,33 +535,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class LanguageModelInput(
-    SingleOutputGraphNode[types.LanguageModel], GraphNode[types.LanguageModel]
-):
+class LanguageModelInput(SingleOutputGraphNode[types.LanguageModel], GraphNode[types.LanguageModel]):
     """
 
-    Accepts a language model as a parameter for workflows.
-    input, parameter, model, language, model_name
+        Accepts a language model as a parameter for workflows.
+        input, parameter, model, language, model_name
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
-        default=types.LanguageModel(
-            type="language_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="The language model to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(default=types.LanguageModel(type='language_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, supported_tasks=[]), description='The language model to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -779,47 +561,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class MessageDeconstructor(
-    GraphNode[nodetool.nodes.nodetool.input.MessageDeconstructor.OutputType]
-):
+class MessageDeconstructor(GraphNode[nodetool.nodes.nodetool.input.MessageDeconstructor.OutputType]):
     """
 
-    Deconstructs a chat message object into its individual fields.
-    extract, decompose, message, fields, chat
+        Deconstructs a chat message object into its individual fields.
+        extract, decompose, message, fields, chat
 
-    Use cases:
-    - Extract specific fields from a message (e.g., role, content, thread_id).
-    - Access message metadata for workflow logic.
-    - Process different parts of a message separately.
+        Use cases:
+        - Extract specific fields from a message (e.g., role, content, thread_id).
+        - Access message metadata for workflow logic.
+        - Process different parts of a message separately.
     """
 
-    value: types.Message | OutputHandle[types.Message] = connect_field(
-        default=types.Message(
-            type="message",
-            id=None,
-            workflow_id=None,
-            graph=None,
-            thread_id=None,
-            tools=None,
-            tool_call_id=None,
-            role="",
-            name=None,
-            content=None,
-            tool_calls=None,
-            collections=None,
-            input_files=None,
-            created_at=None,
-            provider=None,
-            model=None,
-            agent_mode=None,
-            help_mode=None,
-            agent_execution_id=None,
-            execution_event_type=None,
-            workflow_target=None,
-        ),
-        description="The message object to deconstruct.",
-    )
+    value: types.Message | OutputHandle[types.Message] = connect_field(default=types.Message(type='message', id=None, workflow_id=None, graph=None, thread_id=None, tools=None, tool_call_id=None, role='', name=None, content=None, tool_calls=None, collections=None, input_files=None, created_at=None, provider=None, model=None, agent_mode=None, help_mode=None, agent_execution_id=None, execution_event_type=None, workflow_target=None), description='The message object to deconstruct.')
 
     @property
     def out(self) -> "MessageDeconstructorOutputs":
@@ -833,41 +587,34 @@ class MessageDeconstructor(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class MessageDeconstructorOutputs(OutputsProxy):
     @property
     def id(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["id"])
+        return typing.cast(OutputHandle[str], self['id'])
 
     @property
     def thread_id(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["thread_id"])
+        return typing.cast(OutputHandle[str], self['thread_id'])
 
     @property
     def role(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["role"])
+        return typing.cast(OutputHandle[str], self['role'])
 
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def image(self) -> OutputHandle[nodetool.metadata.types.ImageRef]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.ImageRef], self["image"]
-        )
+        return typing.cast(OutputHandle[nodetool.metadata.types.ImageRef], self['image'])
 
     @property
     def audio(self) -> OutputHandle[nodetool.metadata.types.AudioRef]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.AudioRef], self["audio"]
-        )
+        return typing.cast(OutputHandle[nodetool.metadata.types.AudioRef], self['audio'])
 
     @property
     def model(self) -> OutputHandle[nodetool.metadata.types.LanguageModel]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.LanguageModel], self["model"]
-        )
+        return typing.cast(OutputHandle[nodetool.metadata.types.LanguageModel], self['model'])
 
 
 import typing
@@ -876,46 +623,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class MessageInput(SingleOutputGraphNode[types.Message], GraphNode[types.Message]):
     """
 
-    Accepts a chat message object for workflows.
-    input, parameter, message, chat, conversation
+        Accepts a chat message object for workflows.
+        input, parameter, message, chat, conversation
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.Message | OutputHandle[types.Message] = connect_field(
-        default=types.Message(
-            type="message",
-            id=None,
-            workflow_id=None,
-            graph=None,
-            thread_id=None,
-            tools=None,
-            tool_call_id=None,
-            role="",
-            name=None,
-            content=None,
-            tool_calls=None,
-            collections=None,
-            input_files=None,
-            created_at=None,
-            provider=None,
-            model=None,
-            agent_mode=None,
-            help_mode=None,
-            agent_execution_id=None,
-            execution_event_type=None,
-            workflow_target=None,
-        ),
-        description="The message object containing role, content, and metadata.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.Message | OutputHandle[types.Message] = connect_field(default=types.Message(type='message', id=None, workflow_id=None, graph=None, thread_id=None, tools=None, tool_call_id=None, role='', name=None, content=None, tool_calls=None, collections=None, input_files=None, created_at=None, provider=None, model=None, agent_mode=None, help_mode=None, agent_execution_id=None, execution_event_type=None, workflow_target=None), description='The message object containing role, content, and metadata.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -932,25 +649,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class MessageListInput(
-    SingleOutputGraphNode[list[types.Message]], GraphNode[list[types.Message]]
-):
+class MessageListInput(SingleOutputGraphNode[list[types.Message]], GraphNode[list[types.Message]]):
     """
 
-    Accepts a list of chat message objects for workflows.
-    input, parameter, messages, chat, conversation, history
+        Accepts a list of chat message objects for workflows.
+        input, parameter, messages, chat, conversation, history
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: list[types.Message] | OutputHandle[list[types.Message]] = connect_field(
-        default=[], description="The list of message objects representing chat history."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: list[types.Message] | OutputHandle[list[types.Message]] = connect_field(default=[], description='The list of message objects representing chat history.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -967,37 +675,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class Model3DInput(
-    SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3DRef]
-):
+class Model3DInput(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3DRef]):
     """
 
-    Accepts a reference to a 3D model asset for workflows, specified by a 'Model3DRef'.
-    A 'Model3DRef' points to 3D model data that can be used for visualization, processing,
-    or conversion by 3D-capable nodes.
-    input, parameter, 3d, model, mesh, obj, glb, stl, ply, asset
+        Accepts a reference to a 3D model asset for workflows, specified by a 'Model3DRef'.
+        A 'Model3DRef' points to 3D model data that can be used for visualization, processing,
+        or conversion by 3D-capable nodes.
+        input, parameter, 3d, model, mesh, obj, glb, stl, ply, asset
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.Model3DRef | OutputHandle[types.Model3DRef] = connect_field(
-        default=types.Model3DRef(
-            type="model_3d",
-            uri="",
-            asset_id=None,
-            data=None,
-            metadata=None,
-            format=None,
-            material_file=None,
-            texture_files=[],
-        ),
-        description="The 3D model to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.Model3DRef | OutputHandle[types.Model3DRef] = connect_field(default=types.Model3DRef(type='model_3d', uri='', asset_id=None, data=None, metadata=None, format=None, material_file=None, texture_files=[]), description='The 3D model to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1014,28 +703,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class RealtimeAudioInput(
-    GraphNode[nodetool.nodes.nodetool.input.RealtimeAudioInput.OutputType]
-):
+class RealtimeAudioInput(GraphNode[nodetool.nodes.nodetool.input.RealtimeAudioInput.OutputType]):
     """
 
-    Accepts streaming audio data for workflows.
-    input, parameter, audio, sound, voice, speech, asset
+        Accepts streaming audio data for workflows.
+        input, parameter, audio, sound, voice, speech, asset
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The audio to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @property
     def out(self) -> "RealtimeAudioInputOutputs":
@@ -1049,11 +726,10 @@ class RealtimeAudioInput(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class RealtimeAudioInputOutputs(OutputsProxy):
     @property
     def chunk(self) -> OutputHandle[types.Chunk]:
-        return typing.cast(OutputHandle[types.Chunk], self["chunk"])
+        return typing.cast(OutputHandle[types.Chunk], self['chunk'])
 
 
 import typing
@@ -1062,37 +738,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class SelectInput(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Accepts a selection from a predefined set of options as a parameter for workflows.
-    input, parameter, select, enum, dropdown, choice, options
+        Accepts a selection from a predefined set of options as a parameter for workflows.
+        input, parameter, select, enum, dropdown, choice, options
 
-    Use cases:
-    - Let users choose from a fixed set of values in app mode
-    - Configure enum-like options for downstream nodes
-    - Provide dropdown selection for workflow parameters
+        Use cases:
+        - Let users choose from a fixed set of values in app mode
+        - Configure enum-like options for downstream nodes
+        - Provide dropdown selection for workflow parameters
 
-    The output is a string that can be connected to enum-typed inputs.
+        The output is a string that can be connected to enum-typed inputs.
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: str | OutputHandle[str] = connect_field(
-        default="", description="The currently selected value."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
-    options: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[], description="The list of available options to choose from."
-    )
-    enum_type_name: str | OutputHandle[str] = connect_field(
-        default="",
-        description="The enum type name this select corresponds to (for type matching).",
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: str | OutputHandle[str] = connect_field(default='', description='The currently selected value.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
+    options: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='The list of available options to choose from.')
+    enum_type_name: str | OutputHandle[str] = connect_field(default='', description='The enum type name this select corresponds to (for type matching).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1109,36 +773,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class StringInput(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Accepts a string value as a parameter for workflows.
-    input, parameter, string, text, label, name, value
+        Accepts a string value as a parameter for workflows.
+        input, parameter, string, text, label, name, value
 
-    Use cases:
-    - Define a name for an entity or process.
-    - Specify a label for a component or output.
-    - Enter a short keyword or search term.
-    - Provide a simple configuration value (e.g., an API key, a model name).
-    - If you need to input multi-line text or the content of a file, use 'DocumentFileInput'.
+        Use cases:
+        - Define a name for an entity or process.
+        - Specify a label for a component or output.
+        - Enter a short keyword or search term.
+        - Provide a simple configuration value (e.g., an API key, a model name).
+        - If you need to input multi-line text or the content of a file, use 'DocumentFileInput'.
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: str | OutputHandle[str] = connect_field(default="", description=None)
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
-    max_length: int | OutputHandle[int] = connect_field(
-        default=0,
-        description="Maximum number of characters allowed. Use 0 for unlimited.",
-    )
-    line_mode: str | OutputHandle[str] = connect_field(
-        default="single_line",
-        description="Controls whether the UI should render the input as single-line or multiline.",
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: str | OutputHandle[str] = connect_field(default='', description=None)
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
+    max_length: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of characters allowed. Use 0 for unlimited.')
+    line_mode: str | OutputHandle[str] = connect_field(default='single_line', description='Controls whether the UI should render the input as single-line or multiline.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1155,23 +808,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class StringListInput(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-    Accepts a list of strings as a parameter for workflows.
-    input, parameter, string, text, label, name, value
+        Accepts a list of strings as a parameter for workflows.
+        input, parameter, string, text, label, name, value
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[], description="The list of strings to use as input."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='The list of strings to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1188,32 +834,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class TTSModelInput(SingleOutputGraphNode[types.TTSModel], GraphNode[types.TTSModel]):
     """
 
-    Accepts a text-to-speech model as a parameter for workflows.
-    input, parameter, model, tts, speech, voice
+        Accepts a text-to-speech model as a parameter for workflows.
+        input, parameter, model, tts, speech, voice
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.TTSModel | OutputHandle[types.TTSModel] = connect_field(
-        default=types.TTSModel(
-            type="tts_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-            voices=[],
-            selected_voice="",
-        ),
-        description="The text-to-speech model to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.TTSModel | OutputHandle[types.TTSModel] = connect_field(default=types.TTSModel(type='tts_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, voices=[], selected_voice=''), description='The text-to-speech model to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1230,23 +860,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class TextListInput(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-    Accepts a list of text strings as a parameter for workflows.
-    input, parameter, text, string, list
+        Accepts a list of text strings as a parameter for workflows.
+        input, parameter, text, string, list
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[], description="The list of text strings to use as input."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='The list of text strings to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1263,32 +886,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
 class VideoInput(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-    Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.
-    input, parameter, video, movie, clip, visual, asset
+        Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.
+        input, parameter, video, movie, clip, visual, asset
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
-        default=types.VideoRef(
-            type="video",
-            uri="",
-            asset_id=None,
-            data=None,
-            metadata=None,
-            duration=None,
-            format=None,
-        ),
-        description="The video to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The video to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1305,25 +912,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class VideoListInput(
-    SingleOutputGraphNode[list[types.VideoRef]], GraphNode[list[types.VideoRef]]
-):
+class VideoListInput(SingleOutputGraphNode[list[types.VideoRef]], GraphNode[list[types.VideoRef]]):
     """
 
-    Accepts a list of video references as a parameter for workflows.
-    input, parameter, video, movie, clip, visual, asset, list
+        Accepts a list of video references as a parameter for workflows.
+        input, parameter, video, movie, clip, visual, asset, list
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: list[types.VideoRef] | OutputHandle[list[types.VideoRef]] = connect_field(
-        default=[], description="The list of videos to use as input."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: list[types.VideoRef] | OutputHandle[list[types.VideoRef]] = connect_field(default=[], description='The list of videos to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1340,33 +938,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
-
-class VideoModelInput(
-    SingleOutputGraphNode[types.VideoModel], GraphNode[types.VideoModel]
-):
+class VideoModelInput(SingleOutputGraphNode[types.VideoModel], GraphNode[types.VideoModel]):
     """
 
-    Accepts a video generation model as a parameter for workflows.
-    input, parameter, model, video, generation
+        Accepts a video generation model as a parameter for workflows.
+        input, parameter, model, video, generation
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(
-        default=types.VideoModel(
-            type="video_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="The video generation model to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(default=types.VideoModel(type='video_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, supported_tasks=[]), description='The video generation model to use as input.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the input for the workflow.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1375,3 +956,5 @@ class VideoModelInput(
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

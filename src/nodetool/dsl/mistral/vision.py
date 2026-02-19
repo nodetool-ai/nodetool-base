@@ -18,47 +18,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.mistral.vision
 from nodetool.workflows.base_node import BaseNode
 
-
 class ImageToText(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Analyze images and generate text descriptions using Mistral AI's Pixtral models.
-    mistral, pixtral, vision, image, ocr, analysis, multimodal
+        Analyze images and generate text descriptions using Mistral AI's Pixtral models.
+        mistral, pixtral, vision, image, ocr, analysis, multimodal
 
-    Uses Mistral AI's Pixtral vision models to understand and describe images.
-    Can perform OCR, image analysis, and answer questions about images.
-    Requires a Mistral API key.
+        Uses Mistral AI's Pixtral vision models to understand and describe images.
+        Can perform OCR, image analysis, and answer questions about images.
+        Requires a Mistral API key.
 
-    Use cases:
-    - Extract text from images (OCR)
-    - Describe image contents
-    - Answer questions about images
-    - Analyze charts and diagrams
-    - Document understanding
+        Use cases:
+        - Extract text from images (OCR)
+        - Describe image contents
+        - Answer questions about images
+        - Analyze charts and diagrams
+        - Document understanding
     """
 
     VisionModel: typing.ClassVar[type] = nodetool.nodes.mistral.vision.VisionModel
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to analyze",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="Describe this image in detail.",
-        description="The prompt/question about the image",
-    )
-    model: nodetool.nodes.mistral.vision.VisionModel = Field(
-        default=nodetool.nodes.mistral.vision.VisionModel.PIXTRAL_LARGE,
-        description="The Pixtral model to use for vision tasks",
-    )
-    temperature: float | OutputHandle[float] = connect_field(
-        default=0.3, description="Sampling temperature for response generation"
-    )
-    max_tokens: int | OutputHandle[int] = connect_field(
-        default=1024, description="Maximum number of tokens to generate"
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to analyze')
+    prompt: str | OutputHandle[str] = connect_field(default='Describe this image in detail.', description='The prompt/question about the image')
+    model: nodetool.nodes.mistral.vision.VisionModel = Field(default=nodetool.nodes.mistral.vision.VisionModel.PIXTRAL_LARGE, description='The Pixtral model to use for vision tasks')
+    temperature: float | OutputHandle[float] = connect_field(default=0.3, description='Sampling temperature for response generation')
+    max_tokens: int | OutputHandle[int] = connect_field(default=1024, description='Maximum number of tokens to generate')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -75,36 +59,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.mistral.vision
 from nodetool.workflows.base_node import BaseNode
 
-
 class OCR(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Extract text from images using Mistral AI's Pixtral models.
-    mistral, pixtral, ocr, text extraction, document, image
+        Extract text from images using Mistral AI's Pixtral models.
+        mistral, pixtral, ocr, text extraction, document, image
 
-    Specialized node for optical character recognition (OCR) using Pixtral.
-    Optimized for extracting text content from documents, screenshots, and images.
-    Requires a Mistral API key.
+        Specialized node for optical character recognition (OCR) using Pixtral.
+        Optimized for extracting text content from documents, screenshots, and images.
+        Requires a Mistral API key.
 
-    Use cases:
-    - Extract text from scanned documents
-    - Read text from screenshots
-    - Digitize printed materials
-    - Extract data from forms and receipts
+        Use cases:
+        - Extract text from scanned documents
+        - Read text from screenshots
+        - Digitize printed materials
+        - Extract data from forms and receipts
     """
 
     VisionModel: typing.ClassVar[type] = nodetool.nodes.mistral.vision.VisionModel
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to extract text from",
-    )
-    model: nodetool.nodes.mistral.vision.VisionModel = Field(
-        default=nodetool.nodes.mistral.vision.VisionModel.PIXTRAL_LARGE,
-        description="The Pixtral model to use for OCR",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to extract text from')
+    model: nodetool.nodes.mistral.vision.VisionModel = Field(default=nodetool.nodes.mistral.vision.VisionModel.PIXTRAL_LARGE, description='The Pixtral model to use for OCR')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -113,3 +88,5 @@ class OCR(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

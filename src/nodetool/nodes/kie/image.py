@@ -1587,6 +1587,233 @@ class RecraftRemoveBackground(KieBaseNode):
         )
 
 
+class IdeogramCharacter(KieBaseNode):
+    """Generate character images using Ideogram via Kie.ai.
+
+    kie, ideogram, character, image generation, ai, character consistency
+
+    Ideogram Character generates images of characters in different settings while
+    maintaining character consistency using reference images and text prompts.
+
+    Use cases:
+    - Generate character images in various settings
+    - Maintain character consistency across images
+    - Create character portraits with specific backgrounds
+    """
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    prompt: str = Field(
+        default="",
+        description="Text description for the character image.",
+    )
+
+    reference_images: list[ImageRef] = Field(
+        default=[],
+        description="Reference images for character guidance.",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="Rendering speed preference.",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        REALISTIC = "REALISTIC"
+        FICTION = "FICTION"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="Generation style.",
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Whether to expand/augment the prompt.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "square"
+        SQUARE_HD = "square_hd"
+        PORTRAIT_4_3 = "portrait_4_3"
+        PORTRAIT_16_9 = "portrait_16_9"
+        LANDSCAPE_4_3 = "landscape_4_3"
+        LANDSCAPE_16_9 = "landscape_16_9"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE_HD,
+        description="The size of the output image.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Undesired elements to exclude from the image.",
+    )
+
+    seed: int = Field(
+        default=0,
+        description="Random seed for generation.",
+        ge=0,
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/character"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        if not self.reference_images:
+            raise ValueError("At least one reference image is required")
+
+        reference_image_urls = []
+        for ref_img in self.reference_images:
+            if ref_img.is_set():
+                url = await self._upload_image(context, ref_img)
+                reference_image_urls.append(url)
+
+        return {
+            "prompt": self.prompt,
+            "reference_image_urls": reference_image_urls,
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "expand_prompt": self.expand_prompt,
+            "image_size": self.image_size.value,
+            "negative_prompt": self.negative_prompt,
+            "num_images": "1",
+            "seed": self.seed if self.seed > 0 else None,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class IdeogramCharacterEdit(KieBaseNode):
+    """Edit masked character images using Ideogram via Kie.ai.
+
+    kie, ideogram, character-edit, image editing, ai, inpainting
+
+    Ideogram Character Edit allows you to fill masked parts of character images
+    while maintaining character consistency using reference images and text prompts.
+
+    Use cases:
+    - Edit specific parts of character images
+    - Fill masked areas with new content
+    - Maintain character consistency during edits
+    """
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    prompt: str = Field(
+        default="",
+        description="Text description for the masked area.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Base image with masked area to fill.",
+    )
+
+    mask: ImageRef = Field(
+        default=ImageRef(),
+        description="Mask image indicating areas to edit.",
+    )
+
+    reference_images: list[ImageRef] = Field(
+        default=[],
+        description="Reference images for character guidance.",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="Rendering speed preference.",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        REALISTIC = "REALISTIC"
+        FICTION = "FICTION"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="Generation style.",
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Whether to expand/augment the prompt.",
+    )
+
+    seed: int = Field(
+        default=0,
+        description="Random seed for generation.",
+        ge=0,
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/character-edit"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        if not self.image.is_set():
+            raise ValueError("Base image is required")
+
+        if not self.mask.is_set():
+            raise ValueError("Mask image is required")
+
+        if not self.reference_images:
+            raise ValueError("At least one reference image is required")
+
+        image_url = await self._upload_image(context, self.image)
+        mask_url = await self._upload_image(context, self.mask)
+
+        reference_image_urls = []
+        for ref_img in self.reference_images:
+            if ref_img.is_set():
+                url = await self._upload_image(context, ref_img)
+                reference_image_urls.append(url)
+
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "mask_url": mask_url,
+            "reference_image_urls": reference_image_urls,
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "expand_prompt": self.expand_prompt,
+            "num_images": "1",
+            "seed": self.seed if self.seed > 0 else None,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
 class IdeogramCharacterRemix(KieBaseNode):
     """Remix characters in images using Ideogram via Kie.ai.
 

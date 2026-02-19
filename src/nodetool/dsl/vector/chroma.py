@@ -18,31 +18,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
-class CollectionNode(
-    SingleOutputGraphNode[types.Collection], GraphNode[types.Collection]
-):
+class CollectionNode(SingleOutputGraphNode[types.Collection], GraphNode[types.Collection]):
     """
 
-    Get or create a named vector database collection for storing embeddings.
-    vector, embedding, collection, RAG, get, create, chroma
+        Get or create a named vector database collection for storing embeddings.
+        vector, embedding, collection, RAG, get, create, chroma
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The name of the collection to create"
-    )
-    embedding_model: types.LlamaModel | OutputHandle[types.LlamaModel] = connect_field(
-        default=types.LlamaModel(
-            type="llama_model",
-            name="",
-            repo_id="",
-            modified_at="",
-            size=0,
-            digest="",
-            details={},
-        ),
-        description="Model to use for embedding, search for nomic-embed-text and download it",
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The name of the collection to create')
+    embedding_model: types.LlamaModel | OutputHandle[types.LlamaModel] = connect_field(default=types.LlamaModel(type='llama_model', name='', repo_id='', modified_at='', size=0, digest='', details={}), description='Model to use for embedding, search for nomic-embed-text and download it')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -59,18 +43,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class Count(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
-    Count the number of documents in a collection.
-    vector, embedding, collection, RAG, chroma
+        Count the number of documents in a collection.
+        vector, embedding, collection, RAG, chroma
     """
 
-    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to count",
-    )
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(default=types.Collection(type='collection', name=''), description='The collection to count')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -87,27 +67,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class GetDocuments(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-    Get documents from a chroma collection.
-    vector, embedding, collection, RAG, retrieve, chroma
+        Get documents from a chroma collection.
+        vector, embedding, collection, RAG, retrieve, chroma
     """
 
-    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to get",
-    )
-    ids: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[], description="The ids of the documents to get"
-    )
-    limit: int | OutputHandle[int] = connect_field(
-        default=100, description="The limit of the documents to get"
-    )
-    offset: int | OutputHandle[int] = connect_field(
-        default=0, description="The offset of the documents to get"
-    )
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(default=types.Collection(type='collection', name=''), description='The collection to get')
+    ids: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='The ids of the documents to get')
+    limit: int | OutputHandle[int] = connect_field(default=100, description='The limit of the documents to get')
+    offset: int | OutputHandle[int] = connect_field(default=0, description='The offset of the documents to get')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -124,30 +94,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class HybridSearch(GraphNode[nodetool.nodes.vector.chroma.HybridSearch.OutputType]):
     """
 
-    Hybrid search combining semantic and keyword-based search for better retrieval. Uses reciprocal rank fusion to combine results from both methods.
-    vector, RAG, query, semantic, text, similarity, chroma
+        Hybrid search combining semantic and keyword-based search for better retrieval. Uses reciprocal rank fusion to combine results from both methods.
+        vector, RAG, query, semantic, text, similarity, chroma
     """
 
-    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to query",
-    )
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="The text to query"
-    )
-    n_results: int | OutputHandle[int] = connect_field(
-        default=5, description="The number of final results to return"
-    )
-    k_constant: float | OutputHandle[float] = connect_field(
-        default=60.0, description="Constant for reciprocal rank fusion (default: 60.0)"
-    )
-    min_keyword_length: int | OutputHandle[int] = connect_field(
-        default=3, description="Minimum length for keyword tokens"
-    )
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(default=types.Collection(type='collection', name=''), description='The collection to query')
+    text: str | OutputHandle[str] = connect_field(default='', description='The text to query')
+    n_results: int | OutputHandle[int] = connect_field(default=5, description='The number of final results to return')
+    k_constant: float | OutputHandle[float] = connect_field(default=60.0, description='Constant for reciprocal rank fusion (default: 60.0)')
+    min_keyword_length: int | OutputHandle[int] = connect_field(default=3, description='Minimum length for keyword tokens')
 
     @property
     def out(self) -> "HybridSearchOutputs":
@@ -161,27 +119,26 @@ class HybridSearch(GraphNode[nodetool.nodes.vector.chroma.HybridSearch.OutputTyp
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class HybridSearchOutputs(OutputsProxy):
     @property
     def ids(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self["ids"])
+        return typing.cast(OutputHandle[list[str]], self['ids'])
 
     @property
     def documents(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self["documents"])
+        return typing.cast(OutputHandle[list[str]], self['documents'])
 
     @property
     def metadatas(self) -> OutputHandle[list[dict]]:
-        return typing.cast(OutputHandle[list[dict]], self["metadatas"])
+        return typing.cast(OutputHandle[list[dict]], self['metadatas'])
 
     @property
     def distances(self) -> OutputHandle[list[float]]:
-        return typing.cast(OutputHandle[list[float]], self["distances"])
+        return typing.cast(OutputHandle[list[float]], self['distances'])
 
     @property
     def scores(self) -> OutputHandle[list[float]]:
-        return typing.cast(OutputHandle[list[float]], self["scores"])
+        return typing.cast(OutputHandle[list[float]], self['scores'])
 
 
 import typing
@@ -190,39 +147,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class IndexAggregatedText(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Index multiple text chunks at once with aggregated embeddings from Ollama.
-    vector, embedding, collection, RAG, index, text, chunk, batch, ollama, chroma
+        Index multiple text chunks at once with aggregated embeddings from Ollama.
+        vector, embedding, collection, RAG, index, text, chunk, batch, ollama, chroma
     """
 
-    EmbeddingAggregation: typing.ClassVar[type] = (
-        nodetool.nodes.vector.chroma.EmbeddingAggregation
-    )
+    EmbeddingAggregation: typing.ClassVar[type] = nodetool.nodes.vector.chroma.EmbeddingAggregation
 
-    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to index",
-    )
-    document: str | OutputHandle[str] = connect_field(
-        default="", description="The document to index"
-    )
-    document_id: str | OutputHandle[str] = connect_field(
-        default="", description="The document ID to associate with the text"
-    )
-    metadata: dict | OutputHandle[dict] = connect_field(
-        default={}, description="The metadata to associate with the text"
-    )
-    text_chunks: (
-        list[nodetool.metadata.types.TextChunk | str]
-        | OutputHandle[list[nodetool.metadata.types.TextChunk | str]]
-    ) = connect_field(default=[], description="List of text chunks to index")
-    aggregation: nodetool.nodes.vector.chroma.EmbeddingAggregation = Field(
-        default=nodetool.nodes.vector.chroma.EmbeddingAggregation.MEAN,
-        description="The aggregation method to use for the embeddings.",
-    )
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(default=types.Collection(type='collection', name=''), description='The collection to index')
+    document: str | OutputHandle[str] = connect_field(default='', description='The document to index')
+    document_id: str | OutputHandle[str] = connect_field(default='', description='The document ID to associate with the text')
+    metadata: dict | OutputHandle[dict] = connect_field(default={}, description='The metadata to associate with the text')
+    text_chunks: list[nodetool.metadata.types.TextChunk | str] | OutputHandle[list[nodetool.metadata.types.TextChunk | str]] = connect_field(default=[], description='List of text chunks to index')
+    aggregation: nodetool.nodes.vector.chroma.EmbeddingAggregation = Field(default=nodetool.nodes.vector.chroma.EmbeddingAggregation.MEAN, description='The aggregation method to use for the embeddings.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -239,28 +178,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class IndexEmbedding(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Index a single embedding vector into a Chroma collection with optional metadata. Creates a searchable entry that can be queried for similarity matching.
-    vector, index, embedding, chroma, storage, RAG
+        Index a single embedding vector into a Chroma collection with optional metadata. Creates a searchable entry that can be queried for similarity matching.
+        vector, index, embedding, chroma, storage, RAG
     """
 
-    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to index",
-    )
-    embedding: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The embedding to index",
-    )
-    index_id: str | OutputHandle[str] = connect_field(
-        default="", description="The ID to associate with the embedding"
-    )
-    metadata: dict | OutputHandle[dict] = connect_field(
-        default={}, description="The metadata to associate with the embedding"
-    )
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(default=types.Collection(type='collection', name=''), description='The collection to index')
+    embedding: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The embedding to index')
+    index_id: str | OutputHandle[str] = connect_field(default='', description='The ID to associate with the embedding')
+    metadata: dict | OutputHandle[dict] = connect_field(default={}, description='The metadata to associate with the embedding')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -277,31 +205,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class IndexImage(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Index a list of image assets or files.
-    vector, embedding, collection, RAG, index, image, batch, chroma
+        Index a list of image assets or files.
+        vector, embedding, collection, RAG, index, image, batch, chroma
     """
 
-    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to index",
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=[], description="List of image assets to index"
-    )
-    index_id: str | OutputHandle[str] = connect_field(
-        default="",
-        description="The ID to associate with the image, defaults to the URI of the image",
-    )
-    metadata: dict | OutputHandle[dict] = connect_field(
-        default={}, description="The metadata to associate with the image"
-    )
-    upsert: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Whether to upsert the images"
-    )
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(default=types.Collection(type='collection', name=''), description='The collection to index')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=[], description='List of image assets to index')
+    index_id: str | OutputHandle[str] = connect_field(default='', description='The ID to associate with the image, defaults to the URI of the image')
+    metadata: dict | OutputHandle[dict] = connect_field(default={}, description='The metadata to associate with the image')
+    upsert: bool | OutputHandle[bool] = connect_field(default=False, description='Whether to upsert the images')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -318,27 +233,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class IndexString(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Index a string with a Document ID to a collection.
-    vector, embedding, collection, RAG, index, text, string, chroma
+        Index a string with a Document ID to a collection.
+        vector, embedding, collection, RAG, index, text, string, chroma
     """
 
-    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to index",
-    )
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="Text content to index"
-    )
-    document_id: str | OutputHandle[str] = connect_field(
-        default="", description="Document ID to associate with the text content"
-    )
-    metadata: dict | OutputHandle[dict] = connect_field(
-        default={}, description="The metadata to associate with the text"
-    )
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(default=types.Collection(type='collection', name=''), description='The collection to index')
+    text: str | OutputHandle[str] = connect_field(default='', description='Text content to index')
+    document_id: str | OutputHandle[str] = connect_field(default='', description='Document ID to associate with the text content')
+    metadata: dict | OutputHandle[dict] = connect_field(default={}, description='The metadata to associate with the text')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -355,27 +260,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class IndexTextChunk(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Index a single text chunk.
-    vector, embedding, collection, RAG, index, text, chunk, chroma
+        Index a single text chunk.
+        vector, embedding, collection, RAG, index, text, chunk, chroma
     """
 
-    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to index",
-    )
-    document_id: str | OutputHandle[str] = connect_field(
-        default="", description="The document ID to associate with the text chunk"
-    )
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="The text to index"
-    )
-    metadata: dict | OutputHandle[dict] = connect_field(
-        default={}, description="The metadata to associate with the text chunk"
-    )
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(default=types.Collection(type='collection', name=''), description='The collection to index')
+    document_id: str | OutputHandle[str] = connect_field(default='', description='The document ID to associate with the text chunk')
+    text: str | OutputHandle[str] = connect_field(default='', description='The text to index')
+    metadata: dict | OutputHandle[dict] = connect_field(default={}, description='The metadata to associate with the text chunk')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -392,21 +287,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class Peek(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-    Peek at the documents in a collection.
-    vector, embedding, collection, RAG, preview, chroma
+        Peek at the documents in a collection.
+        vector, embedding, collection, RAG, preview, chroma
     """
 
-    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to peek",
-    )
-    limit: int | OutputHandle[int] = connect_field(
-        default=100, description="The limit of the documents to peek"
-    )
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(default=types.Collection(type='collection', name=''), description='The collection to peek')
+    limit: int | OutputHandle[int] = connect_field(default=100, description='The limit of the documents to peek')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -423,27 +312,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class QueryImage(GraphNode[nodetool.nodes.vector.chroma.QueryImage.OutputType]):
     """
 
-    Query the index for similar images.
-    vector, RAG, query, image, search, similarity, chroma
+        Query the index for similar images.
+        vector, RAG, query, image, search, similarity, chroma
     """
 
-    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to query",
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to query",
-    )
-    n_results: int | OutputHandle[int] = connect_field(
-        default=1, description="The number of results to return"
-    )
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(default=types.Collection(type='collection', name=''), description='The collection to query')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to query')
+    n_results: int | OutputHandle[int] = connect_field(default=1, description='The number of results to return')
 
     @property
     def out(self) -> "QueryImageOutputs":
@@ -457,23 +335,22 @@ class QueryImage(GraphNode[nodetool.nodes.vector.chroma.QueryImage.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class QueryImageOutputs(OutputsProxy):
     @property
     def ids(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self["ids"])
+        return typing.cast(OutputHandle[list[str]], self['ids'])
 
     @property
     def documents(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self["documents"])
+        return typing.cast(OutputHandle[list[str]], self['documents'])
 
     @property
     def metadatas(self) -> OutputHandle[list[dict]]:
-        return typing.cast(OutputHandle[list[dict]], self["metadatas"])
+        return typing.cast(OutputHandle[list[dict]], self['metadatas'])
 
     @property
     def distances(self) -> OutputHandle[list[float]]:
-        return typing.cast(OutputHandle[list[float]], self["distances"])
+        return typing.cast(OutputHandle[list[float]], self['distances'])
 
 
 import typing
@@ -482,24 +359,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class QueryText(GraphNode[nodetool.nodes.vector.chroma.QueryText.OutputType]):
     """
 
-    Query the index for similar text.
-    vector, RAG, query, text, search, similarity, chroma
+        Query the index for similar text.
+        vector, RAG, query, text, search, similarity, chroma
     """
 
-    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to query",
-    )
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="The text to query"
-    )
-    n_results: int | OutputHandle[int] = connect_field(
-        default=1, description="The number of results to return"
-    )
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(default=types.Collection(type='collection', name=''), description='The collection to query')
+    text: str | OutputHandle[str] = connect_field(default='', description='The text to query')
+    n_results: int | OutputHandle[int] = connect_field(default=1, description='The number of results to return')
 
     @property
     def out(self) -> "QueryTextOutputs":
@@ -513,23 +382,22 @@ class QueryText(GraphNode[nodetool.nodes.vector.chroma.QueryText.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class QueryTextOutputs(OutputsProxy):
     @property
     def ids(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self["ids"])
+        return typing.cast(OutputHandle[list[str]], self['ids'])
 
     @property
     def documents(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self["documents"])
+        return typing.cast(OutputHandle[list[str]], self['documents'])
 
     @property
     def metadatas(self) -> OutputHandle[list[dict]]:
-        return typing.cast(OutputHandle[list[dict]], self["metadatas"])
+        return typing.cast(OutputHandle[list[dict]], self['metadatas'])
 
     @property
     def distances(self) -> OutputHandle[list[float]]:
-        return typing.cast(OutputHandle[list[float]], self["distances"])
+        return typing.cast(OutputHandle[list[float]], self['distances'])
 
 
 import typing
@@ -538,21 +406,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
-
 class RemoveOverlap(GraphNode[nodetool.nodes.vector.chroma.RemoveOverlap.OutputType]):
     """
 
-    Removes overlapping words between consecutive strings in a list. Splits text into words and matches word sequences for more accurate overlap detection.
-    vector, RAG, query, text, processing, overlap, deduplication
+        Removes overlapping words between consecutive strings in a list. Splits text into words and matches word sequences for more accurate overlap detection.
+        vector, RAG, query, text, processing, overlap, deduplication
     """
 
-    documents: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[], description="List of strings to process for overlap removal"
-    )
-    min_overlap_words: int | OutputHandle[int] = connect_field(
-        default=2,
-        description="Minimum number of words that must overlap to be considered",
-    )
+    documents: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='List of strings to process for overlap removal')
+    min_overlap_words: int | OutputHandle[int] = connect_field(default=2, description='Minimum number of words that must overlap to be considered')
 
     @property
     def out(self) -> "RemoveOverlapOutputs":
@@ -566,8 +428,9 @@ class RemoveOverlap(GraphNode[nodetool.nodes.vector.chroma.RemoveOverlap.OutputT
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class RemoveOverlapOutputs(OutputsProxy):
     @property
     def documents(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self["documents"])
+        return typing.cast(OutputHandle[list[str]], self['documents'])
+
+

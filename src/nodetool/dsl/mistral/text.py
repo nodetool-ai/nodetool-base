@@ -18,42 +18,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.mistral.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class ChatComplete(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Generate text using Mistral AI's chat completion models.
-    mistral, chat, ai, text generation, llm, completion
+        Generate text using Mistral AI's chat completion models.
+        mistral, chat, ai, text generation, llm, completion
 
-    Uses Mistral AI's chat models to generate responses from prompts.
-    Requires a Mistral API key.
+        Uses Mistral AI's chat models to generate responses from prompts.
+        Requires a Mistral API key.
 
-    Use cases:
-    - Generate text responses to prompts
-    - Build conversational AI applications
-    - Code generation with Codestral
-    - Multi-modal understanding with Pixtral
+        Use cases:
+        - Generate text responses to prompts
+        - Build conversational AI applications
+        - Code generation with Codestral
+        - Multi-modal understanding with Pixtral
     """
 
     MistralModel: typing.ClassVar[type] = nodetool.nodes.mistral.text.MistralModel
 
-    model: nodetool.nodes.mistral.text.MistralModel = Field(
-        default=nodetool.nodes.mistral.text.MistralModel.MISTRAL_SMALL,
-        description="The Mistral model to use for generation",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="", description="The prompt for text generation"
-    )
-    system_prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Optional system prompt to guide the model's behavior"
-    )
-    temperature: float | OutputHandle[float] = connect_field(
-        default=0.7,
-        description="Sampling temperature. Higher values make output more random.",
-    )
-    max_tokens: int | OutputHandle[int] = connect_field(
-        default=1024, description="Maximum number of tokens to generate"
-    )
+    model: nodetool.nodes.mistral.text.MistralModel = Field(default=nodetool.nodes.mistral.text.MistralModel.MISTRAL_SMALL, description='The Mistral model to use for generation')
+    prompt: str | OutputHandle[str] = connect_field(default='', description='The prompt for text generation')
+    system_prompt: str | OutputHandle[str] = connect_field(default='', description="Optional system prompt to guide the model's behavior")
+    temperature: float | OutputHandle[float] = connect_field(default=0.7, description='Sampling temperature. Higher values make output more random.')
+    max_tokens: int | OutputHandle[int] = connect_field(default=1024, description='Maximum number of tokens to generate')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -70,37 +57,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.mistral.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class CodeComplete(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Generate code using Mistral AI's Codestral model.
-    mistral, code, codestral, ai, programming, completion
+        Generate code using Mistral AI's Codestral model.
+        mistral, code, codestral, ai, programming, completion
 
-    Uses Mistral AI's Codestral model specifically designed for code generation.
-    Supports fill-in-the-middle (FIM) for code completion tasks.
-    Requires a Mistral API key.
+        Uses Mistral AI's Codestral model specifically designed for code generation.
+        Supports fill-in-the-middle (FIM) for code completion tasks.
+        Requires a Mistral API key.
 
-    Use cases:
-    - Generate code from natural language descriptions
-    - Complete partial code snippets
-    - Fill in code between prefix and suffix
-    - Automated code generation for various programming languages
+        Use cases:
+        - Generate code from natural language descriptions
+        - Complete partial code snippets
+        - Fill in code between prefix and suffix
+        - Automated code generation for various programming languages
     """
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="", description="The prompt or code prefix for generation"
-    )
-    suffix: str | OutputHandle[str] = connect_field(
-        default="", description="Optional suffix for fill-in-the-middle completion"
-    )
-    temperature: float | OutputHandle[float] = connect_field(
-        default=0.0,
-        description="Sampling temperature. Lower values for code generation.",
-    )
-    max_tokens: int | OutputHandle[int] = connect_field(
-        default=2048, description="Maximum number of tokens to generate"
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='', description='The prompt or code prefix for generation')
+    suffix: str | OutputHandle[str] = connect_field(default='', description='Optional suffix for fill-in-the-middle completion')
+    temperature: float | OutputHandle[float] = connect_field(default=0.0, description='Sampling temperature. Lower values for code generation.')
+    max_tokens: int | OutputHandle[int] = connect_field(default=2048, description='Maximum number of tokens to generate')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -109,3 +86,5 @@ class CodeComplete(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

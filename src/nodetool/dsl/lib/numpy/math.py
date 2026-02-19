@@ -18,23 +18,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.math
 from nodetool.workflows.base_node import BaseNode
 
-
 class AbsArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Compute the absolute value of each element in a array.
-    array, absolute, magnitude
+        Compute the absolute value of each element in a array.
+        array, absolute, magnitude
 
-    Use cases:
-    - Calculate magnitudes of complex numbers
-    - Preprocess data for certain algorithms
-    - Implement activation functions in neural networks
+        Use cases:
+        - Calculate magnitudes of complex numbers
+        - Preprocess data for certain algorithms
+        - Implement activation functions in neural networks
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The input array to compute the absolute values from.",
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The input array to compute the absolute values from.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -51,28 +47,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.math
 from nodetool.workflows.base_node import BaseNode
 
-
-class CosineArray(
-    SingleOutputGraphNode[float | nodetool.metadata.types.NPArray],
-    GraphNode[float | nodetool.metadata.types.NPArray],
-):
+class CosineArray(SingleOutputGraphNode[float | nodetool.metadata.types.NPArray], GraphNode[float | nodetool.metadata.types.NPArray]):
     """
 
-    Computes the cosine of input angles in radians.
-    math, trigonometry, cosine, cos
+        Computes the cosine of input angles in radians.
+        math, trigonometry, cosine, cos
 
-    Use cases:
-    - Calculating horizontal components in physics
-    - Creating circular motions
-    - Phase calculations in signal processing
+        Use cases:
+        - Calculating horizontal components in physics
+        - Creating circular motions
+        - Phase calculations in signal processing
     """
 
-    angle_rad: (
-        float
-        | int
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[float | int | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
+    angle_rad: float | int | nodetool.metadata.types.NPArray | OutputHandle[float | int | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -89,26 +76,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.math
 from nodetool.workflows.base_node import BaseNode
 
-
-class ExpArray(
-    SingleOutputGraphNode[float | int | nodetool.metadata.types.NPArray],
-    GraphNode[float | int | nodetool.metadata.types.NPArray],
-):
+class ExpArray(SingleOutputGraphNode[float | int | nodetool.metadata.types.NPArray], GraphNode[float | int | nodetool.metadata.types.NPArray]):
     """
 
-    Calculate the exponential of each element in a array.
-    array, exponential, math, activation
+        Calculate the exponential of each element in a array.
+        array, exponential, math, activation
 
-    Use cases:
-    - Implement exponential activation functions
-    - Calculate growth rates in scientific models
-    - Transform data for certain statistical analyses
+        Use cases:
+        - Implement exponential activation functions
+        - Calculate growth rates in scientific models
+        - Transform data for certain statistical analyses
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Input array",
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Input array')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -125,26 +105,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.math
 from nodetool.workflows.base_node import BaseNode
 
-
-class LogArray(
-    SingleOutputGraphNode[float | int | nodetool.metadata.types.NPArray],
-    GraphNode[float | int | nodetool.metadata.types.NPArray],
-):
+class LogArray(SingleOutputGraphNode[float | int | nodetool.metadata.types.NPArray], GraphNode[float | int | nodetool.metadata.types.NPArray]):
     """
 
-    Calculate the natural logarithm of each element in a array.
-    array, logarithm, math, transformation
+        Calculate the natural logarithm of each element in a array.
+        array, logarithm, math, transformation
 
-    Use cases:
-    - Implement log transformations on data
-    - Calculate entropy in information theory
-    - Normalize data with large ranges
+        Use cases:
+        - Implement log transformations on data
+        - Calculate entropy in information theory
+        - Normalize data with large ranges
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Input array",
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Input array')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -161,34 +134,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.math
 from nodetool.workflows.base_node import BaseNode
 
-
-class PowerArray(
-    SingleOutputGraphNode[float | int | nodetool.metadata.types.NPArray],
-    GraphNode[float | int | nodetool.metadata.types.NPArray],
-):
+class PowerArray(SingleOutputGraphNode[float | int | nodetool.metadata.types.NPArray], GraphNode[float | int | nodetool.metadata.types.NPArray]):
     """
 
-    Raises the base array to the power of the exponent element-wise.
-    math, exponentiation, power, pow, **
+        Raises the base array to the power of the exponent element-wise.
+        math, exponentiation, power, pow, **
 
-    Use cases:
-    - Calculating compound interest
-    - Implementing polynomial functions
-    - Applying non-linear transformations to data
+        Use cases:
+        - Calculating compound interest
+        - Implementing polynomial functions
+        - Applying non-linear transformations to data
     """
 
-    base: (
-        float
-        | int
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[float | int | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=1.0, description=None)
-    exponent: (
-        float
-        | int
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[float | int | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=2.0, description=None)
+    base: float | int | nodetool.metadata.types.NPArray | OutputHandle[float | int | nodetool.metadata.types.NPArray] = connect_field(default=1.0, description=None)
+    exponent: float | int | nodetool.metadata.types.NPArray | OutputHandle[float | int | nodetool.metadata.types.NPArray] = connect_field(default=2.0, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -205,28 +164,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.math
 from nodetool.workflows.base_node import BaseNode
 
-
-class SineArray(
-    SingleOutputGraphNode[float | nodetool.metadata.types.NPArray],
-    GraphNode[float | nodetool.metadata.types.NPArray],
-):
+class SineArray(SingleOutputGraphNode[float | nodetool.metadata.types.NPArray], GraphNode[float | nodetool.metadata.types.NPArray]):
     """
 
-    Computes the sine of input angles in radians.
-    math, trigonometry, sine, sin
+        Computes the sine of input angles in radians.
+        math, trigonometry, sine, sin
 
-    Use cases:
-    - Calculating vertical components in physics
-    - Generating smooth periodic functions
-    - Audio signal processing
+        Use cases:
+        - Calculating vertical components in physics
+        - Generating smooth periodic functions
+        - Audio signal processing
     """
 
-    angle_rad: (
-        float
-        | int
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[float | int | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
+    angle_rad: float | int | nodetool.metadata.types.NPArray | OutputHandle[float | int | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -243,26 +193,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.math
 from nodetool.workflows.base_node import BaseNode
 
-
-class SqrtArray(
-    SingleOutputGraphNode[float | int | nodetool.metadata.types.NPArray],
-    GraphNode[float | int | nodetool.metadata.types.NPArray],
-):
+class SqrtArray(SingleOutputGraphNode[float | int | nodetool.metadata.types.NPArray], GraphNode[float | int | nodetool.metadata.types.NPArray]):
     """
 
-    Calculates the square root of the input array element-wise.
-    math, square root, sqrt, √
+        Calculates the square root of the input array element-wise.
+        math, square root, sqrt, √
 
-    Use cases:
-    - Normalizing data
-    - Calculating distances in Euclidean space
-    - Finding intermediate values in binary search
+        Use cases:
+        - Normalizing data
+        - Calculating distances in Euclidean space
+        - Finding intermediate values in binary search
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Input array",
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Input array')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -271,3 +214,5 @@ class SqrtArray(
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

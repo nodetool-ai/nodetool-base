@@ -18,23 +18,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
 from nodetool.workflows.base_node import BaseNode
 
-
 class Output(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
 
-    Generic output node for any type.
-    output, result, sink, return
+        Generic output node for any type.
+        output, result, sink, return
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: Any | OutputHandle[Any] = connect_field(
-        default=None, description="The value of the output."
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the output for the workflow."
-    )
+    name: str | OutputHandle[str] = connect_field(default='', description='The parameter name for the workflow.')
+    value: Any | OutputHandle[Any] = connect_field(default=None, description='The value of the output.')
+    description: str | OutputHandle[str] = connect_field(default='', description='The description of the output for the workflow.')
 
     @property
     def out(self) -> "OutputOutputs":
@@ -48,8 +41,9 @@ class Output(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class OutputOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[Any]:
-        return typing.cast(OutputHandle[Any], self["output"])
+        return typing.cast(OutputHandle[Any], self['output'])
+
+
