@@ -12,6 +12,7 @@ from nodetool.agents.tools.workflow_tool import GraphTool
 from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import (
     AudioRef,
+    DocumentRef,
     ImageRef,
     LanguageModel,
     Message,
@@ -22,6 +23,7 @@ from nodetool.metadata.types import (
     Provider,
     ToolCall,
     ToolName,
+    VideoRef,
 )
 from nodetool.models.thread import Thread as ThreadModel
 from nodetool.types.model import UnifiedModel
@@ -896,7 +898,7 @@ class Agent(BaseNode):
     )
     tools: list[ToolName] = Field(
         title="Tools",
-        default=[ToolName(name="google_search"), ToolName(name="browser")],
+        default=[],
         description="Tools to enable for the agent. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
     )
     image: ImageRef = Field(
@@ -1249,8 +1251,30 @@ class Agent(BaseNode):
                 if isinstance(content, str):
                     content = [MessageTextContent(text=content)]
                 elif isinstance(content, list):
-                    # Content is already a list of MessageContent objects
-                    pass
+                    # Content is a list of dicts from model_dump(), convert to MessageContent objects
+                    parsed_content = []
+                    for item in content:
+                        if isinstance(item, dict):
+                            item_type = item.get("type")
+                            if item_type == "text":
+                                parsed_content.append(MessageTextContent(text=item.get("text", "")))
+                            elif item_type == "image_url":
+                                parsed_content.append(MessageImageContent(image=ImageRef(**item.get("image", {}))))
+                            elif item_type == "audio":
+                                parsed_content.append(MessageAudioContent(audio=AudioRef(**item.get("audio", {}))))
+                            elif item_type == "video":
+                                from nodetool.metadata.types import MessageVideoContent
+                                parsed_content.append(MessageVideoContent(video=VideoRef(**item.get("video", {}))))
+                            elif item_type == "document":
+                                from nodetool.metadata.types import MessageDocumentContent
+                                parsed_content.append(MessageDocumentContent(document=DocumentRef(**item.get("document", {}))))
+                            else:
+                                # Fallback: treat as text
+                                parsed_content.append(MessageTextContent(text=str(item)))
+                        else:
+                            # Already a MessageContent object
+                            parsed_content.append(item)
+                    content = parsed_content
 
                 loaded_messages.append(
                     Message(
@@ -1284,7 +1308,7 @@ class Agent(BaseNode):
             return
 
         try:
-            from nodetool.types.chat import MessageCreateRequest
+            from nodetool.types.message_types import MessageCreateRequest
 
             # Create message request
             req = MessageCreateRequest(
@@ -1362,7 +1386,7 @@ class Agent(BaseNode):
             tools (list[Tool]): Resolved tools available for tool-calling.
         """
         # Save the initial user message to thread if thread_id is set
-        # The last message in the list should be the user message
+        # The last message in the list should be the current user message
         if self.thread_id and len(messages) > 0 and messages[-1].role == "user":
             await self._save_message_to_thread(context, messages[-1])
 
@@ -1473,8 +1497,6 @@ class Agent(BaseNode):
                             f"chunk_count={chunk_count}, final_text_len={len(message_text_content.text)}, "
                             f"final_text={repr(message_text_content.text[:100])}"
                         )
-                        # Save the assistant message to thread
-                        await self._save_message_to_thread(context, assistant_message)
                         final_text = message_text_content.text
                         log.debug(
                             f"_execute_agent_loop about to yield final text: iteration={iteration}, "
@@ -1634,7 +1656,6 @@ class Agent(BaseNode):
                     f"_execute_agent_loop fallback: provider didn't send chunk.done=True, "
                     f"yielding accumulated text: iteration={iteration}, text_len={len(message_text_content.text)}"
                 )
-                await self._save_message_to_thread(context, assistant_message)
                 yield {
                     "chunk": None,
                     "thinking": None,
@@ -1644,6 +1665,10 @@ class Agent(BaseNode):
                 log.debug(
                     f"_execute_agent_loop fallback: yielded final text: iteration={iteration}"
                 )
+
+            # Save the assistant message to thread after iteration completes
+            if self.thread_id:
+                await self._save_message_to_thread(context, assistant_message)
 
             if pending_tool_tasks:
                 log.debug(
