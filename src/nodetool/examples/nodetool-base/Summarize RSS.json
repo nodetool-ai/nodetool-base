@@ -62,7 +62,7 @@
           "model": {
             "type": "language_model"
           },
-          "max_tokens": 1000,
+          "max_tokens": 1000
         },
         "ui_properties": {
           "selected": false,

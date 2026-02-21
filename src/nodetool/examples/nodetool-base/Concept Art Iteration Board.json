@@ -150,7 +150,7 @@
           },
           "history": [],
           "thread_id": "",
-          "max_tokens": 1024,
+          "max_tokens": 1024
         },
         "ui_properties": {},
         "dynamic_properties": {},
@@ -283,7 +283,7 @@
           },
           "history": [],
           "thread_id": "",
-          "max_tokens": 1024,
+          "max_tokens": 1024
         },
         "ui_properties": {},
         "dynamic_properties": {},

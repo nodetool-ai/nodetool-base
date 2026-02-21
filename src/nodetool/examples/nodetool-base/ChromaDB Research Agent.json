@@ -55,7 +55,7 @@
           },
           "history": [],
           "thread_id": "",
-          "max_tokens": 4096,
+          "max_tokens": 4096
         },
         "ui_properties": {},
         "dynamic_properties": {},

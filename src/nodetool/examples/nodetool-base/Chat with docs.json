@@ -112,7 +112,7 @@
           },
           "history": [],
           "thread_id": null,
-          "max_tokens": 8192,
+          "max_tokens": 8192
         },
         "ui_properties": {
           "selected": false,

@@ -329,7 +329,7 @@
           },
           "history": [],
           "thread_id": "",
-          "max_tokens": 2048,
+          "max_tokens": 2048
         },
         "ui_properties": {
           "position": {

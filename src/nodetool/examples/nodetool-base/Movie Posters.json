@@ -108,7 +108,7 @@
           "voice": "none",
           "tools": [],
           "messages": [],
-          "max_tokens": 4096,
+          "max_tokens": 4096
         },
         "ui_properties": {
           "selected": false,
