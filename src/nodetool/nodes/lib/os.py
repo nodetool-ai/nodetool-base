@@ -1,3 +1,4 @@
+import asyncio
 import os
 import shutil
 import glob
@@ -31,7 +32,7 @@ class OpenWorkspaceDirectory(BaseNode):
     async def process(self, context: ProcessingContext) -> None:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        subprocess.run(["open", context.workspace_dir])
+        await asyncio.to_thread(subprocess.run, ["open", context.workspace_dir])
 
 
 
@@ -57,7 +58,7 @@ class FileExists(BaseNode):
         if not self.path:
             raise ValueError("'path' field cannot be empty")
         expanded_path = os.path.expanduser(self.path)
-        return os.path.exists(expanded_path)
+        return await asyncio.to_thread(os.path.exists, expanded_path)
 
 
 class ListFiles(BaseNode):
@@ -94,10 +95,10 @@ class ListFiles(BaseNode):
 
         if self.include_subdirectories:
             pattern = os.path.join(expanded_directory, "**", self.pattern)
-            paths = glob.glob(pattern, recursive=True)
+            paths = await asyncio.to_thread(glob.glob, pattern, recursive=True)
         else:
             pattern = os.path.join(expanded_directory, self.pattern)
-            paths = glob.glob(pattern)
+            paths = await asyncio.to_thread(glob.glob, pattern)
 
         for p in paths:
             yield {"file": p}
@@ -117,7 +118,7 @@ class CopyFile(BaseNode):
     source_path: str = Field(default="", description="Source file path")
     destination_path: str = Field(default="", description="Destination file path")
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> str:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         if not self.source_path:
@@ -127,7 +128,17 @@ class CopyFile(BaseNode):
         expanded_source = os.path.expanduser(self.source_path)
         expanded_dest = os.path.expanduser(self.destination_path)
 
-        shutil.copy2(expanded_source, expanded_dest)
+        # Create parent directories if needed
+        await asyncio.to_thread(
+            os.makedirs, os.path.dirname(expanded_dest), exist_ok=True
+        )
+
+        if await asyncio.to_thread(os.path.isdir, expanded_source):
+            await asyncio.to_thread(shutil.copytree, expanded_source, expanded_dest)
+        else:
+            await asyncio.to_thread(shutil.copy2, expanded_source, expanded_dest)
+
+        return self.destination_path
 
 
 class MoveFile(BaseNode):
@@ -150,7 +161,7 @@ class MoveFile(BaseNode):
         expanded_source = os.path.expanduser(self.source_path)
         expanded_dest = os.path.expanduser(self.destination_path)
 
-        shutil.move(expanded_source, expanded_dest)
+        await asyncio.to_thread(shutil.move, expanded_source, expanded_dest)
 
 
 class CreateDirectory(BaseNode):
@@ -174,7 +185,7 @@ class CreateDirectory(BaseNode):
         if not self.path:
             raise ValueError("'path' field cannot be empty")
         expanded_path = os.path.expanduser(self.path)
-        os.makedirs(expanded_path, exist_ok=self.exist_ok)
+        await asyncio.to_thread(os.makedirs, expanded_path, exist_ok=self.exist_ok)
 
 
 class GetFileSize(BaseNode):
@@ -195,7 +206,7 @@ class GetFileSize(BaseNode):
         if not self.path:
             raise ValueError("'path' field cannot be empty")
         expanded_path = os.path.expanduser(self.path)
-        stats = os.stat(expanded_path)
+        stats = await asyncio.to_thread(os.stat, expanded_path)
         return stats.st_size
 
 
@@ -217,7 +228,7 @@ class CreatedTime(BaseNode):
         if not self.path:
             raise ValueError("'path' field cannot be empty")
         expanded_path = os.path.expanduser(self.path)
-        stats = os.stat(expanded_path)
+        stats = await asyncio.to_thread(os.stat, expanded_path)
         return Datetime.from_datetime(datetime.fromtimestamp(stats.st_ctime))
 
 
@@ -239,7 +250,7 @@ class ModifiedTime(BaseNode):
         if not self.path:
             raise ValueError("'path' field cannot be empty")
         expanded_path = os.path.expanduser(self.path)
-        stats = os.stat(expanded_path)
+        stats = await asyncio.to_thread(os.stat, expanded_path)
         return Datetime.from_datetime(datetime.fromtimestamp(stats.st_mtime))
 
 
@@ -261,7 +272,7 @@ class AccessedTime(BaseNode):
         if not self.path:
             raise ValueError("'path' field cannot be empty")
         expanded_path = os.path.expanduser(self.path)
-        stats = os.stat(expanded_path)
+        stats = await asyncio.to_thread(os.stat, expanded_path)
         return Datetime.from_datetime(datetime.fromtimestamp(stats.st_atime))
 
 
@@ -283,7 +294,7 @@ class IsFile(BaseNode):
         if not self.path:
             raise ValueError("'path' field cannot be empty")
         expanded_path = os.path.expanduser(self.path)
-        return os.path.isfile(expanded_path)
+        return await asyncio.to_thread(os.path.isfile, expanded_path)
 
 
 class IsDirectory(BaseNode):
@@ -304,7 +315,7 @@ class IsDirectory(BaseNode):
         if not self.path:
             raise ValueError("'path' field cannot be empty")
         expanded_path = os.path.expanduser(self.path)
-        return os.path.isdir(expanded_path)
+        return await asyncio.to_thread(os.path.isdir, expanded_path)
 
 
 class FileExtension(BaseNode):
@@ -525,16 +536,20 @@ class GetPathInfo(BaseNode):
     async def process(self, context: ProcessingContext) -> dict:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        return {
-            "dirname": os.path.dirname(self.path),
-            "basename": os.path.basename(self.path),
-            "extension": os.path.splitext(self.path)[1],
-            "absolute": os.path.abspath(self.path),
-            "exists": os.path.exists(self.path),
-            "is_file": os.path.isfile(self.path),
-            "is_dir": os.path.isdir(self.path),
-            "is_symlink": os.path.islink(self.path),
-        }
+
+        def get_info():
+            return {
+                "dirname": os.path.dirname(self.path),
+                "basename": os.path.basename(self.path),
+                "extension": os.path.splitext(self.path)[1],
+                "absolute": os.path.abspath(self.path),
+                "exists": os.path.exists(self.path),
+                "is_file": os.path.isfile(self.path),
+                "is_dir": os.path.isdir(self.path),
+                "is_symlink": os.path.islink(self.path),
+            }
+
+        return await asyncio.to_thread(get_info)
 
 
 class AbsolutePath(BaseNode):
@@ -556,7 +571,7 @@ class AbsolutePath(BaseNode):
         expanded_path = os.path.expanduser(self.path)
         if not expanded_path:
             raise ValueError("path cannot be empty")
-        return os.path.abspath(expanded_path)
+        return await asyncio.to_thread(os.path.abspath, expanded_path)
 
 
 class SplitPath(BaseNode):
@@ -626,7 +641,7 @@ class RelativePath(BaseNode):
         expanded_start = os.path.expanduser(self.start_path)
         if not expanded_target:
             raise ValueError("target_path cannot be empty")
-        return os.path.relpath(expanded_target, expanded_start)
+        return await asyncio.to_thread(os.path.relpath, expanded_target, expanded_start)
 
 
 class PathToString(BaseNode):
@@ -692,13 +707,18 @@ class ShowNotification(BaseNode):
             ]
 
             try:
-                subprocess.run(cmd, check=True, capture_output=True)
+                await asyncio.to_thread(
+                    subprocess.run, cmd, check=True, capture_output=True
+                )
             except subprocess.CalledProcessError as e:
                 raise RuntimeError(f"Failed to show notification: {e.stderr.decode()}")
 
         else:  # Windows and Linux
             from plyer import notification
 
-            notification.notify(
-                title=self.title, message=self.message, timeout=self.timeout
+            await asyncio.to_thread(
+                notification.notify,
+                title=self.title,
+                message=self.message,
+                timeout=self.timeout,
             )  # type: ignore
