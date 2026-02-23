@@ -1,10 +1,8 @@
-import datetime
 import enum
 from fractions import Fraction
 from io import BytesIO
 import os
 import tempfile
-import asyncio
 from typing import AsyncGenerator, ClassVar, TypedDict
 import uuid
 import ffmpeg
@@ -32,6 +30,7 @@ from nodetool.workflows.processing_context import create_file_uri
 from nodetool.config.environment import Environment
 from nodetool.workflows.types import SaveUpdate
 from nodetool.providers.types import TextToVideoParams, ImageToVideoParams
+from .utils import generate_timestamped_name
 import aiofiles
 
 logger = get_logger(__name__)
@@ -359,7 +358,7 @@ class SaveVideoFile(BaseNode):
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 
-        filename = datetime.datetime.now().strftime(self.filename)
+        filename = generate_timestamped_name(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
         os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
 
@@ -457,7 +456,7 @@ class SaveVideo(BaseNode):
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         video = await context.asset_to_io(self.video)
-        filename = datetime.datetime.now().strftime(self.name)
+        filename = generate_timestamped_name(self.name)
         result = await context.video_from_io(
             buffer=video,
             name=filename,

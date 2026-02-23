@@ -11,7 +11,7 @@ Includes AI-powered 3D generation nodes (TextTo3D, ImageTo3D).
 
 from __future__ import annotations
 
-import datetime
+from .utils import generate_timestamped_name
 import os
 from enum import Enum
 from typing import Any, ClassVar, TypedDict
@@ -183,7 +183,7 @@ class SaveModel3DFile(BaseNode):
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 
-        filename = datetime.datetime.now().strftime(self.filename)
+        filename = generate_timestamped_name(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
         os.makedirs(os.path.dirname(expanded_path) or ".", exist_ok=True)
 
@@ -275,7 +275,7 @@ class SaveModel3D(BaseNode):
         else:
             model_data = await context.asset_to_bytes(self.model)
 
-        filename = datetime.datetime.now().strftime(self.name)
+        filename = generate_timestamped_name(self.name)
         parent_id = self.folder.asset_id if self.folder.is_set() else None
 
         # Determine format from filename

@@ -9,7 +9,7 @@ from nodetool.workflows.processing_context import create_file_uri
 from nodetool.providers.types import TextToImageParams, ImageToImageParams
 from nodetool.workflows.types import SaveUpdate
 import os
-import datetime
+from .utils import generate_timestamped_name
 from pydantic import Field
 import PIL
 import PIL.Image
@@ -145,7 +145,7 @@ class SaveImageFile(BaseNode):
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 
-        filename = datetime.datetime.now().strftime(self.filename)
+        filename = generate_timestamped_name(self.filename)
 
         expanded_path = os.path.join(expanded_folder, filename)
         os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
@@ -247,7 +247,7 @@ class SaveImage(BaseNode):
             raise ValueError("The input image is not connected.")
 
         image = await context.image_to_pil(self.image)
-        filename = datetime.datetime.now().strftime(self.name)
+        filename = generate_timestamped_name(self.name)
         parent_id = self.folder.asset_id if self.folder.is_set() else None
 
         result = await context.image_from_pil(
