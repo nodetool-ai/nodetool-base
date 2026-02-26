@@ -189,3 +189,11 @@ async def test_float_operations(context: ProcessingContext):
     node = Divide(a=7, b=2)
     result = await node.process(context)
     assert result == 3.5
+
+
+@pytest.mark.asyncio
+async def test_math_function_square_root_negative(context: ProcessingContext):
+    # Test square root of a negative number (should raise ValueError)
+    node = MathFunction(input=-16, operation=MathFunction.Operation.SQUARE_ROOT)
+    with pytest.raises(ValueError):
+        await node.process(context)
