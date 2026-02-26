@@ -766,7 +766,10 @@ class FilterDictByQuery(BaseNode):
                 if current_condition:
                     try:
                         df = pd.DataFrame([d])
-                        filtered_df = df.query(current_condition)
+                        # Pass empty dictionaries to prevent access to local and global variables
+                        filtered_df = df.query(
+                            current_condition, local_dict={}, global_dict={}
+                        )
                         if not filtered_df.empty:
                             yield {"output": d}
                     except Exception:
