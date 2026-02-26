@@ -237,7 +237,7 @@ class Query(BaseNode):
             cursor.execute(sql)
 
             results = []
-            for row in cursor.fetchall():
+            for row in cursor:
                 row_dict = dict(row)
                 # Try to parse JSON values
                 for key, value in row_dict.items():
@@ -413,9 +413,8 @@ class ExecuteSQL(BaseNode):
                     "message": "SQL executed successfully"
                 }
             else:
-                rows = cursor.fetchall()
                 results = []
-                for row in rows:
+                for row in cursor:
                     row_dict = dict(row)
                     for key, value in row_dict.items():
                         if isinstance(value, str):
