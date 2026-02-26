@@ -6,6 +6,7 @@ for security and isolation. They automatically use context.workspace_dir as the 
 """
 
 import os
+import asyncio
 from typing import AsyncGenerator, TypedDict
 from pydantic import Field
 from nodetool.metadata.types import ImageRef, VideoRef
@@ -230,9 +231,9 @@ class DeleteWorkspaceFile(BaseNode):
                 raise ValueError(
                     f"Path is a directory. Set recursive=True to delete: {self.path}"
                 )
-            shutil.rmtree(full_path)
+            await asyncio.to_thread(shutil.rmtree, full_path)
         else:
-            os.remove(full_path)
+            await asyncio.to_thread(os.remove, full_path)
 
 
 class CreateWorkspaceDirectory(BaseNode):
