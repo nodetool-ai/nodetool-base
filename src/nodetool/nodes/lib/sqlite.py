@@ -29,6 +29,14 @@ def column_type_to_sqlite(column_type: str) -> str:
     return mapping.get(column_type, "TEXT")
 
 
+def quote_identifier(identifier: str) -> str:
+    """Quote a SQLite identifier (table or column name) to prevent SQL injection."""
+    if not identifier:
+        return '""'
+    escaped = identifier.replace('"', '""')
+    return f'"{escaped}"'
+
+
 class CreateTable(BaseNode):
     """
     Create a new SQLite table with specified columns.
@@ -74,7 +82,8 @@ class CreateTable(BaseNode):
 
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
-        table_exists = conn.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{self.table_name}'").fetchone() is not None
+        # Use parameterized query for checking table existence
+        table_exists = conn.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (self.table_name,)).fetchone() is not None
         if table_exists:
             return {
                 "database_name": self.database_name,
@@ -87,16 +96,17 @@ class CreateTable(BaseNode):
             column_defs = []
             for i, col in enumerate(self.columns.columns):
                 sqlite_type = column_type_to_sqlite(col.data_type)
+                col_name = quote_identifier(col.name)
 
                 # Make first int column a primary key if requested
                 if i == 0 and self.add_primary_key and col.data_type == "int":
-                    column_defs.append(f"{col.name} INTEGER PRIMARY KEY AUTOINCREMENT")
+                    column_defs.append(f"{col_name} INTEGER PRIMARY KEY AUTOINCREMENT")
                 else:
-                    column_defs.append(f"{col.name} {sqlite_type}")
+                    column_defs.append(f"{col_name} {sqlite_type}")
 
             columns_sql = ", ".join(column_defs)
             if_not_exists_clause = "IF NOT EXISTS " if self.if_not_exists else ""
-            sql = f"CREATE TABLE {if_not_exists_clause}{self.table_name} ({columns_sql})"
+            sql = f"CREATE TABLE {if_not_exists_clause}{quote_identifier(self.table_name)} ({columns_sql})"
 
             cursor.execute(sql)
             conn.commit()
@@ -144,9 +154,9 @@ class Insert(BaseNode):
         try:
             cursor = conn.cursor()
 
-            columns = ", ".join(self.data.keys())
+            columns = ", ".join([quote_identifier(k) for k in self.data.keys()])
             placeholders = ", ".join(["?" for _ in self.data.values()])
-            sql = f"INSERT INTO {self.table_name} ({columns}) VALUES ({placeholders})"
+            sql = f"INSERT INTO {quote_identifier(self.table_name)} ({columns}) VALUES ({placeholders})"
 
             values = []
             for v in self.data.values():
@@ -221,9 +231,9 @@ class Query(BaseNode):
             if not self.columns.columns:
                 columns = "*"
             else:
-                columns = ", ".join([f"{col.name}" for col in self.columns.columns])
+                columns = ", ".join([quote_identifier(col.name) for col in self.columns.columns])
 
-            sql = f"SELECT {columns} FROM {self.table_name}"
+            sql = f"SELECT {columns} FROM {quote_identifier(self.table_name)}"
 
             if self.where:
                 sql += f" WHERE {self.where}"
@@ -296,8 +306,8 @@ class Update(BaseNode):
         try:
             cursor = conn.cursor()
 
-            set_clause = ", ".join([f"{col} = ?" for col in self.data.keys()])
-            sql = f"UPDATE {self.table_name} SET {set_clause}"
+            set_clause = ", ".join([f"{quote_identifier(col)} = ?" for col in self.data.keys()])
+            sql = f"UPDATE {quote_identifier(self.table_name)} SET {set_clause}"
 
             if self.where:
                 sql += f" WHERE {self.where}"
@@ -356,7 +366,7 @@ class Delete(BaseNode):
         try:
             cursor = conn.cursor()
 
-            sql = f"DELETE FROM {self.table_name} WHERE {self.where}"
+            sql = f"DELETE FROM {quote_identifier(self.table_name)} WHERE {self.where}"
 
             cursor.execute(sql)
             conn.commit()
