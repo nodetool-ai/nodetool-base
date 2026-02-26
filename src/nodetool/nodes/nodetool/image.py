@@ -10,9 +10,11 @@ from nodetool.providers.types import TextToImageParams, ImageToImageParams
 from nodetool.workflows.types import SaveUpdate
 import os
 import datetime
+import asyncio
 from pydantic import Field
 import PIL
 import PIL.Image
+import PIL.ImageOps
 import aiofiles
 
 
@@ -364,7 +366,8 @@ class Paste(BaseNode):
 
         image = await context.image_to_pil(self.image)
         paste = await context.image_to_pil(self.paste)
-        image.paste(paste, (self.left, self.top))
+        # Offload CPU-intensive task to thread to prevent blocking event loop
+        await asyncio.to_thread(image.paste, paste, (self.left, self.top))
         return await context.image_from_pil(image)
 
 
@@ -381,7 +384,10 @@ class Scale(BaseNode):
         image = await context.image_to_pil(self.image)
         width = int((image.width * self.scale))
         height = int((image.height * self.scale))
-        image = image.resize((width, height), PIL.Image.Resampling.LANCZOS)
+        # Offload CPU-intensive task to thread to prevent blocking event loop
+        image = await asyncio.to_thread(
+            image.resize, (width, height), PIL.Image.Resampling.LANCZOS
+        )
         return await context.image_from_pil(image)
 
 
@@ -397,7 +403,10 @@ class Resize(BaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image = await context.image_to_pil(self.image)
-        res = image.resize((self.width, self.height), PIL.Image.LANCZOS)  # type: ignore
+        # Offload CPU-intensive task to thread to prevent blocking event loop
+        res = await asyncio.to_thread(
+            image.resize, (self.width, self.height), PIL.Image.LANCZOS  # type: ignore
+        )
         return await context.image_from_pil(res)
 
 
@@ -417,7 +426,10 @@ class Crop(BaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image = await context.image_to_pil(self.image)
-        res = image.crop((self.left, self.top, self.right, self.bottom))
+        # Offload CPU-intensive task to thread to prevent blocking event loop
+        res = await asyncio.to_thread(
+            image.crop, (self.left, self.top, self.right, self.bottom)
+        )
         return await context.image_from_pil(res)
 
 
@@ -433,7 +445,13 @@ class Fit(BaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image = await context.image_to_pil(self.image)
-        res = PIL.ImageOps.fit(image, (self.width, self.height), PIL.Image.LANCZOS)  # type: ignore
+        # Offload CPU-intensive task to thread to prevent blocking event loop
+        res = await asyncio.to_thread(
+            PIL.ImageOps.fit,  # type: ignore
+            image,
+            (self.width, self.height),
+            PIL.Image.LANCZOS,
+        )
         return await context.image_from_pil(res)
 
 
