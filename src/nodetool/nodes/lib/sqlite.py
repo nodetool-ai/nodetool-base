@@ -3,6 +3,7 @@ SQLite database nodes for persistent storage and memory mechanisms.
 """
 
 import sqlite3
+import aiosqlite
 import json
 from typing import ClassVar, TypedDict
 from pathlib import Path
@@ -72,17 +73,16 @@ class CreateTable(BaseNode):
         db_path = Path(context.workspace_dir) / self.database_name
         log.info(f"Creating table {self.table_name} in database {self.database_name} at {db_path}")
 
-        conn = sqlite3.connect(db_path)
-        conn.row_factory = sqlite3.Row
-        table_exists = conn.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{self.table_name}'").fetchone() is not None
-        if table_exists:
-            return {
-                "database_name": self.database_name,
-                "table_name": self.table_name,
-                "columns": self.columns
-            }
-        try:
-            cursor = conn.cursor()
+        async with aiosqlite.connect(db_path) as conn:
+            conn.row_factory = aiosqlite.Row
+            cursor = await conn.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{self.table_name}'")
+            table_exists = await cursor.fetchone() is not None
+            if table_exists:
+                return {
+                    "database_name": self.database_name,
+                    "table_name": self.table_name,
+                    "columns": self.columns
+                }
 
             column_defs = []
             for i, col in enumerate(self.columns.columns):
@@ -98,16 +98,14 @@ class CreateTable(BaseNode):
             if_not_exists_clause = "IF NOT EXISTS " if self.if_not_exists else ""
             sql = f"CREATE TABLE {if_not_exists_clause}{self.table_name} ({columns_sql})"
 
-            cursor.execute(sql)
-            conn.commit()
+            await conn.execute(sql)
+            await conn.commit()
 
             return {
                 "database_name": self.database_name,
                 "table_name": self.table_name,
                 "columns": self.columns
             }
-        finally:
-            conn.close()
 
 
 class Insert(BaseNode):
@@ -139,11 +137,8 @@ class Insert(BaseNode):
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
         db_path = Path(context.workspace_dir) / self.database_name
 
-        conn = sqlite3.connect(db_path)
         log.info(f"Inserting record into table {self.table_name} in database {self.database_name} at {db_path}")
-        try:
-            cursor = conn.cursor()
-
+        async with aiosqlite.connect(db_path) as conn:
             columns = ", ".join(self.data.keys())
             placeholders = ", ".join(["?" for _ in self.data.values()])
             sql = f"INSERT INTO {self.table_name} ({columns}) VALUES ({placeholders})"
@@ -155,16 +150,14 @@ class Insert(BaseNode):
                 else:
                     values.append(v)
 
-            cursor.execute(sql, values)
-            conn.commit()
+            cursor = await conn.execute(sql, values)
+            await conn.commit()
 
             return {
                 "row_id": cursor.lastrowid,
                 "rows_affected": cursor.rowcount,
                 "message": f"Inserted record with ID {cursor.lastrowid}"
             }
-        finally:
-            conn.close()
 
 
 class Query(BaseNode):
@@ -212,50 +205,48 @@ class Query(BaseNode):
         if not db_path.exists():
             return []
 
-        conn = sqlite3.connect(db_path)
-        conn.row_factory = sqlite3.Row
         try:
-            cursor = conn.cursor()
+            async with aiosqlite.connect(db_path) as conn:
+                conn.row_factory = aiosqlite.Row
 
-            # Use SELECT * if no columns specified, otherwise use specified columns
-            if not self.columns.columns:
-                columns = "*"
-            else:
-                columns = ", ".join([f"{col.name}" for col in self.columns.columns])
+                # Use SELECT * if no columns specified, otherwise use specified columns
+                if not self.columns.columns:
+                    columns = "*"
+                else:
+                    columns = ", ".join([f"{col.name}" for col in self.columns.columns])
 
-            sql = f"SELECT {columns} FROM {self.table_name}"
+                sql = f"SELECT {columns} FROM {self.table_name}"
 
-            if self.where:
-                sql += f" WHERE {self.where}"
+                if self.where:
+                    sql += f" WHERE {self.where}"
 
-            if self.order_by:
-                sql += f" ORDER BY {self.order_by}"
+                if self.order_by:
+                    sql += f" ORDER BY {self.order_by}"
 
-            if self.limit > 0:
-                sql += f" LIMIT {self.limit}"
+                if self.limit > 0:
+                    sql += f" LIMIT {self.limit}"
 
-            cursor.execute(sql)
+                cursor = await conn.execute(sql)
+                rows = await cursor.fetchall()
 
-            results = []
-            for row in cursor.fetchall():
-                row_dict = dict(row)
-                # Try to parse JSON values
-                for key, value in row_dict.items():
-                    if isinstance(value, str):
-                        try:
-                            row_dict[key] = json.loads(value)
-                        except (json.JSONDecodeError, TypeError):
-                            pass
-                results.append(row_dict)
+                results = []
+                for row in rows:
+                    row_dict = dict(row)
+                    # Try to parse JSON values
+                    for key, value in row_dict.items():
+                        if isinstance(value, str):
+                            try:
+                                row_dict[key] = json.loads(value)
+                            except (json.JSONDecodeError, TypeError):
+                                pass
+                    results.append(row_dict)
 
-            return results
+                return results
         except Exception as e:
             import traceback
             log.error(traceback.print_stack())
             log.error(f"Error querying table {self.table_name} in database {self.database_name} at {db_path}: {e}")
             raise e
-        finally:
-            conn.close()
 
 
 class Update(BaseNode):
@@ -292,10 +283,7 @@ class Update(BaseNode):
         db_path = Path(context.workspace_dir) / self.database_name
         log.info(f"Updating table {self.table_name} in database {self.database_name} at {db_path}")
 
-        conn = sqlite3.connect(db_path)
-        try:
-            cursor = conn.cursor()
-
+        async with aiosqlite.connect(db_path) as conn:
             set_clause = ", ".join([f"{col} = ?" for col in self.data.keys()])
             sql = f"UPDATE {self.table_name} SET {set_clause}"
 
@@ -309,15 +297,13 @@ class Update(BaseNode):
                 else:
                     values.append(v)
 
-            cursor.execute(sql, values)
-            conn.commit()
+            cursor = await conn.execute(sql, values)
+            await conn.commit()
 
             return {
                 "rows_affected": cursor.rowcount,
                 "message": f"Updated {cursor.rowcount} record(s)"
             }
-        finally:
-            conn.close()
 
 
 class Delete(BaseNode):
@@ -352,21 +338,16 @@ class Delete(BaseNode):
 
         db_path = Path(context.workspace_dir) / self.database_name
 
-        conn = sqlite3.connect(db_path)
-        try:
-            cursor = conn.cursor()
-
+        async with aiosqlite.connect(db_path) as conn:
             sql = f"DELETE FROM {self.table_name} WHERE {self.where}"
 
-            cursor.execute(sql)
-            conn.commit()
+            cursor = await conn.execute(sql)
+            await conn.commit()
 
             return {
                 "rows_affected": cursor.rowcount,
                 "message": f"Deleted {cursor.rowcount} record(s)"
             }
-        finally:
-            conn.close()
 
 
 class ExecuteSQL(BaseNode):
@@ -398,22 +379,19 @@ class ExecuteSQL(BaseNode):
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
         db_path = Path(context.workspace_dir) / self.database_name
 
-        conn = sqlite3.connect(db_path)
-        conn.row_factory = sqlite3.Row
-        try:
-            cursor = conn.cursor()
-
-            cursor.execute(self.sql, self.parameters)
+        async with aiosqlite.connect(db_path) as conn:
+            conn.row_factory = aiosqlite.Row
+            cursor = await conn.execute(self.sql, self.parameters)
 
             if self.sql.strip().upper().startswith(('INSERT', 'UPDATE', 'DELETE', 'CREATE', 'ALTER', 'DROP')):
-                conn.commit()
+                await conn.commit()
                 return {
                     "rows_affected": cursor.rowcount,
                     "last_row_id": cursor.lastrowid,
                     "message": "SQL executed successfully"
                 }
             else:
-                rows = cursor.fetchall()
+                rows = await cursor.fetchall()
                 results = []
                 for row in rows:
                     row_dict = dict(row)
@@ -430,8 +408,6 @@ class ExecuteSQL(BaseNode):
                     "count": len(results),
                     "message": f"Query returned {len(results)} row(s)"
                 }
-        finally:
-            conn.close()
 
 
 class GetDatabasePath(BaseNode):
