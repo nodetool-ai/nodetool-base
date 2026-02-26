@@ -1,5 +1,6 @@
 from datetime import datetime
 from io import BytesIO
+import asyncio
 import json
 import os
 import string
@@ -1739,13 +1740,18 @@ class Embedding(BaseNode):
         client = provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
 
         # Generate embeddings for each chunk and average them
-        all_embeddings = []
-        for chunk in chunks:
-            response = await client.models.embed_content(
+        tasks = [
+            client.models.embed_content(
                 model=self.model.id,
                 contents=chunk,
             )
+            for chunk in chunks
+        ]
 
+        responses = await asyncio.gather(*tasks)
+
+        all_embeddings = []
+        for response in responses:
             if not response.embeddings or not response.embeddings[0].values:
                 raise ValueError("No embedding generated from the input text")
 
