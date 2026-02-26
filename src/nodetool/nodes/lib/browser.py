@@ -2,7 +2,8 @@ import asyncio
 import os
 import re
 from enum import Enum
-from typing import Any, AsyncGenerator, Dict, Optional, ClassVar, TypedDict
+from typing import Any, AsyncGenerator, Dict, Optional, ClassVar, TypedDict, Set, List, Tuple
+from urllib.parse import urljoin, urlparse
 
 import aiohttp
 from pydantic import Field
@@ -696,7 +697,7 @@ class SpiderCrawl(BaseNode):
         title: Optional[str]
         status_code: int
 
-    def get_timeout_seconds(self) -> float | None:  # type: ignore[override] # Returns timeout for spider crawl task based on max pages
+    def get_timeout_seconds(self) -> float | None:  # type: ignore[override]
         """Return overall timeout for spider crawl.
 
         Based on max pages and delays to prevent long-running crawls.
@@ -704,27 +705,9 @@ class SpiderCrawl(BaseNode):
         estimated = (self.max_pages * (self.timeout / 1000.0 + self.delay_ms / 1000.0)) + 60.0
         return min(estimated, 600.0)  # Cap at 10 minutes
 
-    async def gen_process(
-        self, context: ProcessingContext
-    ) -> AsyncGenerator[OutputType, None]:
-        """Stream discovered URLs and their content as they are crawled."""
-        from urllib.parse import urljoin, urlparse
-        from playwright.async_api import async_playwright
-        import asyncio
-
-        if not self.start_url:
-            raise ValueError("start_url is required")
-
-        # Parse start URL to get domain
-        start_parsed = urlparse(self.start_url)
-        start_domain = f"{start_parsed.scheme}://{start_parsed.netloc}"
-
-        # Track visited URLs and URLs to visit
-        visited: set[str] = set()
-        to_visit: list[tuple[str, int]] = [(self.start_url, 0)]  # (url, depth)
-        pages_crawled = 0
-
-        # Compile URL patterns if provided
+    async def _setup_crawl(self, start_domain: str) -> tuple[Optional[Any], Optional[re.Pattern], Optional[re.Pattern]]:
+        """Initialize robot parser and compile regex patterns."""
+        # Compile URL patterns
         url_pattern_re = None
         if self.url_pattern:
             try:
@@ -739,7 +722,7 @@ class SpiderCrawl(BaseNode):
             except re.error as e:
                 logger.warning("Invalid exclude_pattern regex: %s", e)
 
-        # Check robots.txt if enabled
+        # Initialize robot parser
         robot_parser = None
         if self.respect_robots_txt:
             try:
@@ -761,6 +744,125 @@ class SpiderCrawl(BaseNode):
                 logger.warning("urllib.robotparser not available, skipping robots.txt check")
                 robot_parser = None
 
+        return robot_parser, url_pattern_re, exclude_pattern_re
+
+    def _should_crawl(
+        self,
+        url: str,
+        depth: int,
+        visited: Set[str],
+        robot_parser: Optional[Any],
+        url_pattern_re: Optional[re.Pattern],
+        exclude_pattern_re: Optional[re.Pattern],
+    ) -> bool:
+        """Check if a URL should be crawled."""
+        if url in visited:
+            return False
+
+        if depth > self.max_depth:
+            return False
+
+        if robot_parser and not robot_parser.can_fetch("*", url):
+            logger.debug("Skipping %s (blocked by robots.txt)", url)
+            return False
+
+        if url_pattern_re and not url_pattern_re.search(url):
+            return False
+
+        if exclude_pattern_re and exclude_pattern_re.search(url):
+            return False
+
+        return True
+
+    async def _crawl_page(self, page: Any, url: str, depth: int) -> OutputType:
+        """Navigate to the page and extract info."""
+        response = await page.goto(
+            url,
+            wait_until="domcontentloaded",
+            timeout=self.timeout
+        )
+
+        status_code = response.status if response else 0
+        title = await page.title()
+
+        html_content = None
+        if self.include_html:
+            html_content = await page.content()
+
+        return {
+            "url": url,
+            "depth": depth,
+            "html": html_content,
+            "title": title,
+            "status_code": status_code,
+        }
+
+    async def _extract_links(self, page: Any) -> List[str]:
+        """Extract all href attributes from anchor tags, filtering out non-http links."""
+        return await page.evaluate(
+            """() => {
+                return Array.from(document.querySelectorAll('a[href]'))
+                    .map(a => a.href)
+                    .filter(href =>
+                        href &&
+                        !href.startsWith('javascript:') &&
+                        !href.startsWith('mailto:') &&
+                        !href.startsWith('tel:')
+                    );
+            }"""
+        )
+
+    def _process_links(
+        self,
+        links: List[str],
+        current_url: str,
+        start_domain: str,
+        visited: Set[str],
+        to_visit: List[Tuple[str, int]],
+        current_depth: int
+    ) -> None:
+        """Process extracted links and add to queue."""
+        for link in links:
+            try:
+                # Normalize URL
+                normalized_link = urljoin(current_url, link)
+                normalized_link = normalized_link.split('#')[0]
+
+                if normalized_link in visited:
+                    continue
+
+                if self.same_domain_only:
+                    link_parsed = urlparse(normalized_link)
+                    link_domain = f"{link_parsed.scheme}://{link_parsed.netloc}"
+                    if link_domain != start_domain:
+                        continue
+
+                # Add to queue if not already queued
+                if not any(url == normalized_link for url, _ in to_visit):
+                    to_visit.append((normalized_link, current_depth + 1))
+
+            except Exception as e:
+                logger.debug("Error processing link %s: %s", link, e)
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
+        """Stream discovered URLs and their content as they are crawled."""
+        from playwright.async_api import async_playwright
+
+        if not self.start_url:
+            raise ValueError("start_url is required")
+
+        start_parsed = urlparse(self.start_url)
+        start_domain = f"{start_parsed.scheme}://{start_parsed.netloc}"
+
+        visited: Set[str] = set()
+        to_visit: List[Tuple[str, int]] = [(self.start_url, 0)]
+        pages_crawled = 0
+
+        # Setup crawling configuration
+        robot_parser, url_pattern_re, exclude_pattern_re = await self._setup_crawl(start_domain)
+
         async with async_playwright() as apw:
             browser = await apw.chromium.launch()
             ctx = await browser.new_context(
@@ -773,103 +875,31 @@ class SpiderCrawl(BaseNode):
                 while to_visit and pages_crawled < self.max_pages:
                     current_url, depth = to_visit.pop(0)
 
-                    # Skip if already visited
-                    if current_url in visited:
-                        continue
-
-                    # Check depth limit
-                    if depth > self.max_depth:
-                        continue
-
-                    # Check robots.txt
-                    if robot_parser and not robot_parser.can_fetch("*", current_url):
-                        logger.debug("Skipping %s (blocked by robots.txt)", current_url)
-                        continue
-
-                    # Check URL patterns
-                    if url_pattern_re and not url_pattern_re.search(current_url):
-                        continue
-                    if exclude_pattern_re and exclude_pattern_re.search(current_url):
+                    if not self._should_crawl(
+                        current_url, depth, visited,
+                        robot_parser, url_pattern_re, exclude_pattern_re
+                    ):
                         continue
 
                     visited.add(current_url)
 
                     try:
-                        # Navigate to page
-                        response = await page.goto(
-                            current_url,
-                            wait_until="domcontentloaded",
-                            timeout=self.timeout
-                        )
-
-                        status_code = response.status if response else 0
-
-                        # Extract page info
-                        title = await page.title()
-                        html_content = None
-                        if self.include_html:
-                            html_content = await page.content()
-
-                        # Yield current page
-                        yield {
-                            "url": current_url,
-                            "depth": depth,
-                            "html": html_content,
-                            "title": title,
-                            "status_code": status_code,
-                        }
-
+                        result = await self._crawl_page(page, current_url, depth)
+                        yield result
                         pages_crawled += 1
 
-                        # Extract links if not at max depth
                         if depth < self.max_depth:
-                            # Extract all href attributes from anchor tags, filtering out non-http links
-                            links = await page.evaluate(
-                                """() => {
-                                    return Array.from(document.querySelectorAll('a[href]'))
-                                        .map(a => a.href)
-                                        .filter(href => 
-                                            href && 
-                                            !href.startsWith('javascript:') && 
-                                            !href.startsWith('mailto:') && 
-                                            !href.startsWith('tel:')
-                                        );
-                                }"""
+                            links = await self._extract_links(page)
+                            self._process_links(
+                                links, current_url, start_domain,
+                                visited, to_visit, depth
                             )
 
-                            # Process discovered links
-                            for link in links:
-                                try:
-                                    # Normalize URL
-                                    normalized_link = urljoin(current_url, link)
-                                    # Remove fragment
-                                    normalized_link = normalized_link.split('#')[0]
-
-                                    # Skip if already visited or queued
-                                    if normalized_link in visited:
-                                        continue
-
-                                    # Check domain restriction
-                                    if self.same_domain_only:
-                                        link_parsed = urlparse(normalized_link)
-                                        link_domain = f"{link_parsed.scheme}://{link_parsed.netloc}"
-                                        if link_domain != start_domain:
-                                            continue
-
-                                    # Add to queue
-                                    if not any(url == normalized_link for url, _ in to_visit):
-                                        to_visit.append((normalized_link, depth + 1))
-
-                                except Exception as e:
-                                    logger.debug("Error processing link %s: %s", link, e)
-
-                        # Politeness delay
                         if self.delay_ms > 0 and to_visit:
                             await asyncio.sleep(self.delay_ms / 1000.0)
 
                     except Exception as e:
                         logger.warning("Error crawling %s: %s", current_url, e)
-                        # Still yield the URL with error info
                         yield {
                             "url": current_url,
                             "depth": depth,
