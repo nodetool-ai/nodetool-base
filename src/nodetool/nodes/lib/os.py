@@ -696,15 +696,9 @@ class ShowNotification(BaseNode):
             raise ValueError("message cannot be empty")
 
         if os.name == "posix" and "darwin" in os.uname().sysname.lower():  # macOS
-            # Escape single quotes in the title and message
-            escaped_title = self.title.replace("'", "'\"'\"'")
-            escaped_message = self.message.replace("'", "'\"'\"'")
-
-            cmd = [
-                "osascript",
-                "-e",
-                f'display notification "{escaped_message}" with title "{escaped_title}"',
-            ]
+            # Use osascript with arguments to prevent command injection
+            script = 'on run argv\n  display notification (item 1 of argv) with title (item 2 of argv)\nend run'
+            cmd = ["osascript", "-e", script, "--", self.message, self.title]
 
             try:
                 await asyncio.to_thread(
