@@ -33,6 +33,7 @@ from nodetool.config.environment import Environment
 from nodetool.workflows.types import SaveUpdate
 from nodetool.providers.types import TextToVideoParams, ImageToVideoParams
 import aiofiles
+import aiofiles.os
 
 logger = get_logger(__name__)
 
@@ -311,7 +312,7 @@ class LoadVideoFile(BaseNode):
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         expanded_path = os.path.expanduser(self.path)
-        if not os.path.exists(expanded_path):
+        if not await aiofiles.os.path.exists(expanded_path):
             raise ValueError(f"Video file not found: {expanded_path}")
 
         async with aiofiles.open(expanded_path, "rb") as f:
