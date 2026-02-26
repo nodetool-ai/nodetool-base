@@ -1,4 +1,5 @@
 import pytest
+import json
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.lib.json import (
     ParseDict,
@@ -32,6 +33,13 @@ async def test_parse_dict(context: ProcessingContext):
 async def test_parse_dict_invalid_raises(context: ProcessingContext):
     node = ParseDict(json_string='[1, 2, 3]')
     with pytest.raises(ValueError):
+        await node.process(context)
+
+
+@pytest.mark.asyncio
+async def test_parse_dict_malformed_json_raises(context: ProcessingContext):
+    node = ParseDict(json_string='{invalid')
+    with pytest.raises(json.JSONDecodeError):
         await node.process(context)
 
 
@@ -132,4 +140,3 @@ async def test_json_template(context: ProcessingContext):
     bad = JSONTemplate(template="{invalid}", values={})
     with pytest.raises(ValueError):
         await bad.process(context)
-
