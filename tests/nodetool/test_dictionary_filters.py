@@ -167,6 +167,35 @@ async def test_filter_dict_by_query(context):
 
 
 @pytest.mark.asyncio
+async def test_filter_dict_by_query_invalid_syntax(context):
+    """Test FilterDictByQuery with invalid syntax and missing columns."""
+    data = [
+        {"name": "A", "val": 10},
+        {"name": "B", "val": 20},
+    ]
+
+    # Test case 1: Invalid syntax
+    res = await run_simple_filter_graph(
+        context,
+        data,
+        FilterDictByQuery.get_node_type(),
+        {"condition": "val =="},  # Invalid syntax
+    )
+    # Should skip all items due to error
+    assert len(res) == 0
+
+    # Test case 2: Missing column
+    res = await run_simple_filter_graph(
+        context,
+        data,
+        FilterDictByQuery.get_node_type(),
+        {"condition": "non_existent_column > 5"},
+    )
+    # Should skip all items due to error
+    assert len(res) == 0
+
+
+@pytest.mark.asyncio
 async def test_filter_dict_by_value_starts_with(context):
     """Test FilterDictByValue with starts_with filter."""
     data = [
