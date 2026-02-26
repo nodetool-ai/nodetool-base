@@ -5,6 +5,7 @@ from enum import Enum
 from typing import Any, ClassVar, List, TypedDict
 from urllib.parse import urljoin
 
+import aiofiles
 import aiohttp
 from pydantic import Field
 
@@ -751,8 +752,8 @@ class DownloadFiles(BaseNode):
                     filepath = os.path.join(expanded_folder, filename)
                     content = await response.read()
 
-                    with open(filepath, "wb") as f:
-                        f.write(content)
+                    async with aiofiles.open(filepath, "wb") as f:
+                        await f.write(content)
 
                     return filepath
                 else:
