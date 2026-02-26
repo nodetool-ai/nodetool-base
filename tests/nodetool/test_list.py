@@ -11,6 +11,7 @@ from nodetool.nodes.nodetool.list import (
     Extend,
     Dedupe,
     Reverse,
+    Product,
 )
 
 # Create dummy inputs for testing
@@ -36,6 +37,7 @@ def context():
         (Extend(values=dummy_list, other_values=[6, 7]), list),
         (Dedupe(values=[1, 2, 2, 3, 3, 3]), list),
         (Reverse(values=dummy_list), list),
+        (Product(values=dummy_list), (int, float)),
     ],
 )
 async def test_list_nodes(context: ProcessingContext, node, expected_type):
@@ -70,6 +72,29 @@ async def test_get_element_out_of_range(context: ProcessingContext):
         await node.process(context)
 
 
+@pytest.mark.asyncio
+async def test_product_node(context: ProcessingContext):
+    node = Product(values=[2, 3, 4])
+    result = await node.process(context)
+    assert result == 24
+
+
+@pytest.mark.asyncio
+async def test_product_empty(context: ProcessingContext):
+    node = Product(values=[])
+    with pytest.raises(ValueError):
+        await node.process(context)
+
+
+@pytest.mark.asyncio
+async def test_product_invalid_values(context: ProcessingContext):
+    # Pydantic validation will raise a ValidationError when creating the model
+    from pydantic import ValidationError
+
+    with pytest.raises(ValidationError):
+        Product(values=["a", "b"])
+
+
 @pytest.mark.parametrize(
     "NodeClass",
     [
@@ -82,6 +107,7 @@ async def test_get_element_out_of_range(context: ProcessingContext):
         Extend,
         Dedupe,
         Reverse,
+        Product,
     ],
 )
 def test_node_attributes(NodeClass):
