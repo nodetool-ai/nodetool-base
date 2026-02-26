@@ -64,6 +64,24 @@ class LoadAudioAssets(BaseNode):
             }
 
 
+async def _load_audio_from_path(context: ProcessingContext, path: str) -> AudioRef:
+    """Helper function to load audio from a file path."""
+    if Environment.is_production():
+        raise ValueError("This node is not available in production")
+    if not path:
+        raise ValueError("path cannot be empty")
+    expanded_path = os.path.expanduser(path)
+    if not os.path.exists(expanded_path):
+        raise ValueError(f"Audio file not found: {expanded_path}")
+
+    async with aiofiles.open(expanded_path, "rb") as f:
+        audio_data = await f.read()
+
+    audio = await context.audio_from_bytes(audio_data)
+    audio.uri = create_file_uri(expanded_path)
+    return audio
+
+
 class LoadAudioFile(BaseNode):
     """
     Read an audio file from disk.
@@ -73,20 +91,7 @@ class LoadAudioFile(BaseNode):
     path: str = Field(default="", description="Path to the audio file to read")
 
     async def process(self, context: ProcessingContext) -> AudioRef:
-        if Environment.is_production():
-            raise ValueError("This node is not available in production")
-        if not self.path:
-            raise ValueError("path cannot be empty")
-        expanded_path = os.path.expanduser(self.path)
-        if not os.path.exists(expanded_path):
-            raise ValueError(f"Audio file not found: {expanded_path}")
-
-        async with aiofiles.open(expanded_path, "rb") as f:
-            audio_data = await f.read()
-
-        audio = await context.audio_from_bytes(audio_data)
-        audio.uri = create_file_uri(expanded_path)
-        return audio
+        return await _load_audio_from_path(context, self.path)
 
 
 class LoadAudioFolder(BaseNode):
@@ -143,11 +148,7 @@ class LoadAudioFolder(BaseNode):
             if ext.lower() not in allowed_exts:
                 continue
 
-            async with aiofiles.open(file_path, "rb") as f:
-                audio_data = await f.read()
-
-            audio = await context.audio_from_bytes(audio_data)
-            audio.uri = create_file_uri(file_path)
+            audio = await _load_audio_from_path(context, file_path)
             yield {"path": file_path, "audio": audio}
 
 
