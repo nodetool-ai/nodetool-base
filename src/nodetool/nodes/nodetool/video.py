@@ -33,17 +33,9 @@ from nodetool.config.environment import Environment
 from nodetool.workflows.types import SaveUpdate
 from nodetool.providers.types import TextToVideoParams, ImageToVideoParams
 import aiofiles
+from .utils import managed_temp_file
 
 logger = get_logger(__name__)
-
-
-def safe_unlink(path: str):
-    try:
-        os.unlink(path)
-    except FileNotFoundError:
-        return
-    except Exception as e:
-        logger.debug("Failed to unlink %s: %s", path, e)
 
 
 def _probe_video_fps(path: str) -> float:
@@ -501,11 +493,11 @@ class FrameIterator(BaseNode):
         cv2 = _require_cv2()
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp:
-            temp.write(video_file.read())
-            temp.flush()
+        with managed_temp_file(suffix=".mp4") as temp_path:
+            with open(temp_path, "wb") as temp:
+                temp.write(video_file.read())
 
-            cap = cv2.VideoCapture(temp.name, apiPreference=0, params=[])
+            cap = cv2.VideoCapture(temp_path, apiPreference=0, params=[])
             frame_count = 0
             fps = await self.get_fps(context)
 
@@ -533,11 +525,11 @@ class FrameIterator(BaseNode):
     async def get_fps(self, context: ProcessingContext) -> float:
         cv2 = _require_cv2()
         video_file = await context.asset_to_io(self.video)
-        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp:
-            temp.write(video_file.read())
-            temp.flush()
+        with managed_temp_file(suffix=".mp4") as temp_path:
+            with open(temp_path, "wb") as temp:
+                temp.write(video_file.read())
 
-            cap = cv2.VideoCapture(temp.name)
+            cap = cv2.VideoCapture(temp_path)
             fps = cap.get(cv2.CAP_PROP_FPS)
             cap.release()
 
@@ -556,10 +548,10 @@ class Fps(BaseNode):
 
     async def process(self, context: ProcessingContext) -> float:
         video_file = await context.asset_to_io(self.video)
-        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp:
-            temp.write(video_file.read())
-            temp.flush()
-            return _probe_video_fps(temp.name)
+        with managed_temp_file(suffix=".mp4") as temp_path:
+            with open(temp_path, "wb") as temp:
+                temp.write(video_file.read())
+            return _probe_video_fps(temp_path)
 
 
 class FrameToVideo(BaseNode):
@@ -613,6 +605,8 @@ class FrameToVideo(BaseNode):
         self, context: ProcessingContext, temp_dir: str, fps: float
     ) -> VideoRef:
         # Create a temporary file for the output video
+        # We manually manage this file path within the temp_dir provided by TemporaryDirectory
+        # which will be cleaned up automatically when the context manager exits in run()
         video_path = os.path.join(temp_dir, f"video_{str(uuid.uuid4())}.mp4")
         try:
             # Use FFmpeg to create video from frames
@@ -633,9 +627,6 @@ class FrameToVideo(BaseNode):
             logger.error("FFmpeg stdout:\n%s", e.stdout.decode("utf8"))
             logger.error("FFmpeg stderr:\n%s", e.stderr.decode("utf8"))
             raise RuntimeError(f"Error creating video: {e.stderr.decode('utf8')}")
-
-        finally:
-            safe_unlink(video_path)
 
 
 class Concat(BaseNode):
@@ -661,27 +652,25 @@ class Concat(BaseNode):
         video_b = await context.asset_to_io(self.video_b)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_a,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_b,
-            tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as temp_list,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as output_temp,
+            managed_temp_file(suffix=".mp4") as temp_a_path,
+            managed_temp_file(suffix=".mp4") as temp_b_path,
+            managed_temp_file(suffix=".txt") as temp_list_path,
+            managed_temp_file(suffix=".mp4") as output_temp_path,
         ):
             try:
-                temp_a.write(video_a.read())
-                temp_b.write(video_b.read())
-                temp_a.close()
-                temp_b.close()
-                output_temp.close()
+                with open(temp_a_path, "wb") as temp_a:
+                    temp_a.write(video_a.read())
+                with open(temp_b_path, "wb") as temp_b:
+                    temp_b.write(video_b.read())
 
                 # Create a list file for concatenation
-                async with aiofiles.open(temp_list.name, "w") as f:
-                    await f.write(f"file '{temp_a.name}'\n")
-                    await f.write(f"file '{temp_b.name}'\n")
-                temp_list.close()
+                async with aiofiles.open(temp_list_path, "w") as f:
+                    await f.write(f"file '{temp_a_path}'\n")
+                    await f.write(f"file '{temp_b_path}'\n")
 
                 # Check if both videos have audio streams
-                probe_a = ffmpeg.probe(temp_a.name)
-                probe_b = ffmpeg.probe(temp_b.name)
+                probe_a = ffmpeg.probe(temp_a_path)
+                probe_b = ffmpeg.probe(temp_b_path)
                 has_audio_a = any(
                     stream["codec_type"] == "audio" for stream in probe_a["streams"]
                 )
@@ -690,13 +679,13 @@ class Concat(BaseNode):
                 )
 
                 # Use ffmpeg-python to concatenate videos
-                input_stream = ffmpeg.input(temp_list.name, format="concat", safe=0)
+                input_stream = ffmpeg.input(temp_list_path, format="concat", safe=0)
 
                 if has_audio_a and has_audio_b:
-                    output = ffmpeg.output(input_stream, output_temp.name, c="copy")
+                    output = ffmpeg.output(input_stream, output_temp_path, c="copy")
                 else:
                     output = ffmpeg.output(
-                        input_stream.video, output_temp.name, vcodec="libx264"
+                        input_stream.video, output_temp_path, vcodec="libx264"
                     )
 
                 output.overwrite_output().run(
@@ -704,7 +693,7 @@ class Concat(BaseNode):
                 )
 
                 # Read the concatenated video and create a VideoRef
-                async with aiofiles.open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp_path, "rb") as f:
                     return await context.video_from_io(f)
             except ffmpeg.Error as e:
                 logger.error("FFmpeg stdout:\n%s", e.stdout.decode("utf8"))
@@ -712,11 +701,6 @@ class Concat(BaseNode):
                 raise RuntimeError(
                     f"Error concatenating videos: {e.stderr.decode('utf8')}"
                 )
-            finally:
-                safe_unlink(temp_a.name)
-                safe_unlink(temp_b.name)
-                safe_unlink(temp_list.name)
-                safe_unlink(output_temp.name)
 
 
 class Trim(BaseNode):
@@ -743,18 +727,17 @@ class Trim(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp,
-            tempfile.NamedTemporaryFile(suffix=".mp4") as output_temp,
+            managed_temp_file(suffix=".mp4") as temp_path,
+            managed_temp_file(suffix=".mp4") as output_temp_path,
         ):
             try:
-                temp.write(video_file.read())
-                temp.close()
-                output_temp.close()
+                with open(temp_path, "wb") as temp:
+                    temp.write(video_file.read())
 
-                input_stream = ffmpeg.input(temp.name)
+                input_stream = ffmpeg.input(temp_path)
 
                 # Check if the video has an audio stream
-                probe = ffmpeg.probe(temp.name)
+                probe = ffmpeg.probe(temp_path)
                 has_audio = any(
                     stream["codec_type"] == "audio" for stream in probe["streams"]
                 )
@@ -782,20 +765,17 @@ class Trim(BaseNode):
 
                     # Output both video and audio
                     ffmpeg.output(
-                        trimmed_video, trimmed_audio, output_temp.name
+                        trimmed_video, trimmed_audio, output_temp_path
                     ).overwrite_output().run(quiet=False)
                 else:
                     # Output only video
                     ffmpeg.output(
-                        trimmed_video, output_temp.name
+                        trimmed_video, output_temp_path
                     ).overwrite_output().run(quiet=False)
 
                 # Read the trimmed video and create a VideoRef
-                async with aiofiles.open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp_path, "rb") as f:
                     return await context.video_from_io(f)
-            finally:
-                safe_unlink(temp.name)
-                safe_unlink(output_temp.name)
 
 
 class ResizeNode(BaseNode):
@@ -823,21 +803,20 @@ class ResizeNode(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as output_temp,
+            managed_temp_file(suffix=".mp4") as temp_path,
+            managed_temp_file(suffix=".mp4") as output_temp_path,
         ):
             try:
-                temp.write(video_file.read())
-                temp.close()
-                output_temp.close()
+                with open(temp_path, "wb") as temp:
+                    temp.write(video_file.read())
 
-                input_stream = ffmpeg.input(temp.name)
+                input_stream = ffmpeg.input(temp_path)
 
                 # Apply resizing to video stream
                 resized = input_stream.video.filter("scale", self.width, self.height)
 
                 # Check if audio stream exists
-                probe = ffmpeg.probe(temp.name)
+                probe = ffmpeg.probe(temp_path)
                 has_audio = any(
                     stream["codec_type"] == "audio" for stream in probe["streams"]
                 )
@@ -846,20 +825,17 @@ class ResizeNode(BaseNode):
                     # Keep audio stream unchanged if it exists
                     audio = input_stream.audio
                     ffmpeg.output(
-                        resized, audio, output_temp.name
+                        resized, audio, output_temp_path
                     ).overwrite_output().run(quiet=False)
                 else:
                     # Output only video if no audio stream
-                    ffmpeg.output(resized, output_temp.name).overwrite_output().run(
+                    ffmpeg.output(resized, output_temp_path).overwrite_output().run(
                         quiet=False
                     )
 
                 # Read the resized video and create a VideoRef
-                async with aiofiles.open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp_path, "rb") as f:
                     return await context.video_from_io(f)
-            finally:
-                safe_unlink(temp.name)
-                safe_unlink(output_temp.name)
 
 
 class Rotate(BaseNode):
@@ -884,22 +860,21 @@ class Rotate(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as output_temp,
+            managed_temp_file(suffix=".mp4") as temp_path,
+            managed_temp_file(suffix=".mp4") as output_temp_path,
         ):
             try:
-                temp.write(video_file.read())
-                temp.close()
-                output_temp.close()
+                with open(temp_path, "wb") as temp:
+                    temp.write(video_file.read())
 
-                input_stream = ffmpeg.input(temp.name)
+                input_stream = ffmpeg.input(temp_path)
 
                 # Apply rotation to video stream
                 angle_rad = np.radians(self.angle)
                 rotated = input_stream.video.filter("rotate", angle=angle_rad)
 
                 # Check if audio stream exists
-                probe = ffmpeg.probe(temp.name)
+                probe = ffmpeg.probe(temp_path)
                 has_audio = any(
                     stream["codec_type"] == "audio" for stream in probe["streams"]
                 )
@@ -908,20 +883,17 @@ class Rotate(BaseNode):
                     # Keep audio stream unchanged if it exists
                     audio = input_stream.audio
                     ffmpeg.output(
-                        rotated, audio, output_temp.name
+                        rotated, audio, output_temp_path
                     ).overwrite_output().run(quiet=False)
                 else:
                     # Output only video if no audio stream
-                    ffmpeg.output(rotated, output_temp.name).overwrite_output().run(
+                    ffmpeg.output(rotated, output_temp_path).overwrite_output().run(
                         quiet=False
                     )
 
                 # Read the rotated video and create a VideoRef
-                async with aiofiles.open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp_path, "rb") as f:
                     return await context.video_from_io(f)
-            finally:
-                safe_unlink(temp.name)
-                safe_unlink(output_temp.name)
 
 
 class SetSpeed(BaseNode):
@@ -948,18 +920,17 @@ class SetSpeed(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as output_temp,
+            managed_temp_file(suffix=".mp4") as temp_path,
+            managed_temp_file(suffix=".mp4") as output_temp_path,
         ):
             try:
-                temp.write(video_file.read())
-                temp.close()
-                output_temp.close()
+                with open(temp_path, "wb") as temp:
+                    temp.write(video_file.read())
 
-                input_stream = ffmpeg.input(temp.name)
+                input_stream = ffmpeg.input(temp_path)
 
                 # Check if video has audio
-                probe = ffmpeg.probe(temp.name)
+                probe = ffmpeg.probe(temp_path)
                 has_audio = any(
                     stream["codec_type"] == "audio" for stream in probe["streams"]
                 )
@@ -988,20 +959,17 @@ class SetSpeed(BaseNode):
 
                     # Output with adjusted audio
                     ffmpeg.output(
-                        adjusted_video, adjusted_audio, output_temp.name
+                        adjusted_video, adjusted_audio, output_temp_path
                     ).overwrite_output().run(quiet=False)
                 else:
                     # Output video only
                     ffmpeg.output(
-                        adjusted_video, output_temp.name
+                        adjusted_video, output_temp_path
                     ).overwrite_output().run(quiet=False)
 
                 # Read the speed-adjusted video and create a VideoRef
-                async with aiofiles.open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp_path, "rb") as f:
                     return await context.video_from_io(f)
-            finally:
-                safe_unlink(temp.name)
-                safe_unlink(output_temp.name)
 
 
 class Overlay(BaseNode):
@@ -1038,23 +1006,22 @@ class Overlay(BaseNode):
         overlay_video_file = await context.asset_to_io(self.overlay_video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as main_temp,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as overlay_temp,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as output_temp,
+            managed_temp_file(suffix=".mp4") as main_temp_path,
+            managed_temp_file(suffix=".mp4") as overlay_temp_path,
+            managed_temp_file(suffix=".mp4") as output_temp_path,
         ):
             try:
-                main_temp.write(main_video_file.read())
-                overlay_temp.write(overlay_video_file.read())
-                main_temp.close()
-                overlay_temp.close()
-                output_temp.close()
+                with open(main_temp_path, "wb") as main_temp:
+                    main_temp.write(main_video_file.read())
+                with open(overlay_temp_path, "wb") as overlay_temp:
+                    overlay_temp.write(overlay_video_file.read())
 
-                main_input = ffmpeg.input(main_temp.name)
-                overlay_input = ffmpeg.input(overlay_temp.name)
+                main_input = ffmpeg.input(main_temp_path)
+                overlay_input = ffmpeg.input(overlay_temp_path)
 
                 # Check if videos have audio streams
-                probe_main = ffmpeg.probe(main_temp.name)
-                probe_overlay = ffmpeg.probe(overlay_temp.name)
+                probe_main = ffmpeg.probe(main_temp_path)
+                probe_overlay = ffmpeg.probe(overlay_temp_path)
                 has_audio_main = any(
                     stream["codec_type"] == "audio" for stream in probe_main["streams"]
                 )
@@ -1086,35 +1053,31 @@ class Overlay(BaseNode):
                         duration="longest",
                     )
                     ffmpeg.output(
-                        video_output, audio_output, output_temp.name
+                        video_output, audio_output, output_temp_path
                     ).overwrite_output().run(quiet=False)
                 elif has_audio_main:
                     ffmpeg.output(
-                        video_output, main_input.audio, output_temp.name
+                        video_output, main_input.audio, output_temp_path
                     ).overwrite_output().run(quiet=False)
                 elif has_audio_overlay:
                     overlay_audio = overlay_input.audio.filter(
                         "volume", volume=self.overlay_audio_volume
                     )
                     ffmpeg.output(
-                        video_output, overlay_audio, output_temp.name
+                        video_output, overlay_audio, output_temp_path
                     ).overwrite_output().run(quiet=False)
                 else:
                     ffmpeg.output(
-                        video_output, output_temp.name
+                        video_output, output_temp_path
                     ).overwrite_output().run(quiet=False)
 
                 # Read the overlaid video and create a VideoRef
-                async with aiofiles.open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp_path, "rb") as f:
                     return await context.video_from_io(f)
             except ffmpeg.Error as e:
                 logger.error("stdout: %s", e.stdout.decode("utf8"))
                 logger.error("stderr: %s", e.stderr.decode("utf8"))
                 raise RuntimeError(f"ffmpeg error: {e.stderr.decode('utf8')}")
-            finally:
-                safe_unlink(main_temp.name)
-                safe_unlink(overlay_temp.name)
-                safe_unlink(output_temp.name)
 
 
 class ColorBalance(BaseNode):
@@ -1138,7 +1101,6 @@ class ColorBalance(BaseNode):
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
-        import tempfile
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -1146,20 +1108,19 @@ class ColorBalance(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_input_path,
+            managed_temp_file(suffix=".mp4") as temp_output_path,
         ):
-            # Write input video to temporary file
-            temp_input.write(video_file.read())
-            temp_input.close()
-            temp_output.close()
-
             try:
+                # Write input video to temporary file
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
+
                 # Get input stream
-                input_stream = ffmpeg.input(temp_input.name)
+                input_stream = ffmpeg.input(temp_input_path)
 
                 # Check if video has audio
-                probe = ffmpeg.probe(temp_input.name)
+                probe = ffmpeg.probe(temp_input_path)
                 has_audio = any(
                     stream["codec_type"] == "audio" for stream in probe["streams"]
                 )
@@ -1177,7 +1138,7 @@ class ColorBalance(BaseNode):
                     output = ffmpeg.output(
                         adjusted_video,
                         input_stream.audio,
-                        temp_output.name,
+                        temp_output_path,
                         vcodec="libx264",
                         acodec="copy",
                     )
@@ -1185,7 +1146,7 @@ class ColorBalance(BaseNode):
                     # Video only output
                     output = ffmpeg.output(
                         adjusted_video,
-                        temp_output.name,
+                        temp_output_path,
                         vcodec="libx264",
                     )
 
@@ -1193,16 +1154,11 @@ class ColorBalance(BaseNode):
                 output.overwrite_output().run(quiet=True)
 
                 # Read the processed video and create a VideoRef
-                async with aiofiles.open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output_path, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
                 raise ValueError(f"Error processing video: {e.stderr.decode()}")
-
-            finally:
-                # Clean up temporary files
-                safe_unlink(temp_input.name)
-                safe_unlink(temp_output.name)
 
 
 class Denoise(BaseNode):
@@ -1223,7 +1179,6 @@ class Denoise(BaseNode):
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
-        import tempfile
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -1231,18 +1186,17 @@ class Denoise(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_input_path,
+            managed_temp_file(suffix=".mp4") as temp_output_path,
         ):
-            # Write input video to temporary file
-            temp_input.write(video_file.read())
-            temp_input.close()
-            temp_output.close()
-
             try:
+                # Write input video to temporary file
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
+
                 # Get input stream and check for audio
-                input_stream = ffmpeg.input(temp_input.name)
-                probe = ffmpeg.probe(temp_input.name)
+                input_stream = ffmpeg.input(temp_input_path)
+                probe = ffmpeg.probe(temp_input_path)
                 has_audio = any(
                     stream["codec_type"] == "audio" for stream in probe["streams"]
                 )
@@ -1255,26 +1209,21 @@ class Denoise(BaseNode):
                     output = ffmpeg.output(
                         denoised,
                         input_stream.audio,
-                        temp_output.name,
+                        temp_output_path,
                         acodec="copy",  # Copy audio without re-encoding
                     )
                 else:
-                    output = ffmpeg.output(denoised, temp_output.name)
+                    output = ffmpeg.output(denoised, temp_output_path)
 
                 # Run ffmpeg process
                 ffmpeg.run(output, quiet=True, overwrite_output=True)
 
                 # Read the processed video and create a VideoRef
-                async with aiofiles.open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output_path, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
                 raise ValueError(f"Error processing video: {e.stderr.decode()}")
-
-            finally:
-                # Clean up temporary files
-                safe_unlink(temp_input.name)
-                safe_unlink(temp_output.name)
 
 
 class Stabilize(BaseNode):
@@ -1299,7 +1248,6 @@ class Stabilize(BaseNode):
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
-        import tempfile
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -1307,18 +1255,17 @@ class Stabilize(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_input_path,
+            managed_temp_file(suffix=".mp4") as temp_output_path,
         ):
-            # Write input video to temporary file
-            temp_input.write(video_file.read())
-            temp_input.close()
-            temp_output.close()
-
             try:
+                # Write input video to temporary file
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
+
                 # Get input stream and check for audio
-                input_stream = ffmpeg.input(temp_input.name)
-                probe = ffmpeg.probe(temp_input.name)
+                input_stream = ffmpeg.input(temp_input_path)
+                probe = ffmpeg.probe(temp_input_path)
                 has_audio = any(
                     stream["codec_type"] == "audio" for stream in probe["streams"]
                 )
@@ -1331,25 +1278,20 @@ class Stabilize(BaseNode):
                 if has_audio:
                     # Combine stabilized video with original audio
                     output = ffmpeg.output(
-                        stabilized, input_stream.audio, temp_output.name, acodec="copy"
+                        stabilized, input_stream.audio, temp_output_path, acodec="copy"
                     )
                 else:
-                    output = ffmpeg.output(stabilized, temp_output.name)
+                    output = ffmpeg.output(stabilized, temp_output_path)
 
                 # Run ffmpeg process
                 ffmpeg.run(output, quiet=True, overwrite_output=True)
 
                 # Read the processed video and create a VideoRef
-                async with aiofiles.open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output_path, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
                 raise ValueError(f"Error processing video: {e.stderr.decode()}")
-
-            finally:
-                # Clean up temporary files
-                safe_unlink(temp_input.name)
-                safe_unlink(temp_output.name)
 
 
 class Sharpness(BaseNode):
@@ -1376,7 +1318,6 @@ class Sharpness(BaseNode):
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
-        import tempfile
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -1384,18 +1325,17 @@ class Sharpness(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_input_path,
+            managed_temp_file(suffix=".mp4") as temp_output_path,
         ):
-            # Write input video to temporary file
-            temp_input.write(video_file.read())
-            temp_input.close()
-            temp_output.close()
-
             try:
+                # Write input video to temporary file
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
+
                 # Get input stream and check for audio
-                input_stream = ffmpeg.input(temp_input.name)
-                probe = ffmpeg.probe(temp_input.name)
+                input_stream = ffmpeg.input(temp_input_path)
+                probe = ffmpeg.probe(temp_input_path)
                 has_audio = any(
                     stream["codec_type"] == "audio" for stream in probe["streams"]
                 )
@@ -1414,25 +1354,20 @@ class Sharpness(BaseNode):
                 if has_audio:
                     # Combine sharpened video with original audio
                     output = ffmpeg.output(
-                        sharpened, input_stream.audio, temp_output.name, acodec="copy"
+                        sharpened, input_stream.audio, temp_output_path, acodec="copy"
                     )
                 else:
-                    output = ffmpeg.output(sharpened, temp_output.name)
+                    output = ffmpeg.output(sharpened, temp_output_path)
 
                 # Run ffmpeg process
                 ffmpeg.run(output, quiet=True, overwrite_output=True)
 
                 # Read the processed video and create a VideoRef
-                async with aiofiles.open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output_path, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
                 raise ValueError(f"Error processing video: {e.stderr.decode()}")
-
-            finally:
-                # Clean up temporary files
-                safe_unlink(temp_input.name)
-                safe_unlink(temp_output.name)
 
 
 class Blur(BaseNode):
@@ -1453,7 +1388,6 @@ class Blur(BaseNode):
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
-        import tempfile
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -1461,18 +1395,17 @@ class Blur(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_input_path,
+            managed_temp_file(suffix=".mp4") as temp_output_path,
         ):
-            # Write input video to temporary file
-            temp_input.write(video_file.read())
-            temp_input.close()
-            temp_output.close()
-
             try:
+                # Write input video to temporary file
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
+
                 # Get input stream and check for audio
-                input_stream = ffmpeg.input(temp_input.name)
-                probe = ffmpeg.probe(temp_input.name)
+                input_stream = ffmpeg.input(temp_input_path)
+                probe = ffmpeg.probe(temp_input_path)
                 has_audio = any(
                     stream["codec_type"] == "audio" for stream in probe["streams"]
                 )
@@ -1485,25 +1418,20 @@ class Blur(BaseNode):
                 if has_audio:
                     # Combine blurred video with original audio
                     output = ffmpeg.output(
-                        blurred, input_stream.audio, temp_output.name, acodec="copy"
+                        blurred, input_stream.audio, temp_output_path, acodec="copy"
                     )
                 else:
-                    output = ffmpeg.output(blurred, temp_output.name)
+                    output = ffmpeg.output(blurred, temp_output_path)
 
                 # Run ffmpeg process
                 ffmpeg.run(output, quiet=True, overwrite_output=True)
 
                 # Read the processed video and create a VideoRef
-                async with aiofiles.open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output_path, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
                 raise ValueError(f"Error processing video: {e.stderr.decode()}")
-
-            finally:
-                # Clean up temporary files
-                safe_unlink(temp_input.name)
-                safe_unlink(temp_output.name)
 
 
 class Saturation(BaseNode):
@@ -1524,7 +1452,6 @@ class Saturation(BaseNode):
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
-        import tempfile
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -1532,18 +1459,17 @@ class Saturation(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_input_path,
+            managed_temp_file(suffix=".mp4") as temp_output_path,
         ):
-            # Write input video to temporary file
-            temp_input.write(video_file.read())
-            temp_input.close()
-            temp_output.close()
-
             try:
+                # Write input video to temporary file
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
+
                 # Get input stream and check for audio
-                input_stream = ffmpeg.input(temp_input.name)
-                probe = ffmpeg.probe(temp_input.name)
+                input_stream = ffmpeg.input(temp_input_path)
+                probe = ffmpeg.probe(temp_input_path)
                 has_audio = any(
                     stream["codec_type"] == "audio" for stream in probe["streams"]
                 )
@@ -1554,25 +1480,20 @@ class Saturation(BaseNode):
                 if has_audio:
                     # Combine saturated video with original audio
                     output = ffmpeg.output(
-                        saturated, input_stream.audio, temp_output.name, acodec="copy"
+                        saturated, input_stream.audio, temp_output_path, acodec="copy"
                     )
                 else:
-                    output = ffmpeg.output(saturated, temp_output.name)
+                    output = ffmpeg.output(saturated, temp_output_path)
 
                 # Run ffmpeg process
                 ffmpeg.run(output, quiet=True, overwrite_output=True)
 
                 # Read the processed video and create a VideoRef
-                async with aiofiles.open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output_path, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
                 raise ValueError(f"Error processing video: {e.stderr.decode()}")
-
-            finally:
-                # Clean up temporary files
-                safe_unlink(temp_input.name)
-                safe_unlink(temp_output.name)
 
 
 class AddSubtitles(BaseNode):
@@ -1610,24 +1531,23 @@ class AddSubtitles(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_input_path,
+            managed_temp_file(suffix=".mp4") as temp_output_path,
         ):
             try:
                 # Write input video to temporary file
-                temp_input.write(video_file.read())
-                temp_input.close()
-                temp_output.close()
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
 
                 # Get video properties
-                cap = cv2.VideoCapture(temp_input.name)
+                cap = cv2.VideoCapture(temp_input_path)
                 fps = cap.get(cv2.CAP_PROP_FPS)
                 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
                 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
                 # Create VideoWriter
                 fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore
-                out = cv2.VideoWriter(temp_output.name, fourcc, fps, (width, height))
+                out = cv2.VideoWriter(temp_output_path, fourcc, fps, (width, height))
 
                 # Load font
                 font_path = context.get_system_font_path(self.font.name)
@@ -1726,34 +1646,26 @@ class AddSubtitles(BaseNode):
 
                 # Now combine the processed frames with the original audio using ffmpeg
                 # Get the original video with audio
-                input_video = ffmpeg.input(temp_input.name)
+                input_video = ffmpeg.input(temp_input_path)
                 # Get the processed frames
-                processed_frames = ffmpeg.input(temp_output.name)
+                processed_frames = ffmpeg.input(temp_output_path)
 
                 # Create a temporary file for the final output
-                with tempfile.NamedTemporaryFile(
-                    suffix=".mp4", delete=False
-                ) as final_output:
-                    final_output.close()
-
+                with managed_temp_file(suffix=".mp4") as final_output_path:
                     # Combine processed frames with original audio
                     ffmpeg.output(
                         processed_frames.video,
                         input_video.audio,
-                        final_output.name,
+                        final_output_path,
                         acodec="copy",  # Copy audio stream without re-encoding
                     ).overwrite_output().run(quiet=True)
 
                     # Read the final video and create a VideoRef
-                    async with aiofiles.open(final_output.name, "rb") as f:
+                    async with aiofiles.open(final_output_path, "rb") as f:
                         return await context.video_from_io(f)
 
             except Exception as e:
                 raise RuntimeError(f"Error processing video: {str(e)}") from e
-
-            finally:
-                safe_unlink(temp_input.name)
-                safe_unlink(temp_output.name)
 
 
 class Reverse(BaseNode):
@@ -1775,31 +1687,26 @@ class Reverse(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_input_path,
+            managed_temp_file(suffix=".mp4") as temp_output_path,
         ):
             try:
-                temp_input.write(video_file.read())
-                temp_input.close()
-                temp_output.close()
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
 
-                input_stream = ffmpeg.input(temp_input.name)
+                input_stream = ffmpeg.input(temp_input_path)
                 reversed_video = input_stream.filter("reverse")
 
-                ffmpeg.output(reversed_video, temp_output.name).overwrite_output().run(
+                ffmpeg.output(reversed_video, temp_output_path).overwrite_output().run(
                     quiet=False
                 )
 
                 # Read the reversed video and create a VideoRef
-                async with aiofiles.open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output_path, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
                 raise RuntimeError(f"ffmpeg error: {e.stderr.decode('utf8')}")
-
-            finally:
-                safe_unlink(temp_input.name)
-                safe_unlink(temp_output.name)
 
 
 class Transition(BaseNode):
@@ -1894,23 +1801,22 @@ class Transition(BaseNode):
         video_b_file = await context.asset_to_io(self.video_b)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_a,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_b,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_a_path,
+            managed_temp_file(suffix=".mp4") as temp_b_path,
+            managed_temp_file(suffix=".mp4") as temp_output_path,
         ):
             try:
-                temp_a.write(video_a_file.read())
-                temp_b.write(video_b_file.read())
-                temp_a.close()
-                temp_b.close()
-                temp_output.close()
+                with open(temp_a_path, "wb") as temp_a:
+                    temp_a.write(video_a_file.read())
+                with open(temp_b_path, "wb") as temp_b:
+                    temp_b.write(video_b_file.read())
 
-                input_a = ffmpeg.input(temp_a.name)
-                input_b = ffmpeg.input(temp_b.name)
+                input_a = ffmpeg.input(temp_a_path)
+                input_b = ffmpeg.input(temp_b_path)
 
                 # Check if videos have audio streams
-                probe_a = ffmpeg.probe(temp_a.name)
-                probe_b = ffmpeg.probe(temp_b.name)
+                probe_a = ffmpeg.probe(temp_a_path)
+                probe_b = ffmpeg.probe(temp_b_path)
                 has_audio_a = any(
                     stream["codec_type"] == "audio" for stream in probe_a["streams"]
                 )
@@ -1940,24 +1846,19 @@ class Transition(BaseNode):
                         c2="tri",
                     )
                     output = ffmpeg.output(
-                        video_transition, audio_transition, temp_output.name
+                        video_transition, audio_transition, temp_output_path
                     )
                 else:
-                    output = ffmpeg.output(video_transition, temp_output.name)
+                    output = ffmpeg.output(video_transition, temp_output_path)
 
                 output.overwrite_output().run(quiet=False)
 
                 # Read the transitioned video and create a VideoRef
-                async with aiofiles.open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output_path, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
                 raise RuntimeError(f"ffmpeg error: {e.stderr.decode('utf8')}")
-
-            finally:
-                safe_unlink(temp_a.name)
-                safe_unlink(temp_b.name)
-                safe_unlink(temp_output.name)
 
 
 class AddAudio(BaseNode):
@@ -1993,24 +1894,23 @@ class AddAudio(BaseNode):
         audio_file = await context.asset_to_io(self.audio)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_video,
-            tempfile.NamedTemporaryFile(suffix=".opus", delete=False) as temp_audio,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_video_path,
+            managed_temp_file(suffix=".opus") as temp_audio_path,
+            managed_temp_file(suffix=".mp4") as temp_output_path,
         ):
             try:
-                temp_video.write(video_file.read())
-                temp_audio.write(audio_file.read())
-                temp_video.close()
-                temp_audio.close()
-                temp_output.close()
+                with open(temp_video_path, "wb") as temp_video:
+                    temp_video.write(video_file.read())
+                with open(temp_audio_path, "wb") as temp_audio:
+                    temp_audio.write(audio_file.read())
 
                 # Set permissions for temporary files
-                os.chmod(temp_video.name, 0o644)
-                os.chmod(temp_audio.name, 0o644)
-                os.chmod(temp_output.name, 0o644)
+                os.chmod(temp_video_path, 0o644)
+                os.chmod(temp_audio_path, 0o644)
+                os.chmod(temp_output_path, 0o644)
 
-                video_input = ffmpeg.input(temp_video.name)
-                audio_input = ffmpeg.input(temp_audio.name)
+                video_input = ffmpeg.input(temp_video_path)
+                audio_input = ffmpeg.input(temp_audio_path)
 
                 audio_input = audio_input.filter("volume", volume=self.volume)
 
@@ -2024,20 +1924,15 @@ class AddAudio(BaseNode):
                     audio = audio_input
 
                 ffmpeg.output(
-                    video_input.video, audio, temp_output.name, format="mp4"
+                    video_input.video, audio, temp_output_path, format="mp4"
                 ).overwrite_output().run(quiet=False)
 
                 # Read the video with added audio and create a VideoRef
-                async with aiofiles.open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output_path, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
                 raise RuntimeError(f"ffmpeg error: {e.stderr.decode('utf8')}")
-
-            finally:
-                safe_unlink(temp_video.name)
-                safe_unlink(temp_audio.name)
-                safe_unlink(temp_output.name)
 
 
 class ChromaKey(BaseNode):
@@ -2072,19 +1967,18 @@ class ChromaKey(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_input_path,
+            managed_temp_file(suffix=".mp4") as temp_output_path,
         ):
             try:
-                temp_input.write(video_file.read())
-                temp_input.close()
-                temp_output.close()
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
 
                 # Set permissions for temporary files
-                os.chmod(temp_input.name, 0o644)
-                os.chmod(temp_output.name, 0o644)
+                os.chmod(temp_input_path, 0o644)
+                os.chmod(temp_output_path, 0o644)
 
-                input_stream = ffmpeg.input(temp_input.name)
+                input_stream = ffmpeg.input(temp_input_path)
 
                 # Apply chroma key filter
                 keyed = input_stream.filter(
@@ -2094,20 +1988,16 @@ class ChromaKey(BaseNode):
                     blend=self.blend,
                 )
 
-                ffmpeg.output(keyed, temp_output.name).overwrite_output().run(
+                ffmpeg.output(keyed, temp_output_path).overwrite_output().run(
                     quiet=False
                 )
 
                 # Read the chroma keyed video and create a VideoRef
-                async with aiofiles.open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output_path, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
                 raise RuntimeError(f"ffmpeg error: {e.stderr.decode('utf8')}")
-
-            finally:
-                safe_unlink(temp_input.name)
-                safe_unlink(temp_output.name)
 
 
 class ExtractAudio(BaseNode):
@@ -2127,23 +2017,22 @@ class ExtractAudio(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
-            tempfile.NamedTemporaryFile(suffix=".opus", delete=False) as temp_audio,
+            managed_temp_file(suffix=".mp4") as temp_input_path,
+            managed_temp_file(suffix=".opus") as temp_audio_path,
         ):
             try:
-                temp_input.write(video_file.read())
-                temp_input.close()
-                temp_audio.close()
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
 
                 # Set permissions for temporary files
-                os.chmod(temp_input.name, 0o644)
-                os.chmod(temp_audio.name, 0o644)
+                os.chmod(temp_input_path, 0o644)
+                os.chmod(temp_audio_path, 0o644)
 
                 # Extract the audio using Opus codec
                 (
-                    ffmpeg.input(temp_input.name)
+                    ffmpeg.input(temp_input_path)
                     .output(
-                        temp_audio.name,
+                        temp_audio_path,
                         acodec="libopus",
                         map="0:a",
                         format="opus",
@@ -2154,7 +2043,7 @@ class ExtractAudio(BaseNode):
                 )
 
                 # Read the extracted audio and return it
-                async with aiofiles.open(temp_audio.name, "rb") as f:
+                async with aiofiles.open(temp_audio_path, "rb") as f:
                     audio_bytes = await f.read()
                 return await context.audio_from_io(BytesIO(audio_bytes), content_type="audio/opus")
 
@@ -2163,10 +2052,6 @@ class ExtractAudio(BaseNode):
                     e.stderr.decode("utf-8") if e.stderr else "Unknown ffmpeg error."
                 )
                 raise RuntimeError(f"ffmpeg error: {error_message}") from e
-
-            finally:
-                safe_unlink(temp_input.name)
-                safe_unlink(temp_audio.name)
 
 
 class ExtractFrame(BaseNode):
@@ -2191,23 +2076,22 @@ class ExtractFrame(BaseNode):
         video_file = await context.asset_to_io(self.video)
 
         with (
-            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
-            tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_output,
+            managed_temp_file(suffix=".mp4") as temp_input_path,
+            managed_temp_file(suffix=".png") as temp_output_path,
         ):
             try:
-                temp_input.write(video_file.read())
-                temp_input.close()
-                temp_output.close()
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
 
                 # Set permissions for temporary files
-                os.chmod(temp_input.name, 0o644)
-                os.chmod(temp_output.name, 0o644)
+                os.chmod(temp_input_path, 0o644)
+                os.chmod(temp_output_path, 0o644)
 
                 # Extract a single frame at the specified time
                 (
-                    ffmpeg.input(temp_input.name, ss=self.time)
+                    ffmpeg.input(temp_input_path, ss=self.time)
                     .output(
-                        temp_output.name,
+                        temp_output_path,
                         vframes=1,
                         format="image2",
                         loglevel="error",
@@ -2217,7 +2101,7 @@ class ExtractFrame(BaseNode):
                 )
 
                 # Read the extracted frame and return it
-                async with aiofiles.open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output_path, "rb") as f:
                     image_data = await f.read()
                     img = PIL.Image.open(BytesIO(image_data))
                     return await context.image_from_pil(img)
@@ -2227,10 +2111,6 @@ class ExtractFrame(BaseNode):
                     e.stderr.decode("utf-8") if e.stderr else "Unknown ffmpeg error."
                 )
                 raise RuntimeError(f"ffmpeg error: {error_message}") from e
-
-            finally:
-                safe_unlink(temp_input.name)
-                safe_unlink(temp_output.name)
 
 
 class GetVideoInfo(BaseNode):
@@ -2259,12 +2139,12 @@ class GetVideoInfo(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input:
+        with managed_temp_file(suffix=".mp4") as temp_input_path:
             try:
-                temp_input.write(video_file.read())
-                temp_input.close()
+                with open(temp_input_path, "wb") as temp_input:
+                    temp_input.write(video_file.read())
 
-                probe = ffmpeg.probe(temp_input.name)
+                probe = ffmpeg.probe(temp_input_path)
                 streams = probe.get("streams") or []
 
                 video_stream = next(
@@ -2320,6 +2200,3 @@ class GetVideoInfo(BaseNode):
                     e.stderr.decode("utf-8") if e.stderr else "Unknown ffmpeg error."
                 )
                 raise RuntimeError(f"ffmpeg error: {error_message}") from e
-
-            finally:
-                safe_unlink(temp_input.name)
