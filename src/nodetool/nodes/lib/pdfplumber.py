@@ -187,7 +187,7 @@ class ExtractTables(BaseNode):
             "edge_min_length": 3,
             "min_words_vertical": 3,
             "min_words_horizontal": 1,
-            "keep_blank_chars": False,
+            "text_keep_blank_chars": False,
             "text_tolerance": 3,
             "text_x_tolerance": 3,
             "text_y_tolerance": 3,

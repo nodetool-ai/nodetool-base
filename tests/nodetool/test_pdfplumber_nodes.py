@@ -4,6 +4,8 @@ from nodetool.nodes.lib.pdfplumber import (
     ExtractText,
     GetPageCount,
     ExtractPageMetadata,
+    ExtractImages,
+    ExtractTables,
 )
 from nodetool.metadata.types import DocumentRef
 import io
@@ -137,3 +139,34 @@ class TestExtractText:
         
         # Should return empty since pages don't exist
         assert result == ""
+
+
+class TestExtractImages:
+    """Tests for ExtractImages node."""
+
+    @pytest.mark.asyncio
+    async def test_extract_images(self, context: ProcessingContext, pdf_document):
+        """Test extracting images from PDF."""
+        # The minimal PDF doesn't have images, but we can verify it runs without error
+        # and returns empty list
+        node = ExtractImages(pdf=pdf_document, start_page=0, end_page=1)
+        result = await node.process(context)
+
+        assert isinstance(result, list)
+        assert len(result) == 0
+
+
+class TestExtractTables:
+    """Tests for ExtractTables node."""
+
+    @pytest.mark.asyncio
+    async def test_extract_tables(self, context: ProcessingContext, pdf_document):
+        """Test extracting tables from PDF."""
+        # The minimal PDF doesn't have tables, but we can verify it runs without error
+        # and returns empty list.
+        # This also verifies that the default table_settings are valid.
+        node = ExtractTables(pdf=pdf_document, start_page=1, end_page=1)
+        result = await node.process(context)
+
+        assert isinstance(result, list)
+        assert len(result) == 0
