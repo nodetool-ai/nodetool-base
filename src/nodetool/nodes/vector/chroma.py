@@ -207,10 +207,10 @@ class IndexEmbedding(ChromaNode):
         default=Collection(), description="The collection to index"
     )
     embedding: NPArray = Field(default=NPArray(), description="The embedding to index")
-    index_id: str = Field(
+    index_id: str | list[str] = Field(
         default="", description="The ID to associate with the embedding"
     )
-    metadata: dict = Field(
+    metadata: dict | list[dict] = Field(
         default={}, description="The metadata to associate with the embedding"
     )
 
@@ -219,18 +219,44 @@ class IndexEmbedding(ChromaNode):
         return ["embedding", "id"]
 
     async def process(self, context: ProcessingContext):
-        if self.index_id.strip() == "":
-            raise ValueError("The ID cannot be empty")
-
         if self.embedding.is_empty():
             raise ValueError("The embedding cannot be empty")
 
         collection = await get_async_collection(self.collection.name)
-        await collection.add(
-            ids=[self.index_id],
-            embeddings=[self.embedding.to_numpy()],
-            metadatas=[self.metadata or {}],
-        )
+
+        if isinstance(self.index_id, list):
+            if not self.index_id:
+                raise ValueError("The IDs list cannot be empty")
+
+            embeddings = self.embedding.to_numpy()
+            metadatas = self.metadata
+
+            if len(self.index_id) != len(embeddings):
+                raise ValueError(
+                    f"Number of IDs ({len(self.index_id)}) must match number of embeddings ({len(embeddings)})"
+                )
+
+            if isinstance(metadatas, dict):
+                metadatas = [metadatas] * len(self.index_id)
+            elif len(self.index_id) != len(metadatas):
+                raise ValueError(
+                    f"Number of IDs ({len(self.index_id)}) must match number of metadatas ({len(metadatas)})"
+                )
+
+            await collection.add(
+                ids=self.index_id,
+                embeddings=embeddings,
+                metadatas=metadatas,
+            )
+        else:
+            if self.index_id.strip() == "":
+                raise ValueError("The ID cannot be empty")
+
+            await collection.add(
+                ids=[self.index_id],
+                embeddings=[self.embedding.to_numpy()],
+                metadatas=[self.metadata or {}],
+            )
 
 
 class IndexTextChunk(ChromaNode):
