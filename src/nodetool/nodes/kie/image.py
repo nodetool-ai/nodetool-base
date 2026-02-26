@@ -27,6 +27,7 @@ from pydantic import Field
 from nodetool.config.logging_config import get_logger
 from nodetool.media.common.media_utils import FFMPEG_PATH
 from nodetool.metadata.types import ImageRef, VideoRef
+from nodetool.nodes.kie.file_utils import _read_file
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
@@ -248,8 +249,7 @@ class KieBaseNode(BaseNode):
                     f"ffmpeg error (using {FFMPEG_PATH}): {error_msg or 'unknown error'}"
                 )
 
-            with open(output_path, "rb") as f:
-                return f.read()
+            return await asyncio.to_thread(_read_file, output_path)
         finally:
             if input_path and os.path.exists(input_path):
                 os.remove(input_path)
