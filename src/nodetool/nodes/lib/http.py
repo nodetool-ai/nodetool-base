@@ -50,6 +50,9 @@ class HTTPBaseNode(BaseNode):
     def get_basic_fields(cls):
         return ["url"]
 
+    def _decode_response(self, res) -> str:
+        return res.content.decode(res.encoding or "utf-8")
+
 
 class GetRequest(HTTPBaseNode):
     """
@@ -71,7 +74,7 @@ class GetRequest(HTTPBaseNode):
 
     async def process(self, context: ProcessingContext) -> str:
         res = await context.http_get(self.url, **self.get_request_kwargs())
-        return res.content.decode(res.encoding or "utf-8")
+        return self._decode_response(res)
 
 
 class PostRequest(HTTPBaseNode):
@@ -101,7 +104,7 @@ class PostRequest(HTTPBaseNode):
         res = await context.http_post(
             self.url, data=self.data, **self.get_request_kwargs()
         )
-        return res.content.decode(res.encoding or "utf-8")
+        return self._decode_response(res)
 
 
 class PutRequest(HTTPBaseNode):
@@ -131,7 +134,7 @@ class PutRequest(HTTPBaseNode):
         res = await context.http_put(
             self.url, data=self.data, **self.get_request_kwargs()
         )
-        return res.content.decode(res.encoding or "utf-8")
+        return self._decode_response(res)
 
 
 class DeleteRequest(HTTPBaseNode):
@@ -154,7 +157,7 @@ class DeleteRequest(HTTPBaseNode):
 
     async def process(self, context: ProcessingContext) -> str:
         res = await context.http_delete(self.url, **self.get_request_kwargs())
-        return res.content.decode(res.encoding or "utf-8")
+        return self._decode_response(res)
 
 
 class HeadRequest(HTTPBaseNode):
