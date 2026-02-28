@@ -1,14 +1,15 @@
 import asyncio
+import uuid
 import inspect
 import json
 import re
 import datetime
+import time
 from typing import Any, AsyncGenerator, ClassVar, TypedDict
 
 from pydantic import Field, PrivateAttr
 
 from nodetool.agents.tools.base import Tool
-from nodetool.agents.tools.workflow_tool import GraphTool
 from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import (
     AudioRef,
@@ -28,7 +29,7 @@ from nodetool.metadata.types import (
 from nodetool.models.thread import Thread as ThreadModel
 from nodetool.types.model import UnifiedModel
 from nodetool.workflows.base_node import BaseNode
-from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
+from nodetool.workflows.graph_utils import get_downstream_subgraph
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import (
     Chunk,
@@ -1075,13 +1076,6 @@ class Agent(BaseNode):
             ),
         ]
 
-    def should_route_output(self, output_name: str) -> bool:
-        """
-        Do not route dynamic outputs; they represent tool entry points.
-        Still route declared outputs like 'text', 'chunk', 'audio'.
-        """
-        return output_name not in self._dynamic_outputs
-
     @classmethod
     def is_cacheable(cls) -> bool:
         return False
@@ -1092,12 +1086,69 @@ class Agent(BaseNode):
         thinking: Chunk | None
         audio: AudioRef | None
 
-    def _resolve_tools(self, context: ProcessingContext) -> list[Tool]:
-        """Resolve tools from tool names and dynamic outputs.
+    def _get_structured_output_schema(self) -> dict[str, Any] | None:
+        """Build a strict JSON schema from dynamic output slots when configured."""
+        output_slots = self.get_dynamic_output_slots()
+        if not output_slots:
+            return None
 
-        This method instantiates Tool objects from the configured tool names
-        and also creates GraphTools from any dynamic outputs that have
-        downstream node connections.
+        properties: dict[str, Any] = {
+            slot.name: slot.type.get_json_schema() for slot in output_slots
+        }
+        required: list[str] = [slot.name for slot in output_slots]
+
+        return {
+            "type": "object",
+            "title": "Agent Structured Output",
+            "additionalProperties": False,
+            "properties": properties,
+            "required": required,
+        }
+
+    def _parse_structured_output_text(self, raw: str) -> dict[str, Any]:
+        """Parse model output into a JSON object for dynamic structured outputs."""
+        text = str(raw or "").strip()
+        if not text:
+            raise ValueError("Agent returned empty structured output")
+
+        fenced_match = None
+        try:
+            fenced_match = re.search(r"```json\s*([\s\S]*?)\s*```", text, re.IGNORECASE)
+        except Exception:
+            fenced_match = None
+
+        result_obj: Any = None
+        if fenced_match:
+            candidate = fenced_match.group(1).strip()
+            try:
+                result_obj = json.loads(candidate)
+            except Exception:
+                result_obj = None
+
+        if result_obj is None:
+            try:
+                result_obj = json.loads(text)
+            except Exception:
+                result_obj = None
+
+        if result_obj is None:
+            try:
+                start = text.find("{")
+                end = text.rfind("}")
+                if 0 <= start < end:
+                    snippet = text[start : end + 1]
+                    result_obj = json.loads(snippet)
+            except Exception:
+                result_obj = None
+
+        if not isinstance(result_obj, dict):
+            raise ValueError("Agent did not return a valid structured JSON object")
+        return result_obj
+
+    def _resolve_tools(self, context: ProcessingContext) -> list[Tool]:
+        """Resolve tools from configured tool names.
+
+        This method instantiates Tool objects from the configured tool names.
 
         Args:
             context: The processing context containing the workflow graph.
@@ -1127,22 +1178,21 @@ class Agent(BaseNode):
         # Only include workspace tools if the user explicitly selected them
         tools = instantiate_tools_from_names(self.tools)
 
-        # Add GraphTools for dynamic outputs with downstream connections
-        for name, type_meta in self._dynamic_outputs.items():
-            initial_edges, graph = get_downstream_subgraph(context.graph, self.id, name)
-            initial_nodes = [find_node(graph, edge.target) for edge in initial_edges]
-            nodes = graph.nodes
-            if len(nodes) == 0:
-                continue
-            tool = GraphTool(graph, name, "", initial_edges, initial_nodes)
-            tools.append(tool)
-
         # Add control tools for nodes this agent controls
         controlled_info = context.get_controlled_nodes_info(self.id)
         for target_id, info in controlled_info.items():
             control_tool = ControlNodeTool(target_id, info)
             tools.append(control_tool)
-            log.debug(f"Added control tool for node {target_id}: {control_tool.name}")
+            schema_props: list[str] = []
+            if isinstance(control_tool.input_schema, dict):
+                schema_props = list((control_tool.input_schema.get("properties") or {}).keys())
+            log.info(
+                "Agent control tool registered: agent_id=%s target_node_id=%s tool_name=%s params=%s",
+                self.id,
+                target_id,
+                control_tool.name,
+                schema_props,
+            )
 
         return tools
 
@@ -1377,6 +1427,7 @@ class Agent(BaseNode):
         context: ProcessingContext,
         messages: list[Message],
         tools: list[Tool],
+        response_format: dict[str, Any] | None = None,
     ) -> AsyncGenerator[OutputType, None]:
         """Execute one or more model iterations, streaming chunks and handling tools.
 
@@ -1384,26 +1435,55 @@ class Agent(BaseNode):
             context (ProcessingContext): Workflow execution context.
             messages (list[Message]): Message history to seed the model.
             tools (list[Tool]): Resolved tools available for tool-calling.
+            response_format (dict[str, Any] | None): Optional structured output format.
         """
         # Save the initial user message to thread if thread_id is set
         # The last message in the list should be the current user message
         if self.thread_id and len(messages) > 0 and messages[-1].role == "user":
             await self._save_message_to_thread(context, messages[-1])
 
-        tools_called = False
+        should_continue = False
         first_time = True
         iteration = 0
+        max_iterations = 32
+        max_control_tool_calls = 16
+        control_tool_calls_executed = 0
+        total_tool_calls_seen = 0
+        total_effective_tool_calls = 0
+        total_control_tool_calls = 0
 
-        while tools_called or first_time:
+        log.info(
+            "Agent loop initialized: node_id=%s thread_id=%s model=%s provider=%s messages=%d tools=%d max_iterations=%d max_control_tool_calls=%d",
+            self.id,
+            self.thread_id,
+            self.model.id,
+            self.model.provider,
+            len(messages),
+            len(tools),
+            max_iterations,
+            max_control_tool_calls,
+        )
+
+        while should_continue or first_time:
             iteration += 1
+            if iteration > max_iterations:
+                log.warning(
+                    "Agent loop reached max iterations (%d), stopping to avoid runaway tool loops",
+                    max_iterations,
+                )
+                break
             log.debug(
                 "Agent loop start (per-item): iteration=%d tools_called_prev=%s first_time=%s num_messages=%d",
                 iteration,
-                tools_called,
+                should_continue,
                 first_time,
                 len(messages),
             )
-            tools_called = False
+            iteration_started_at = time.perf_counter()
+            iteration_tool_calls_seen = 0
+            iteration_effective_tool_calls = 0
+            iteration_control_tool_calls = 0
+            should_continue = False
             first_time = False
             message_text_content = MessageTextContent(text="")
             assistant_message = Message(
@@ -1424,6 +1504,13 @@ class Agent(BaseNode):
             pending_tool_tasks: list[asyncio.Task] = []
             chunk_count = 0
             done_seen = False
+            log.info(
+                "Agent iteration start: node_id=%s iteration=%d messages=%d tools=%s",
+                self.id,
+                iteration,
+                len(messages),
+                [tool.name for tool in tools],
+            )
             log.debug(
                 f"_execute_agent_loop starting provider.generate_messages: iteration={iteration}, "
                 f"provider_type={type(provider).__name__}"
@@ -1433,6 +1520,7 @@ class Agent(BaseNode):
                 model=self.model.id,
                 tools=tools,
                 max_tokens=self.max_tokens,
+                response_format=response_format,
                 context=context,
             ):
                 chunk_count += 1
@@ -1441,12 +1529,6 @@ class Agent(BaseNode):
                     messages.append(assistant_message)
                 if isinstance(chunk, Chunk):
                     is_thinking = bool(getattr(chunk, "thinking", False))
-                    log.debug(
-                        f"_execute_agent_loop chunk received: iteration={iteration}, "
-                        f"chunk_count={chunk_count}, content_type={chunk.content_type}, "
-                        f"done={chunk.done}, content_len={len(chunk.content or '')}, "
-                        f"current_text_len={len(message_text_content.text)}"
-                    )
                     if is_thinking:
                         yield {
                             "chunk": None,
@@ -1457,10 +1539,6 @@ class Agent(BaseNode):
                         continue
                     if chunk.content_type in ("text", None):
                         message_text_content.text += chunk.content
-                        log.debug(
-                            f"_execute_agent_loop accumulated text: iteration={iteration}, "
-                            f"chunk_count={chunk_count}, total_text_len={len(message_text_content.text)}"
-                        )
                         yield {
                             "chunk": chunk,
                             "thinking": None,
@@ -1527,7 +1605,9 @@ class Agent(BaseNode):
                         )
 
                 elif isinstance(chunk, ToolCall):
-                    tools_called = True
+                    iteration_tool_calls_seen += 1
+                    total_tool_calls_seen += 1
+                    tool_call_effective = False
                     try:
                         args_preview = (
                             (
@@ -1547,6 +1627,17 @@ class Agent(BaseNode):
                         chunk.args is not None,
                         args_preview,
                     )
+                    if not getattr(chunk, "id", None):
+                        chunk.id = f"tool_{uuid.uuid4().hex}"
+                    args_obj = chunk.args if isinstance(chunk.args, dict) else {}
+                    log.info(
+                        "Agent tool call requested: node_id=%s iteration=%d tool_call_id=%s tool_name=%s args_keys=%s",
+                        self.id,
+                        iteration,
+                        chunk.id,
+                        chunk.name,
+                        sorted(args_obj.keys()),
+                    )
                     assert assistant_message.tool_calls is not None
                     assistant_message.tool_calls.append(chunk)
                     for tool_instance in tools:
@@ -1557,42 +1648,163 @@ class Agent(BaseNode):
                             )
 
                             if isinstance(tool_instance, ControlNodeTool):
-                                # Emit control event instead of executing tool
-                                event = tool_instance.create_control_event(
-                                    chunk.args or {}
-                                )
-                                yield {"__control__": event}
+                                call_args = chunk.args or {}
+                                if control_tool_calls_executed < max_control_tool_calls:
+                                    # Emit targeted control event instead of executing the tool
+                                    event = tool_instance.create_control_event(call_args)
+                                    control_wait_started = time.perf_counter()
+                                    log.info(
+                                        "Agent control tool dispatch start: node_id=%s iteration=%d tool_call_id=%s tool_name=%s target_node_id=%s event_type=%s args_keys=%s call_count=%d",
+                                        self.id,
+                                        iteration,
+                                        chunk.id,
+                                        chunk.name,
+                                        tool_instance.target_node_id,
+                                        event.event_type,
+                                        sorted(call_args.keys()),
+                                        control_tool_calls_executed + 1,
+                                    )
+                                    response_future = asyncio.get_running_loop().create_future()
+                                    yield {
+                                        "__control__": {
+                                            "target_node_id": tool_instance.target_node_id,
+                                            "event": event,
+                                            "response_future": response_future,
+                                            "tool_call_id": chunk.id,
+                                            "tool_name": chunk.name,
+                                            "agent_node_id": self.id,
+                                            "agent_iteration": iteration,
+                                        }
+                                    }
+                                    tool_call_effective = True
+                                    control_tool_calls_executed += 1
+                                    iteration_control_tool_calls += 1
+                                    total_control_tool_calls += 1
+                                    try:
+                                        control_result = await asyncio.wait_for(
+                                            response_future,
+                                            timeout=300.0,
+                                        )
+                                        control_elapsed_ms = int(
+                                            (time.perf_counter() - control_wait_started) * 1000
+                                        )
+                                        result_payload = {
+                                            "status": "completed",
+                                            "event_type": event.event_type,
+                                            "target_node_id": tool_instance.target_node_id,
+                                            "properties": call_args,
+                                            "result": serialize_tool_result(control_result),
+                                        }
+                                        log.info(
+                                            "Agent control tool dispatch completed: node_id=%s iteration=%d tool_call_id=%s target_node_id=%s status=completed wait_ms=%d",
+                                            self.id,
+                                            iteration,
+                                            chunk.id,
+                                            tool_instance.target_node_id,
+                                            control_elapsed_ms,
+                                        )
+                                    except TimeoutError:
+                                        control_elapsed_ms = int(
+                                            (time.perf_counter() - control_wait_started) * 1000
+                                        )
+                                        result_payload = {
+                                            "status": "timeout",
+                                            "event_type": event.event_type,
+                                            "target_node_id": tool_instance.target_node_id,
+                                            "properties": call_args,
+                                            "error": "Timed out waiting for controlled node result",
+                                        }
+                                        log.warning(
+                                            "Agent control tool dispatch timeout: node_id=%s iteration=%d tool_call_id=%s target_node_id=%s wait_ms=%d",
+                                            self.id,
+                                            iteration,
+                                            chunk.id,
+                                            tool_instance.target_node_id,
+                                            control_elapsed_ms,
+                                        )
+                                    except Exception as exc:
+                                        control_elapsed_ms = int(
+                                            (time.perf_counter() - control_wait_started) * 1000
+                                        )
+                                        result_payload = {
+                                            "status": "error",
+                                            "event_type": event.event_type,
+                                            "target_node_id": tool_instance.target_node_id,
+                                            "properties": call_args,
+                                            "error": str(exc),
+                                        }
+                                        log.error(
+                                            "Agent control tool dispatch failed: node_id=%s iteration=%d tool_call_id=%s target_node_id=%s wait_ms=%d error=%s",
+                                            self.id,
+                                            iteration,
+                                            chunk.id,
+                                            tool_instance.target_node_id,
+                                            control_elapsed_ms,
+                                            exc,
+                                        )
+                                else:
+                                    result_payload = {
+                                        "status": "max_calls_reached",
+                                        "event_type": "run",
+                                        "target_node_id": tool_instance.target_node_id,
+                                        "properties": call_args,
+                                        "error": (
+                                            f"Exceeded control tool call limit ({max_control_tool_calls}) "
+                                            "for this agent execution"
+                                        ),
+                                    }
+                                    # Continue one more model turn so it can produce a final response.
+                                    tool_call_effective = True
+                                    log.warning(
+                                        "Agent control tool call limit reached: node_id=%s iteration=%d tool_call_id=%s name=%s target=%s count=%d",
+                                        self.id,
+                                        iteration,
+                                        chunk.id,
+                                        chunk.name,
+                                        tool_instance.target_node_id,
+                                        control_tool_calls_executed,
+                                    )
 
-                                # Add tool result message
-                                result_msg = f"Triggered {event.event_type} on {tool_instance.node_info.get('node_title', tool_instance.target_node_id)}"
                                 tool_result_msg = Message(
                                     role="tool",
                                     tool_call_id=chunk.id,
-                                    content=result_msg,
+                                    name=chunk.name,
+                                    content=json.dumps(result_payload, default=str),
                                 )
                                 messages.append(tool_result_msg)
+                                if self.thread_id:
+                                    await self._save_message_to_thread(context, tool_result_msg)
+                                log.info(
+                                    "Agent control tool result message appended: node_id=%s iteration=%d tool_call_id=%s tool_name=%s status=%s content_len=%d",
+                                    self.id,
+                                    iteration,
+                                    chunk.id,
+                                    chunk.name,
+                                    result_payload.get("status"),
+                                    len(tool_result_msg.content or ""),
+                                )
 
                                 context.post_message(
                                     ToolCallUpdate(
                                         node_id=self.id,
+                                        tool_call_id=chunk.id,
                                         name=chunk.name,
                                         args=chunk.args,
-                                        message=tool_instance.user_message(
-                                            chunk.args or {}
-                                        ),
+                                        message=tool_instance.user_message(call_args),
                                     )
                                 )
-                                log.debug(
-                                    "Agent control tool call: emitted %s event to %s",
-                                    event.event_type,
-                                    tool_instance.target_node_id,
-                                )
+                                if result_payload.get("status") == "completed":
+                                    log.debug(
+                                        "Agent control tool call: emitted targeted run event to %s",
+                                        tool_instance.target_node_id,
+                                    )
                                 break
 
                             # Normal tool handling for non-control tools
                             context.post_message(
                                 ToolCallUpdate(
                                     node_id=self.id,
+                                    tool_call_id=chunk.id,
                                     name=chunk.name,
                                     args=chunk.args,
                                     message=tool_instance.user_message(chunk.args),
@@ -1612,10 +1824,28 @@ class Agent(BaseNode):
                                 )
 
                             async def _run_tool(instance: Tool, call: ToolCall):
+                                started_at = time.perf_counter()
                                 try:
+                                    log.info(
+                                        "Agent tool execution start: node_id=%s iteration=%d tool_call_id=%s tool_name=%s",
+                                        self.id,
+                                        iteration,
+                                        getattr(call, "id", None),
+                                        getattr(call, "name", None),
+                                    )
                                     result = await instance.process(context, call.args)
                                     result_json = json.dumps(
                                         serialize_tool_result(result)
+                                    )
+                                    elapsed_ms = int((time.perf_counter() - started_at) * 1000)
+                                    log.info(
+                                        "Agent tool execution completed: node_id=%s iteration=%d tool_call_id=%s tool_name=%s status=completed result_len=%d elapsed_ms=%d",
+                                        self.id,
+                                        iteration,
+                                        getattr(call, "id", None),
+                                        getattr(call, "name", None),
+                                        len(result_json),
+                                        elapsed_ms,
                                     )
                                     log.debug(
                                         "Agent tool result (parallel per-item): iteration=%d id=%s name=%s result_len=%d",
@@ -1631,6 +1861,16 @@ class Agent(BaseNode):
                                     result_json = json.dumps(
                                         {"error": f"Error executing tool: {str(e)}"}
                                     )
+                                    elapsed_ms = int((time.perf_counter() - started_at) * 1000)
+                                    log.error(
+                                        "Agent tool execution failed: node_id=%s iteration=%d tool_call_id=%s tool_name=%s elapsed_ms=%d error=%s",
+                                        self.id,
+                                        iteration,
+                                        getattr(call, "id", None),
+                                        getattr(call, "name", None),
+                                        elapsed_ms,
+                                        e,
+                                    )
                                     log.debug(
                                         "Agent tool result error recorded (parallel per-item): iteration=%d id=%s name=%s",
                                         iteration,
@@ -1642,7 +1882,12 @@ class Agent(BaseNode):
                             pending_tool_tasks.append(
                                 asyncio.create_task(_run_tool(tool_instance, chunk))
                             )
+                            tool_call_effective = True
                             break
+                    if tool_call_effective:
+                        iteration_effective_tool_calls += 1
+                        total_effective_tool_calls += 1
+                        should_continue = True
 
             log.debug(
                 f"_execute_agent_loop async for exited: iteration={iteration}, "
@@ -1677,6 +1922,12 @@ class Agent(BaseNode):
                     iteration,
                 )
                 results = await asyncio.gather(*pending_tool_tasks)
+                log.info(
+                    "Agent parallel tool execution batch complete: node_id=%s iteration=%d completed_calls=%d",
+                    self.id,
+                    iteration,
+                    len(results),
+                )
                 for tool_call_id, tool_name, tool_result_json in results:
                     initial_edges, _ = get_downstream_subgraph(
                         context.graph, self.id, tool_name
@@ -1698,10 +1949,33 @@ class Agent(BaseNode):
                     messages.append(tool_message)
                     # Save tool message to thread
                     await self._save_message_to_thread(context, tool_message)
+                    log.info(
+                        "Agent tool result message appended: node_id=%s iteration=%d tool_call_id=%s tool_name=%s content_len=%d",
+                        self.id,
+                        iteration,
+                        tool_call_id,
+                        tool_name,
+                        len(tool_result_json),
+                    )
+            iteration_elapsed_ms = int((time.perf_counter() - iteration_started_at) * 1000)
+            log.info(
+                "Agent iteration complete: node_id=%s iteration=%d elapsed_ms=%d chunk_count=%d done_seen=%s tool_calls_seen=%d effective_tool_calls=%d control_tool_calls=%d should_continue=%s assistant_text_len=%d total_messages=%d",
+                self.id,
+                iteration,
+                iteration_elapsed_ms,
+                chunk_count,
+                done_seen,
+                iteration_tool_calls_seen,
+                iteration_effective_tool_calls,
+                iteration_control_tool_calls,
+                should_continue,
+                len(message_text_content.text),
+                len(messages),
+            )
             log.debug(
                 "Agent loop end (per-item): iteration=%d will_continue=%s assistant_has_tool_calls=%s assistant_text_len=%d total_messages=%d",
                 iteration,
-                tools_called,
+                should_continue,
                 assistant_message.tool_calls is not None
                 and len(assistant_message.tool_calls) > 0,
                 len(message_text_content.text),
@@ -1716,6 +1990,14 @@ class Agent(BaseNode):
                 if message_text_content.text
                 else "EMPTY"
             ),
+        )
+        log.info(
+            "Agent loop complete: node_id=%s iterations=%d total_tool_calls_seen=%d total_effective_tool_calls=%d total_control_tool_calls=%d",
+            self.id,
+            iteration,
+            total_tool_calls_seen,
+            total_effective_tool_calls,
+            total_control_tool_calls,
         )
 
     async def gen_process(
@@ -1732,7 +2014,34 @@ class Agent(BaseNode):
         messages = await self._prepare_messages(context)
 
         tools = self._resolve_tools(context)
+        structured_schema = self._get_structured_output_schema()
+        response_format = (
+            {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "agent_structured_output",
+                    "schema": structured_schema,
+                    "strict": True,
+                },
+            }
+            if structured_schema is not None
+            else None
+        )
         tool_names = [t.name for t in tools if t is not None]
+        tool_catalog: list[dict[str, Any]] = []
+        for tool in tools:
+            if tool is None:
+                continue
+            input_schema = tool.input_schema if isinstance(tool.input_schema, dict) else {}
+            properties = input_schema.get("properties") if isinstance(input_schema, dict) else {}
+            required = input_schema.get("required") if isinstance(input_schema, dict) else []
+            tool_catalog.append(
+                {
+                    "name": tool.name,
+                    "required": required if isinstance(required, list) else [],
+                    "params": sorted(list(properties.keys())) if isinstance(properties, dict) else [],
+                }
+            )
 
         log.debug("Agent messages: %s", messages)
 
@@ -1743,10 +2052,21 @@ class Agent(BaseNode):
             self.max_tokens,
             tool_names,
         )
+        log.info(
+            "Agent tool catalog: node_id=%s tool_count=%d tools=%s",
+            self.id,
+            len(tool_catalog),
+            tool_catalog,
+        )
 
         item_count = 0
-        async for item in self._execute_agent_loop(context, messages, tools):
+        last_text_output: str | None = None
+        async for item in self._execute_agent_loop(
+            context, messages, tools, response_format=response_format
+        ):
             item_count += 1
+            if item.get("text"):
+                last_text_output = item["text"]
             log.debug(
                 f"gen_process yielding item {item_count}: keys={list(item.keys())}, "
                 f"text_len={len(item.get('text', '') or '')}, "
@@ -1755,6 +2075,21 @@ class Agent(BaseNode):
                 f"has_audio={item.get('audio') is not None}"
             )
             yield item
+
+        if structured_schema is not None:
+            if not last_text_output:
+                raise ValueError("Agent did not return structured output text")
+
+            parsed_output = self._parse_structured_output_text(last_text_output)
+            structured_result: dict[str, Any] = {}
+            for slot in self.get_dynamic_output_slots():
+                if slot.name not in parsed_output:
+                    raise ValueError(
+                        f"Agent structured output is missing required field '{slot.name}'"
+                    )
+                structured_result[slot.name] = parsed_output[slot.name]
+
+            yield structured_result
 
         log.debug(
             f"gen_process completed: node_id={self.id}, total_items_yielded={item_count}"

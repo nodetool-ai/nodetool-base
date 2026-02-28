@@ -18,19 +18,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
+
 class AutoFitColumns(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-        Automatically adjusts column widths to fit content.
-        excel, format, columns
+    Automatically adjusts column widths to fit content.
+    excel, format, columns
 
-        Use cases:
-        - Improve spreadsheet readability
-        - Professional presentation
+    Use cases:
+    - Improve spreadsheet readability
+    - Professional presentation
     """
 
-    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(default=types.ExcelRef(type='excel', uri='', asset_id=None, data=None, metadata=None), description='The Excel workbook to format')
-    sheet_name: str | OutputHandle[str] = connect_field(default='Sheet1', description='Target worksheet name')
+    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
+        default=types.ExcelRef(
+            type="excel", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The Excel workbook to format",
+    )
+    sheet_name: str | OutputHandle[str] = connect_field(
+        default="Sheet1", description="Target worksheet name"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -47,18 +55,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
+
 class CreateWorkbook(SingleOutputGraphNode[types.ExcelRef], GraphNode[types.ExcelRef]):
     """
 
-        Creates a new Excel workbook.
-        excel, workbook, create
+    Creates a new Excel workbook.
+    excel, workbook, create
 
-        Use cases:
-        - Initialize new Excel files
-        - Start spreadsheet creation workflows
+    Use cases:
+    - Initialize new Excel files
+    - Start spreadsheet creation workflows
     """
 
-    sheet_name: str | OutputHandle[str] = connect_field(default='Sheet1', description='Name for the first worksheet')
+    sheet_name: str | OutputHandle[str] = connect_field(
+        default="Sheet1", description="Name for the first worksheet"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -75,22 +86,44 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
+
 class DataFrameToExcel(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-        Writes a DataFrame to an Excel worksheet.
-        excel, dataframe, export
+    Writes a DataFrame to an Excel worksheet.
+    excel, dataframe, export
 
-        Use cases:
-        - Export data analysis results
-        - Create reports from data
+    Use cases:
+    - Export data analysis results
+    - Create reports from data
     """
 
-    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(default=types.ExcelRef(type='excel', uri='', asset_id=None, data=None, metadata=None), description='The Excel workbook to write to')
-    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(default=types.DataframeRef(type='dataframe', uri='', asset_id=None, data=None, metadata=None, columns=None), description='DataFrame to write')
-    sheet_name: str | OutputHandle[str] = connect_field(default='Sheet1', description='Target worksheet name')
-    start_cell: str | OutputHandle[str] = connect_field(default='A1', description='Starting cell for data')
-    include_header: bool | OutputHandle[bool] = connect_field(default=True, description='Include column headers')
+    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
+        default=types.ExcelRef(
+            type="excel", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The Excel workbook to write to",
+    )
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
+        default=types.DataframeRef(
+            type="dataframe",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            columns=None,
+        ),
+        description="DataFrame to write",
+    )
+    sheet_name: str | OutputHandle[str] = connect_field(
+        default="Sheet1", description="Target worksheet name"
+    )
+    start_cell: str | OutputHandle[str] = connect_field(
+        default="A1", description="Starting cell for data"
+    )
+    include_header: bool | OutputHandle[bool] = connect_field(
+        default=True, description="Include column headers"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -107,20 +140,32 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
-class ExcelToDataFrame(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
+
+class ExcelToDataFrame(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
 
-        Reads an Excel worksheet into a pandas DataFrame.
-        excel, dataframe, import
+    Reads an Excel worksheet into a pandas DataFrame.
+    excel, dataframe, import
 
-        Use cases:
-        - Import Excel data for analysis
-        - Process spreadsheet contents
+    Use cases:
+    - Import Excel data for analysis
+    - Process spreadsheet contents
     """
 
-    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(default=types.ExcelRef(type='excel', uri='', asset_id=None, data=None, metadata=None), description='The Excel workbook to read from')
-    sheet_name: str | OutputHandle[str] = connect_field(default='Sheet1', description='Source worksheet name')
-    has_header: bool | OutputHandle[bool] = connect_field(default=True, description='First row contains headers')
+    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
+        default=types.ExcelRef(
+            type="excel", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The Excel workbook to read from",
+    )
+    sheet_name: str | OutputHandle[str] = connect_field(
+        default="Sheet1", description="Source worksheet name"
+    )
+    has_header: bool | OutputHandle[bool] = connect_field(
+        default=True, description="First row contains headers"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -137,23 +182,40 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
+
 class FormatCells(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-        Applies formatting to a range of cells.
-        excel, format, style
+    Applies formatting to a range of cells.
+    excel, format, style
 
-        Use cases:
-        - Highlight important data
-        - Create professional looking reports
+    Use cases:
+    - Highlight important data
+    - Create professional looking reports
     """
 
-    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(default=types.ExcelRef(type='excel', uri='', asset_id=None, data=None, metadata=None), description='The Excel workbook to format')
-    sheet_name: str | OutputHandle[str] = connect_field(default='Sheet1', description='Target worksheet name')
-    cell_range: str | OutputHandle[str] = connect_field(default='A1:B10', description="Cell range to format (e.g. 'A1:B10')")
-    bold: bool | OutputHandle[bool] = connect_field(default=False, description='Make text bold')
-    background_color: str | OutputHandle[str] = connect_field(default='FFFF00', description="Background color in hex format (e.g. 'FFFF00' for yellow)")
-    text_color: str | OutputHandle[str] = connect_field(default='000000', description='Text color in hex format')
+    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
+        default=types.ExcelRef(
+            type="excel", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The Excel workbook to format",
+    )
+    sheet_name: str | OutputHandle[str] = connect_field(
+        default="Sheet1", description="Target worksheet name"
+    )
+    cell_range: str | OutputHandle[str] = connect_field(
+        default="A1:B10", description="Cell range to format (e.g. 'A1:B10')"
+    )
+    bold: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Make text bold"
+    )
+    background_color: str | OutputHandle[str] = connect_field(
+        default="FFFF00",
+        description="Background color in hex format (e.g. 'FFFF00' for yellow)",
+    )
+    text_color: str | OutputHandle[str] = connect_field(
+        default="000000", description="Text color in hex format"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -170,20 +232,32 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
+
 class SaveWorkbook(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-        Saves an Excel workbook to disk.
-        excel, save, export
+    Saves an Excel workbook to disk.
+    excel, save, export
 
-        Use cases:
-        - Export final spreadsheet
-        - Save work in progress
+    Use cases:
+    - Export final spreadsheet
+    - Save work in progress
     """
 
-    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(default=types.ExcelRef(type='excel', uri='', asset_id=None, data=None, metadata=None), description='The Excel workbook to save')
-    folder: types.FilePath | OutputHandle[types.FilePath] = connect_field(default=types.FilePath(type='file_path', path=''), description='The folder to save the file to.')
-    filename: str | OutputHandle[str] = connect_field(default='', description='\n        The filename to save the file to.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
+        default=types.ExcelRef(
+            type="excel", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The Excel workbook to save",
+    )
+    folder: types.FilePath | OutputHandle[types.FilePath] = connect_field(
+        default=types.FilePath(type="file_path", path=""),
+        description="The folder to save the file to.",
+    )
+    filename: str | OutputHandle[str] = connect_field(
+        default="",
+        description="\n        The filename to save the file to.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -192,5 +266,3 @@ class SaveWorkbook(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

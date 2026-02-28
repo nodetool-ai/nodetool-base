@@ -1,4 +1,5 @@
 import pytest
+import json
 from unittest.mock import MagicMock, patch
 
 from nodetool.workflows.processing_context import ProcessingContext
@@ -340,6 +341,24 @@ class TestClassifier:
 
 
 class TestAgent:
+    def test_agent_dynamic_outputs_are_not_converted_to_tools(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Dynamic outputs are for structured output, not implicit tool creation."""
+        node = Agent(
+            prompt="Hello",
+            model=mock_model,
+        )
+        node._dynamic_outputs = {"result": TypeMetadata(type="str")}
+
+        with patch(
+            "nodetool.nodes.nodetool.agents.instantiate_tools_from_names",
+            return_value=[],
+        ):
+            tools = node._resolve_tools(context)
+
+        assert tools == []
+
     @pytest.mark.asyncio
     async def test_agent_basic_text_generation(
         self, context: ProcessingContext, mock_model: LanguageModel
@@ -561,6 +580,75 @@ class TestAgent:
             assert collected["text"] == "One, two, three"
 
     @pytest.mark.asyncio
+    async def test_agent_dynamic_outputs_emit_structured_result(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Agent should emit dynamic outputs as structured JSON fields."""
+        from unittest.mock import AsyncMock
+
+        node = Agent(
+            prompt="Extract a user record",
+            model=mock_model,
+        )
+        node._dynamic_outputs = {
+            "name": TypeMetadata(type="str"),
+            "age": TypeMetadata(type="int"),
+        }
+
+        class StructuredFakeProvider(FakeProvider):
+            def __init__(self):
+                super().__init__(
+                    text_response='{"name":"Alice","age":34}', should_stream=False
+                )
+                self.last_response_format = None
+
+            async def generate_messages(
+                self,
+                messages,
+                model,
+                tools=(),
+                max_tokens: int = 8192,
+                response_format=None,
+                **kwargs,
+            ):
+                self.last_response_format = response_format
+                async for item in super().generate_messages(
+                    messages=messages,
+                    model=model,
+                    tools=tools,
+                    max_tokens=max_tokens,
+                    response_format=response_format,
+                    **kwargs,
+                ):
+                    yield item
+
+        fake_provider = StructuredFakeProvider()
+
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
+        ), patch(
+            "nodetool.nodes.nodetool.agents.instantiate_tools_from_names",
+            return_value=[],
+        ):
+            runner = WorkflowRunner(job_id="test")
+            runner.context = context
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+
+            async def mock_any():
+                yield "prompt", "Extract a user record"
+
+            inbox = MagicMock()
+            inbox.iter_any = mock_any
+
+            await node.run(context, NodeInputs(inbox), outputs)
+
+            collected = outputs.collected()
+            assert collected["name"] == "Alice"
+            assert collected["age"] == 34
+            assert fake_provider.last_response_format is not None
+            assert fake_provider.last_response_format["type"] == "json_schema"
+
+    @pytest.mark.asyncio
     async def test_agent_audio_output(
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
@@ -704,6 +792,196 @@ class TestAgent:
             assert "text" in collected
             assert collected["text"] == "Cats are wonderful pets!"
             assert fake_provider.call_count == 1
+
+    @pytest.mark.asyncio
+    async def test_agent_control_tool_result_is_added_to_followup_messages(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Control tool responses should include the controlled node result for the next model turn."""
+        from unittest.mock import AsyncMock
+
+        from nodetool.agents.tools.control_tool import ControlNodeTool
+        from nodetool.providers import create_fake_tool_call
+
+        node = Agent(
+            prompt="list files",
+            model=mock_model,
+        )
+
+        control_tool = ControlNodeTool(
+            "target1234",
+            {
+                "node_title": "Run Bash Command",
+                "control_actions": {
+                    "run": {
+                        "properties": {
+                            "command": {"type": "string"},
+                        }
+                    }
+                },
+            },
+        )
+
+        tool_call = create_fake_tool_call(
+            control_tool.name,
+            {"command": "ls -la"},
+            call_id="call_control_1",
+        )
+
+        observed_tool_payload: dict | None = None
+
+        def response_fn(messages, model):
+            nonlocal observed_tool_payload
+            tool_messages = [m for m in messages if m.role == "tool" and m.tool_call_id == "call_control_1"]
+            if not tool_messages:
+                return [tool_call]
+
+            observed_tool_payload = json.loads(str(tool_messages[-1].content))
+            return "done"
+
+        fake_provider = FakeProvider(
+            custom_response_fn=response_fn,
+            should_stream=False,
+        )
+
+        with patch.object(
+            context,
+            "get_provider",
+            new_callable=AsyncMock,
+            return_value=fake_provider,
+        ):
+            messages = [Message(role="user", content=[MessageTextContent(text="list files")])]
+            streamed = []
+            async for item in node._execute_agent_loop(context, messages, [control_tool]):
+                streamed.append(item)
+                control_payload = item.get("__control__")
+                if isinstance(control_payload, dict):
+                    response_future = control_payload.get("response_future")
+                    if response_future is not None and not response_future.done():
+                        response_future.set_result({"stdout": "file_a\nfile_b"})
+
+            assert fake_provider.call_count == 2
+            assert observed_tool_payload is not None
+            assert observed_tool_payload["status"] == "completed"
+            assert observed_tool_payload["result"]["stdout"] == "file_a\nfile_b"
+
+    @pytest.mark.asyncio
+    async def test_agent_allows_multiple_control_tool_calls_in_one_run(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Control tool should remain available across iterations for multiple calls."""
+        from unittest.mock import AsyncMock
+
+        from nodetool.agents.tools.control_tool import ControlNodeTool
+        from nodetool.metadata.types import ToolCall as MetadataToolCall
+        from nodetool.providers import Chunk, FakeProvider
+
+        node = Agent(
+            prompt="list files",
+            model=mock_model,
+        )
+
+        control_tool = ControlNodeTool(
+            "target1234",
+            {
+                "node_title": "Run Bash Command",
+                "control_actions": {
+                    "run": {
+                        "properties": {
+                            "command": {"type": "string"},
+                        }
+                    }
+                },
+            },
+        )
+
+        class MultiControlCallProvider(FakeProvider):
+            def __init__(self):
+                super().__init__(text_response="", should_stream=False)
+                self.tools_history: list[list[str]] = []
+                self.tool_payloads_by_id: dict[str, dict] = {}
+
+            async def generate_messages(
+                self,
+                messages,
+                model,
+                tools=(),
+                max_tokens: int = 8192,
+                response_format=None,
+                **kwargs,
+            ):
+                self.call_count += 1
+                self.last_messages = messages
+                self.last_model = model
+                self.last_tools = tools
+                self.last_kwargs = kwargs
+                tool_names = [t.name for t in tools or []]
+                self.tools_history.append(tool_names)
+
+                for msg in messages:
+                    if msg.role != "tool" or msg.name != control_tool.name or not msg.tool_call_id:
+                        continue
+                    try:
+                        self.tool_payloads_by_id[msg.tool_call_id] = json.loads(str(msg.content))
+                    except Exception:
+                        self.tool_payloads_by_id[msg.tool_call_id] = {"raw": str(msg.content)}
+
+                if self.call_count == 1:
+                    yield MetadataToolCall(
+                        id="call_control_1",
+                        name=control_tool.name,
+                        args={"command": "ls -la"},
+                    )
+                    return
+
+                if self.call_count == 2:
+                    yield MetadataToolCall(
+                        id="call_control_2",
+                        name=control_tool.name,
+                        args={"command": "pwd"},
+                    )
+                    return
+
+                yield Chunk(
+                    content="Here are the files:\nfile_a\nfile_b",
+                    done=True,
+                    content_type="text",
+                )
+
+        fake_provider = MultiControlCallProvider()
+
+        with patch.object(
+            context,
+            "get_provider",
+            new_callable=AsyncMock,
+            return_value=fake_provider,
+        ):
+            messages = [Message(role="user", content=[MessageTextContent(text="list files")])]
+            emitted_texts: list[str] = []
+            control_events = 0
+
+            async for item in node._execute_agent_loop(context, messages, [control_tool]):
+                if item.get("text"):
+                    emitted_texts.append(item["text"])
+                control_payload = item.get("__control__")
+                if isinstance(control_payload, dict):
+                    control_events += 1
+                    response_future = control_payload.get("response_future")
+                    if response_future is not None and not response_future.done():
+                        if control_events == 1:
+                            response_future.set_result({"stdout": "file_a\nfile_b"})
+                        else:
+                            response_future.set_result({"stdout": "/Users/mg/workspace"})
+
+            assert control_events == 2
+            assert fake_provider.call_count >= 3
+            assert control_tool.name in fake_provider.tools_history[0]
+            assert control_tool.name in fake_provider.tools_history[1]
+            assert any("Here are the files:" in t for t in emitted_texts)
+            assert fake_provider.tool_payloads_by_id["call_control_1"]["status"] == "completed"
+            assert fake_provider.tool_payloads_by_id["call_control_1"]["result"]["stdout"] == "file_a\nfile_b"
+            assert fake_provider.tool_payloads_by_id["call_control_2"]["status"] == "completed"
+            assert fake_provider.tool_payloads_by_id["call_control_2"]["result"]["stdout"] == "/Users/mg/workspace"
 
     @pytest.mark.asyncio
     async def test_multiple_calls_with_fake_provider(

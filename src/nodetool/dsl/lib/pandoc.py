@@ -18,25 +18,36 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pandoc
 from nodetool.workflows.base_node import BaseNode
 
+
 class ConvertFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Converts between different document formats using pandoc.
-        convert, document, format, pandoc
+    Converts between different document formats using pandoc.
+    convert, document, format, pandoc
 
-        Use cases:
-        - Convert between various document formats (Markdown, HTML, LaTeX, etc.)
-        - Generate documentation in different formats
-        - Create publication-ready documents
+    Use cases:
+    - Convert between various document formats (Markdown, HTML, LaTeX, etc.)
+    - Generate documentation in different formats
+    - Create publication-ready documents
     """
 
     InputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.InputFormat
     OutputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.OutputFormat
 
-    input_path: types.FilePath | OutputHandle[types.FilePath] = connect_field(default=types.FilePath(type='file_path', path=''), description='Path to the input file')
-    input_format: nodetool.nodes.lib.pandoc.InputFormat = Field(default=nodetool.nodes.lib.pandoc.InputFormat.MARKDOWN, description='Input format')
-    output_format: nodetool.nodes.lib.pandoc.OutputFormat = Field(default=nodetool.nodes.lib.pandoc.OutputFormat.PDF, description='Output format')
-    extra_args: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='Additional pandoc arguments')
+    input_path: types.FilePath | OutputHandle[types.FilePath] = connect_field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Path to the input file",
+    )
+    input_format: nodetool.nodes.lib.pandoc.InputFormat = Field(
+        default=nodetool.nodes.lib.pandoc.InputFormat.MARKDOWN,
+        description="Input format",
+    )
+    output_format: nodetool.nodes.lib.pandoc.OutputFormat = Field(
+        default=nodetool.nodes.lib.pandoc.OutputFormat.PDF, description="Output format"
+    )
+    extra_args: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[], description="Additional pandoc arguments"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -53,25 +64,35 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pandoc
 from nodetool.workflows.base_node import BaseNode
 
+
 class ConvertText(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Converts text content between different document formats using pandoc.
-        convert, text, format, pandoc
+    Converts text content between different document formats using pandoc.
+    convert, text, format, pandoc
 
-        Use cases:
-        - Convert text content between various formats (Markdown, HTML, LaTeX, etc.)
-        - Transform content without saving to disk
-        - Process text snippets in different formats
+    Use cases:
+    - Convert text content between various formats (Markdown, HTML, LaTeX, etc.)
+    - Transform content without saving to disk
+    - Process text snippets in different formats
     """
 
     InputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.InputFormat
     OutputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.OutputFormat
 
-    content: str | OutputHandle[str] = connect_field(default='', description='Text content to convert')
-    input_format: nodetool.nodes.lib.pandoc.InputFormat = Field(default=nodetool.nodes.lib.pandoc.InputFormat.MARKDOWN, description='Input format')
-    output_format: nodetool.nodes.lib.pandoc.OutputFormat = Field(default=nodetool.nodes.lib.pandoc.OutputFormat.DOCX, description='Output format')
-    extra_args: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='Additional pandoc arguments')
+    content: str | OutputHandle[str] = connect_field(
+        default="", description="Text content to convert"
+    )
+    input_format: nodetool.nodes.lib.pandoc.InputFormat = Field(
+        default=nodetool.nodes.lib.pandoc.InputFormat.MARKDOWN,
+        description="Input format",
+    )
+    output_format: nodetool.nodes.lib.pandoc.OutputFormat = Field(
+        default=nodetool.nodes.lib.pandoc.OutputFormat.DOCX, description="Output format"
+    )
+    extra_args: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[], description="Additional pandoc arguments"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -80,5 +101,3 @@ class ConvertText(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

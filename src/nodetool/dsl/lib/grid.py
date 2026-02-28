@@ -18,20 +18,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.grid
 from nodetool.workflows.base_node import BaseNode
 
-class CombineImageGrid(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class CombineImageGrid(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
 
-        Combine a grid of image tiles into a single image.
-        image, grid, combine, tiles
+    Combine a grid of image tiles into a single image.
+    image, grid, combine, tiles
 
-        Use cases:
-        - Reassemble processed image chunks
-        - Create composite images from smaller parts
-        - Merge tiled image data from distributed processing
+    Use cases:
+    - Reassemble processed image chunks
+    - Create composite images from smaller parts
+    - Merge tiled image data from distributed processing
     """
 
-    tiles: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(default=[], description='List of image tiles to combine.')
-    columns: int | OutputHandle[int] = connect_field(default=0, description='Number of columns in the grid.')
+    tiles: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(
+        default=[], description="List of image tiles to combine."
+    )
+    columns: int | OutputHandle[int] = connect_field(
+        default=0, description="Number of columns in the grid."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -48,21 +55,33 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.grid
 from nodetool.workflows.base_node import BaseNode
 
-class SliceImageGrid(SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]):
+
+class SliceImageGrid(
+    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
+):
     """
 
-        Slice an image into a grid of tiles.
-        image, grid, slice, tiles
+    Slice an image into a grid of tiles.
+    image, grid, slice, tiles
 
-        Use cases:
-        - Prepare large images for processing in smaller chunks
-        - Create image puzzles or mosaic effects
-        - Distribute image processing tasks across multiple workers
+    Use cases:
+    - Prepare large images for processing in smaller chunks
+    - Create image puzzles or mosaic effects
+    - Distribute image processing tasks across multiple workers
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to slice into a grid.')
-    columns: int | OutputHandle[int] = connect_field(default=0, description='Number of columns in the grid.')
-    rows: int | OutputHandle[int] = connect_field(default=0, description='Number of rows in the grid.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to slice into a grid.",
+    )
+    columns: int | OutputHandle[int] = connect_field(
+        default=0, description="Number of columns in the grid."
+    )
+    rows: int | OutputHandle[int] = connect_field(
+        default=0, description="Number of rows in the grid."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -71,5 +90,3 @@ class SliceImageGrid(SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

@@ -18,20 +18,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class DeleteRequest(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Remove a resource from a server using an HTTP DELETE request.
-        http, delete, request, url
+    Remove a resource from a server using an HTTP DELETE request.
+    http, delete, request, url
 
-        Use cases:
-        - Delete user accounts
-        - Remove API resources
-        - Cancel subscriptions
-        - Clear cache entries
+    Use cases:
+    - Delete user accounts
+    - Remove API resources
+    - Cancel subscriptions
+    - Clear cache entries
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -48,26 +51,43 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
-class DownloadDataframe(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
+
+class DownloadDataframe(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
 
-        Download data from a URL and return as a dataframe.
-        http, get, request, url, dataframe, csv, json, data
+    Download data from a URL and return as a dataframe.
+    http, get, request, url, dataframe, csv, json, data
 
-        Use cases:
-        - Download CSV data and convert to dataframe
-        - Fetch JSON data and convert to dataframe
-        - Retrieve tabular data from APIs
-        - Process data files from URLs
+    Use cases:
+    - Download CSV data and convert to dataframe
+    - Fetch JSON data and convert to dataframe
+    - Retrieve tabular data from APIs
+    - Process data files from URLs
     """
 
-    FileFormat: typing.ClassVar[type] = nodetool.nodes.lib.http.DownloadDataframe.FileFormat
+    FileFormat: typing.ClassVar[type] = (
+        nodetool.nodes.lib.http.DownloadDataframe.FileFormat
+    )
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
-    file_format: nodetool.nodes.lib.http.DownloadDataframe.FileFormat = Field(default=nodetool.nodes.lib.http.DownloadDataframe.FileFormat.CSV, description='The format of the data file (csv, json, tsv).')
-    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(default=types.RecordType(type='record_type', columns=[]), description='The columns of the dataframe.')
-    encoding: str | OutputHandle[str] = connect_field(default='utf-8', description='The encoding of the text file.')
-    delimiter: str | OutputHandle[str] = connect_field(default=',', description='The delimiter for CSV/TSV files.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
+    file_format: nodetool.nodes.lib.http.DownloadDataframe.FileFormat = Field(
+        default=nodetool.nodes.lib.http.DownloadDataframe.FileFormat.CSV,
+        description="The format of the data file (csv, json, tsv).",
+    )
+    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(
+        default=types.RecordType(type="record_type", columns=[]),
+        description="The columns of the dataframe.",
+    )
+    encoding: str | OutputHandle[str] = connect_field(
+        default="utf-8", description="The encoding of the text file."
+    )
+    delimiter: str | OutputHandle[str] = connect_field(
+        default=",", description="The delimiter for CSV/TSV files."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -84,22 +104,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class DownloadFiles(GraphNode[nodetool.nodes.lib.http.DownloadFiles.OutputType]):
     """
 
-        Download files from a list of URLs into a local folder.
-        download, files, urls, batch
+    Download files from a list of URLs into a local folder.
+    download, files, urls, batch
 
-        Use cases:
-        - Batch download files from multiple URLs
-        - Create local copies of remote resources
-        - Archive web content
-        - Download datasets
+    Use cases:
+    - Batch download files from multiple URLs
+    - Create local copies of remote resources
+    - Archive web content
+    - Download datasets
     """
 
-    urls: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='List of URLs to download.')
-    output_folder: str | OutputHandle[str] = connect_field(default='downloads', description='Local folder path where files will be saved.')
-    max_concurrent_downloads: int | OutputHandle[int] = connect_field(default=5, description='Maximum number of concurrent downloads.')
+    urls: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[], description="List of URLs to download."
+    )
+    output_folder: str | OutputHandle[str] = connect_field(
+        default="downloads", description="Local folder path where files will be saved."
+    )
+    max_concurrent_downloads: int | OutputHandle[int] = connect_field(
+        default=5, description="Maximum number of concurrent downloads."
+    )
 
     @property
     def out(self) -> "DownloadFilesOutputs":
@@ -113,14 +140,15 @@ class DownloadFiles(GraphNode[nodetool.nodes.lib.http.DownloadFiles.OutputType])
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class DownloadFilesOutputs(OutputsProxy):
     @property
     def success(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self['success'])
+        return typing.cast(OutputHandle[list[str]], self["success"])
 
     @property
     def failed(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self['failed'])
+        return typing.cast(OutputHandle[list[str]], self["failed"])
 
 
 import typing
@@ -129,20 +157,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class FetchPage(GraphNode[nodetool.nodes.lib.http.FetchPage.OutputType]):
     """
 
-        Fetch a web page using Selenium and return its content.
-        selenium, fetch, webpage, http
+    Fetch a web page using Selenium and return its content.
+    selenium, fetch, webpage, http
 
-        Use cases:
-        - Retrieve content from dynamic websites
-        - Capture JavaScript-rendered content
-        - Interact with web applications
+    Use cases:
+    - Retrieve content from dynamic websites
+    - Capture JavaScript-rendered content
+    - Interact with web applications
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to fetch the page from.')
-    wait_time: int | OutputHandle[int] = connect_field(default=10, description='Maximum time to wait for page load (in seconds).')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to fetch the page from."
+    )
+    wait_time: int | OutputHandle[int] = connect_field(
+        default=10, description="Maximum time to wait for page load (in seconds)."
+    )
 
     @property
     def out(self) -> "FetchPageOutputs":
@@ -156,18 +189,19 @@ class FetchPage(GraphNode[nodetool.nodes.lib.http.FetchPage.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class FetchPageOutputs(OutputsProxy):
     @property
     def html(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['html'])
+        return typing.cast(OutputHandle[str], self["html"])
 
     @property
     def success(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self['success'])
+        return typing.cast(OutputHandle[bool], self["success"])
 
     @property
     def error_message(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['error_message'])
+        return typing.cast(OutputHandle[str], self["error_message"])
 
 
 import typing
@@ -176,21 +210,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class FilterValidURLs(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-        Filter a list of URLs by checking their validity using HEAD requests.
-        url validation, http, head request
+    Filter a list of URLs by checking their validity using HEAD requests.
+    url validation, http, head request
 
-        Use cases:
-        - Clean URL lists by removing broken links
-        - Verify resource availability
-        - Validate website URLs before processing
+    Use cases:
+    - Clean URL lists by removing broken links
+    - Verify resource availability
+    - Validate website URLs before processing
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
-    urls: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='List of URLs to validate.')
-    max_concurrent_requests: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of concurrent HEAD requests.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
+    urls: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[], description="List of URLs to validate."
+    )
+    max_concurrent_requests: int | OutputHandle[int] = connect_field(
+        default=10, description="Maximum number of concurrent HEAD requests."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -207,20 +248,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetRequest(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Perform an HTTP GET request to retrieve data from a specified URL.
-        http, get, request, url
+    Perform an HTTP GET request to retrieve data from a specified URL.
+    http, get, request, url
 
-        Use cases:
-        - Fetch web page content
-        - Retrieve API data
-        - Download files
-        - Check website availability
+    Use cases:
+    - Fetch web page content
+    - Retrieve API data
+    - Download files
+    - Check website availability
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -237,20 +281,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetRequestBinary(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
 
-        Perform an HTTP GET request and return raw binary data.
-        http, get, request, url, binary, download
+    Perform an HTTP GET request and return raw binary data.
+    http, get, request, url, binary, download
 
-        Use cases:
-        - Download binary files
-        - Fetch images or media
-        - Retrieve PDF documents
-        - Download any non-text content
+    Use cases:
+    - Download binary files
+    - Fetch images or media
+    - Retrieve PDF documents
+    - Download any non-text content
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -267,20 +314,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
-class GetRequestDocument(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
+
+class GetRequestDocument(
+    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
+):
     """
 
-        Perform an HTTP GET request and return a document
-        http, get, request, url, document
+    Perform an HTTP GET request and return a document
+    http, get, request, url, document
 
-        Use cases:
-        - Download PDF documents
-        - Retrieve Word documents
-        - Fetch Excel files
-        - Download any document format
+    Use cases:
+    - Download PDF documents
+    - Retrieve Word documents
+    - Fetch Excel files
+    - Download any document format
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -297,19 +349,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class HeadRequest(SingleOutputGraphNode[dict[str, str]], GraphNode[dict[str, str]]):
     """
 
-        Retrieve headers from a resource using an HTTP HEAD request.
-        http, head, request, url
+    Retrieve headers from a resource using an HTTP HEAD request.
+    http, head, request, url
 
-        Use cases:
-        - Check resource existence
-        - Get metadata without downloading content
-        - Verify authentication or permissions
+    Use cases:
+    - Check resource existence
+    - Get metadata without downloading content
+    - Verify authentication or permissions
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -326,21 +381,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class ImageDownloader(GraphNode[nodetool.nodes.lib.http.ImageDownloader.OutputType]):
     """
 
-        Download images from list of URLs and return a list of ImageRefs.
-        image download, web scraping, data processing
+    Download images from list of URLs and return a list of ImageRefs.
+    image download, web scraping, data processing
 
-        Use cases:
-        - Prepare image datasets for machine learning tasks
-        - Archive images from web pages
-        - Process and analyze images extracted from websites
+    Use cases:
+    - Prepare image datasets for machine learning tasks
+    - Archive images from web pages
+    - Process and analyze images extracted from websites
     """
 
-    images: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='List of image URLs to download.')
-    base_url: str | OutputHandle[str] = connect_field(default='', description='Base URL to prepend to relative image URLs.')
-    max_concurrent_downloads: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of concurrent image downloads.')
+    images: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[], description="List of image URLs to download."
+    )
+    base_url: str | OutputHandle[str] = connect_field(
+        default="", description="Base URL to prepend to relative image URLs."
+    )
+    max_concurrent_downloads: int | OutputHandle[int] = connect_field(
+        default=10, description="Maximum number of concurrent image downloads."
+    )
 
     @property
     def out(self) -> "ImageDownloaderOutputs":
@@ -354,14 +416,15 @@ class ImageDownloader(GraphNode[nodetool.nodes.lib.http.ImageDownloader.OutputTy
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ImageDownloaderOutputs(OutputsProxy):
     @property
     def images(self) -> OutputHandle[list[types.ImageRef]]:
-        return typing.cast(OutputHandle[list[types.ImageRef]], self['images'])
+        return typing.cast(OutputHandle[list[types.ImageRef]], self["images"])
 
     @property
     def failed_urls(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self['failed_urls'])
+        return typing.cast(OutputHandle[list[str]], self["failed_urls"])
 
 
 import typing
@@ -370,19 +433,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class JSONGetRequest(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-        Perform an HTTP GET request and parse the response as JSON.
-        http, get, request, url, json, api
+    Perform an HTTP GET request and parse the response as JSON.
+    http, get, request, url, json, api
 
-        Use cases:
-        - Fetch data from REST APIs
-        - Retrieve JSON-formatted responses
-        - Interface with JSON web services
+    Use cases:
+    - Fetch data from REST APIs
+    - Retrieve JSON-formatted responses
+    - Interface with JSON web services
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -399,20 +465,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class JSONPatchRequest(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-        Partially update resources with JSON data using an HTTP PATCH request.
-        http, patch, request, url, json, api
+    Partially update resources with JSON data using an HTTP PATCH request.
+    http, patch, request, url, json, api
 
-        Use cases:
-        - Partial updates to API resources
-        - Modify specific fields without full replacement
-        - Efficient updates for large objects
+    Use cases:
+    - Partial updates to API resources
+    - Modify specific fields without full replacement
+    - Efficient updates for large objects
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
-    data: dict | OutputHandle[dict] = connect_field(default={}, description='The JSON data to send in the PATCH request.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
+    data: dict | OutputHandle[dict] = connect_field(
+        default={}, description="The JSON data to send in the PATCH request."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -429,20 +500,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class JSONPostRequest(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-        Send JSON data to a server using an HTTP POST request.
-        http, post, request, url, json, api
+    Send JSON data to a server using an HTTP POST request.
+    http, post, request, url, json, api
 
-        Use cases:
-        - Send structured data to REST APIs
-        - Create resources with JSON payloads
-        - Interface with modern web services
+    Use cases:
+    - Send structured data to REST APIs
+    - Create resources with JSON payloads
+    - Interface with modern web services
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
-    data: dict | OutputHandle[dict] = connect_field(default={}, description='The JSON data to send in the POST request.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
+    data: dict | OutputHandle[dict] = connect_field(
+        default={}, description="The JSON data to send in the POST request."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -459,20 +535,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class JSONPutRequest(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-        Update resources with JSON data using an HTTP PUT request.
-        http, put, request, url, json, api
+    Update resources with JSON data using an HTTP PUT request.
+    http, put, request, url, json, api
 
-        Use cases:
-        - Update existing API resources
-        - Replace complete objects in REST APIs
-        - Set configuration with JSON data
+    Use cases:
+    - Update existing API resources
+    - Replace complete objects in REST APIs
+    - Set configuration with JSON data
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
-    data: dict | OutputHandle[dict] = connect_field(default={}, description='The JSON data to send in the PUT request.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
+    data: dict | OutputHandle[dict] = connect_field(
+        default={}, description="The JSON data to send in the PUT request."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -489,21 +570,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class PostRequest(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Send data to a server using an HTTP POST request.
-        http, post, request, url, data
+    Send data to a server using an HTTP POST request.
+    http, post, request, url, data
 
-        Use cases:
-        - Submit form data
-        - Create new resources on an API
-        - Upload files
-        - Authenticate users
+    Use cases:
+    - Submit form data
+    - Create new resources on an API
+    - Upload files
+    - Authenticate users
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
-    data: str | OutputHandle[str] = connect_field(default='', description='The data to send in the POST request.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
+    data: str | OutputHandle[str] = connect_field(
+        default="", description="The data to send in the POST request."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -520,21 +606,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class PostRequestBinary(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
 
-        Send data using an HTTP POST request and return raw binary data.
-        http, post, request, url, data, binary
+    Send data using an HTTP POST request and return raw binary data.
+    http, post, request, url, data, binary
 
-        Use cases:
-        - Upload and receive binary files
-        - Interact with binary APIs
-        - Process image or media uploads
-        - Handle binary file transformations
+    Use cases:
+    - Upload and receive binary files
+    - Interact with binary APIs
+    - Process image or media uploads
+    - Handle binary file transformations
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
-    data: str | bytes | OutputHandle[str | bytes] = connect_field(default='', description='The data to send in the POST request. Can be string or binary.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
+    data: str | bytes | OutputHandle[str | bytes] = connect_field(
+        default="",
+        description="The data to send in the POST request. Can be string or binary.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -551,21 +643,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
 
+
 class PutRequest(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Update existing resources on a server using an HTTP PUT request.
-        http, put, request, url, data
+    Update existing resources on a server using an HTTP PUT request.
+    http, put, request, url, data
 
-        Use cases:
-        - Update user profiles
-        - Modify existing API resources
-        - Replace file contents
-        - Set configuration values
+    Use cases:
+    - Update user profiles
+    - Modify existing API resources
+    - Replace file contents
+    - Set configuration values
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to make the request to.')
-    data: str | OutputHandle[str] = connect_field(default='', description='The data to send in the PUT request.')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to make the request to."
+    )
+    data: str | OutputHandle[str] = connect_field(
+        default="", description="The data to send in the PUT request."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -574,5 +671,3 @@ class PutRequest(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

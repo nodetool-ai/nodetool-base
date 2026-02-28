@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.3-rc26",
+  "version": "0.6.3-rc.32",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -4207,8 +4207,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 141999,
-          "likes": 134
+          "downloads": 150266,
+          "likes": 135
         },
         {
           "id": "ggml-org/gemma-3-4b-it-GGUF:gemma-3-4b-it-Q4_K_M.gguf",
@@ -4258,7 +4258,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 29411,
+          "downloads": 28957,
           "likes": 49
         },
         {
@@ -4309,7 +4309,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 248401,
+          "downloads": 246487,
           "likes": 30
         },
         {
@@ -4329,8 +4329,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2623,
-          "likes": 28
+          "downloads": 2816,
+          "likes": 29
         },
         {
           "id": "ggml-org/Qwen3-Coder-30B-A3B-Instruct-Q8_0-GGUF:qwen3-coder-30b-a3b-instruct-q8_0.gguf",
@@ -4355,7 +4355,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 15480,
+          "downloads": 47066,
           "likes": 7
         },
         {
@@ -4376,7 +4376,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 38565,
+          "downloads": 42508,
           "likes": 12
         },
         {
@@ -4395,7 +4395,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 635,
+          "downloads": 657,
           "likes": 19
         },
         {
@@ -4446,7 +4446,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2657,
+          "downloads": 2666,
           "likes": 23
         }
       ],
@@ -4650,7 +4650,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 29411,
+          "downloads": 28957,
           "likes": 49
         }
       ],
@@ -4959,7 +4959,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 29411,
+          "downloads": 28957,
           "likes": 49
         }
       ],
@@ -5078,8 +5078,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 141999,
-          "likes": 134
+          "downloads": 150266,
+          "likes": 135
         },
         {
           "id": "ggml-org/gemma-3-12b-it-GGUF:gemma-3-12b-it-Q4_K_M.gguf",
@@ -5129,7 +5129,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 248401,
+          "downloads": 246487,
           "likes": 30
         }
       ],
@@ -5322,7 +5322,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 29411,
+          "downloads": 28957,
           "likes": 49
         }
       ],
@@ -7259,7 +7259,7 @@
             "type": "enum",
             "values": [
               "single_line",
-              "multiline"
+              "multi_line"
             ]
           }
         }
@@ -21037,7 +21037,7 @@
             "edge_min_length": 3,
             "min_words_vertical": 3,
             "min_words_horizontal": 1,
-            "keep_blank_chars": false,
+            "text_keep_blank_chars": false,
             "text_tolerance": 3,
             "text_x_tolerance": 3,
             "text_y_tolerance": 3
@@ -43817,7 +43817,20 @@
         {
           "name": "index_id",
           "type": {
-            "type": "str"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "list",
+                "type_args": [
+                  {
+                    "type": "str"
+                  }
+                ]
+              }
+            ]
           },
           "default": "",
           "title": "Index Id",
@@ -43826,7 +43839,20 @@
         {
           "name": "metadata",
           "type": {
-            "type": "dict"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "dict"
+              },
+              {
+                "type": "list",
+                "type_args": [
+                  {
+                    "type": "dict"
+                  }
+                ]
+              }
+            ]
           },
           "default": {},
           "title": "Metadata",

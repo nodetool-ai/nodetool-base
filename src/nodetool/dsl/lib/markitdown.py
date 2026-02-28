@@ -18,19 +18,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.markitdown
 from nodetool.workflows.base_node import BaseNode
 
-class ConvertToMarkdown(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
+
+class ConvertToMarkdown(
+    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
+):
     """
 
-        Converts various document formats to markdown using MarkItDown.
-        markdown, convert, document
+    Converts various document formats to markdown using MarkItDown.
+    markdown, convert, document
 
-        Use cases:
-        - Convert Word documents to markdown
-        - Convert Excel files to markdown tables
-        - Convert PowerPoint to markdown content
+    Use cases:
+    - Convert Word documents to markdown
+    - Convert Excel files to markdown tables
+    - Convert PowerPoint to markdown content
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The document to convert to markdown')
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
+        default=types.DocumentRef(
+            type="document", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The document to convert to markdown",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -39,5 +47,3 @@ class ConvertToMarkdown(SingleOutputGraphNode[types.DocumentRef], GraphNode[type
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

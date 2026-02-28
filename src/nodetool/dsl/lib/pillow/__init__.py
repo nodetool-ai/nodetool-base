@@ -18,21 +18,34 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow
 from nodetool.workflows.base_node import BaseNode
 
+
 class Blend(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Blend two images with adjustable alpha mixing.
-        blend, mix, fade, transition
+    Blend two images with adjustable alpha mixing.
+    blend, mix, fade, transition
 
-        Use cases:
-        - Create smooth transitions between images
-        - Adjust opacity of overlays
-        - Combine multiple exposures or effects
+    Use cases:
+    - Create smooth transitions between images
+    - Adjust opacity of overlays
+    - Combine multiple exposures or effects
     """
 
-    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The first image to blend.')
-    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The second image to blend.')
-    alpha: float | OutputHandle[float] = connect_field(default=0.5, description='The mix ratio.')
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The first image to blend.",
+    )
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The second image to blend.",
+    )
+    alpha: float | OutputHandle[float] = connect_field(
+        default=0.5, description="The mix ratio."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -49,21 +62,37 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow
 from nodetool.workflows.base_node import BaseNode
 
+
 class Composite(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Combine two images using a mask for advanced compositing.
-        composite, mask, blend, layering
+    Combine two images using a mask for advanced compositing.
+    composite, mask, blend, layering
 
-        Use cases:
-        - Create complex image compositions
-        - Apply selective blending or effects
-        - Implement advanced photo editing techniques
+    Use cases:
+    - Create complex image compositions
+    - Apply selective blending or effects
+    - Implement advanced photo editing techniques
     """
 
-    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The first image to composite.')
-    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The second image to composite.')
-    mask: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The mask to composite with.')
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The first image to composite.",
+    )
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The second image to composite.",
+    )
+    mask: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The mask to composite with.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -72,5 +101,3 @@ class Composite(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

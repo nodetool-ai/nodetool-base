@@ -34,7 +34,8 @@ def quote_identifier(name: str) -> str:
     Quote a SQLite identifier (table or column name) to prevent SQL injection.
     Replaces double quotes with two double quotes and wraps in double quotes.
     """
-    return f'"{name.replace("\"", "\"\"")}"'
+    escaped = name.replace('"', '""')
+    return f'"{escaped}"'
 
 
 class CreateTable(BaseNode):
