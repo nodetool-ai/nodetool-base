@@ -11,6 +11,7 @@ from nodetool.nodes.nodetool.list import (
     Extend,
     Dedupe,
     Reverse,
+    Randomize,
 )
 
 # Create dummy inputs for testing
@@ -36,6 +37,7 @@ def context():
         (Extend(values=dummy_list, other_values=[6, 7]), list),
         (Dedupe(values=[1, 2, 2, 3, 3, 3]), list),
         (Reverse(values=dummy_list), list),
+        (Randomize(values=dummy_list), list),
     ],
 )
 async def test_list_nodes(context: ProcessingContext, node, expected_type):
@@ -70,6 +72,28 @@ async def test_get_element_out_of_range(context: ProcessingContext):
         await node.process(context)
 
 
+@pytest.mark.asyncio
+async def test_randomize_node(context: ProcessingContext):
+    input_list = [1, 2, 3, 4, 5]
+    node = Randomize(values=input_list)
+    result = await node.process(context)
+
+    # Check that the result has the same length
+    assert len(result) == len(input_list)
+
+    # Check that the result contains the same elements (order independent)
+    assert sorted(result) == sorted(input_list)
+
+    # Check that the original list is not modified (Randomize should return a copy or modify a copy)
+    # Looking at implementation:
+    # shuffled = self.values.copy()
+    # random.shuffle(shuffled)
+    # return shuffled
+    # So self.values should remain unchanged if it's the same object reference,
+    # but `node.values` comes from pydantic field.
+    assert node.values == input_list
+
+
 @pytest.mark.parametrize(
     "NodeClass",
     [
@@ -82,6 +106,7 @@ async def test_get_element_out_of_range(context: ProcessingContext):
         Extend,
         Dedupe,
         Reverse,
+        Randomize,
     ],
 )
 def test_node_attributes(NodeClass):
