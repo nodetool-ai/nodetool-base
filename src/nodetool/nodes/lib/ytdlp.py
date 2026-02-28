@@ -13,6 +13,7 @@ from enum import Enum
 from io import BytesIO
 from typing import ClassVar, TypedDict
 
+import aiofiles
 import PIL.Image
 from pydantic import Field
 
@@ -330,8 +331,8 @@ class YtDlpDownload(BaseNode):
             raise DownloadError("Video file not found after download")
 
         # Read and create VideoRef
-        with open(video_path, "rb") as f:
-            video_bytes = f.read()
+        async with aiofiles.open(video_path, "rb") as f:
+            video_bytes = await f.read()
 
         return await context.video_from_bytes(video_bytes)
 
@@ -347,8 +348,8 @@ class YtDlpDownload(BaseNode):
             raise DownloadError("Audio file not found after download")
 
         # Read and create AudioRef
-        with open(audio_path, "rb") as f:
-            audio_bytes = f.read()
+        async with aiofiles.open(audio_path, "rb") as f:
+            audio_bytes = await f.read()
 
         return await context.audio_from_bytes(audio_bytes)
 
@@ -368,8 +369,10 @@ class YtDlpDownload(BaseNode):
             if ext in self.SUBTITLE_EXTENSIONS:
                 try:
                     # Read as UTF-8
-                    with open(filepath, "r", encoding="utf-8", errors="replace") as f:
-                        content = f.read()
+                    async with aiofiles.open(
+                        filepath, "r", encoding="utf-8", errors="replace"
+                    ) as f:
+                        content = await f.read()
                     # Use the first subtitle file found
                     if content:
                         subtitle_content = content
