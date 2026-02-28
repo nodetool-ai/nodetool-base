@@ -161,6 +161,19 @@ async def test_math_function_log(context: ProcessingContext):
 
 
 @pytest.mark.asyncio
+async def test_math_function_log_error(context: ProcessingContext):
+    # Test log of 0 (undefined)
+    node = MathFunction(input=0, operation=MathFunction.Operation.LOG)
+    with pytest.raises(ValueError, match="math domain error"):
+        await node.process(context)
+
+    # Test log of negative number (undefined for real numbers)
+    node = MathFunction(input=-1, operation=MathFunction.Operation.LOG)
+    with pytest.raises(ValueError, match="math domain error"):
+        await node.process(context)
+
+
+@pytest.mark.asyncio
 async def test_divide_by_zero(context: ProcessingContext):
     node = Divide(a=10, b=0)
     with pytest.raises(ZeroDivisionError):
@@ -189,3 +202,11 @@ async def test_float_operations(context: ProcessingContext):
     node = Divide(a=7, b=2)
     result = await node.process(context)
     assert result == 3.5
+
+
+@pytest.mark.asyncio
+async def test_math_function_square_root_negative(context: ProcessingContext):
+    # Test square root of a negative number (should raise ValueError)
+    node = MathFunction(input=-16, operation=MathFunction.Operation.SQUARE_ROOT)
+    with pytest.raises(ValueError):
+        await node.process(context)

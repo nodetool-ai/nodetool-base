@@ -270,8 +270,30 @@ class JSONTemplate(BaseNode):
     async def process(self, context: ProcessingContext) -> dict:
         result = self.template
         for key, value in self.values.items():
+            json_value = json.dumps(value)
+
+            # 1. Full JSON replacement: "$key" -> "value" (or 123, true, etc.)
+            # This handles cases where the placeholder is the entire value string in the JSON
+            # e.g. {"name": "$user"} -> {"name": "John"}
+            # e.g. {"age": "$age"} -> {"age": 30} (replaces "$age" string with 30)
+            quoted_placeholder_simple = f'"${key}"'
+            if quoted_placeholder_simple in result:
+                result = result.replace(quoted_placeholder_simple, json_value)
+
+            # 2. Partial string interpolation: "Hello $name" -> "Hello John"
+            # Here we want to inject the content of the string (escaped), but without surrounding quotes,
+            # so it becomes part of the existing string in the JSON template.
             placeholder = "$" + key
-            result = result.replace(placeholder, str(value))
+            if isinstance(value, str):
+                # For strings, we need the escaped content, so strip the outer quotes from json.dumps
+                # json.dumps('a"b') -> '"a\"b"'. Inner: 'a\"b'.
+                replacement = json_value[1:-1]
+            else:
+                # For non-strings (int, bool, null), use the JSON representation directly
+                # 30 -> "30" (so "Value is $val" becomes "Value is 30")
+                replacement = json_value
+
+            result = result.replace(placeholder, replacement)
 
         try:
             res = json.loads(result)

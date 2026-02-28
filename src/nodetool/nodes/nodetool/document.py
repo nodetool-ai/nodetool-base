@@ -1,4 +1,4 @@
-import datetime
+from .utils import generate_timestamped_name
 import os
 import glob
 from typing import TypedDict
@@ -67,7 +67,7 @@ class SaveDocumentFile(BaseNode):
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 
-        filename = datetime.datetime.now().strftime(self.filename)
+        filename = generate_timestamped_name(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
         data = await context.asset_to_bytes(self.document)
         async with aiofiles.open(expanded_path, "wb") as f:

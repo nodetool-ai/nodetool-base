@@ -1,4 +1,4 @@
-from datetime import datetime
+from .utils import generate_timestamped_name
 from enum import Enum
 from functools import reduce
 from io import BytesIO
@@ -226,7 +226,7 @@ class SaveList(BaseNode):
 
     async def process(self, context: ProcessingContext) -> TextRef:
         values = "\n".join([str(value) for value in self.values])
-        filename = datetime.now().strftime(self.name)
+        filename = generate_timestamped_name(self.name)
         asset = await context.create_asset(
             name=filename, content_type="text/plain", content=BytesIO(values.encode())
         )

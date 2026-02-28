@@ -10,6 +10,7 @@ import os
 import csv
 import datetime
 
+from .utils import generate_timestamped_name
 from nodetool.config.environment import Environment
 import aiofiles
 
@@ -324,7 +325,7 @@ class SaveCSVFile(BaseNode):
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 
-        filename = datetime.datetime.now().strftime(self.filename)
+        filename = generate_timestamped_name(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
 
         # Use StringIO to build CSV content asynchronously
@@ -766,7 +767,10 @@ class FilterDictByQuery(BaseNode):
                 if current_condition:
                     try:
                         df = pd.DataFrame([d])
-                        filtered_df = df.query(current_condition)
+                        # Pass empty dictionaries to prevent access to local and global variables
+                        filtered_df = df.query(
+                            current_condition, local_dict={}, global_dict={}
+                        )
                         if not filtered_df.empty:
                             yield {"output": d}
                     except Exception:

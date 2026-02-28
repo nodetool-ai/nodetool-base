@@ -1,4 +1,5 @@
 import fnmatch
+import asyncio
 from typing import Any, AsyncGenerator, TypedDict, ClassVar
 from nodetool.config.environment import Environment
 from nodetool.metadata.types import FolderRef, ImageModel, Provider
@@ -9,7 +10,7 @@ from nodetool.workflows.processing_context import create_file_uri
 from nodetool.providers.types import TextToImageParams, ImageToImageParams
 from nodetool.workflows.types import SaveUpdate
 import os
-import datetime
+from .utils import generate_timestamped_name
 from pydantic import Field
 import PIL
 import PIL.Image
@@ -145,7 +146,7 @@ class SaveImageFile(BaseNode):
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 
-        filename = datetime.datetime.now().strftime(self.filename)
+        filename = generate_timestamped_name(self.filename)
 
         expanded_path = os.path.join(expanded_folder, filename)
         os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
@@ -247,7 +248,7 @@ class SaveImage(BaseNode):
             raise ValueError("The input image is not connected.")
 
         image = await context.image_to_pil(self.image)
-        filename = datetime.datetime.now().strftime(self.name)
+        filename = generate_timestamped_name(self.name)
         parent_id = self.folder.asset_id if self.folder.is_set() else None
 
         result = await context.image_from_pil(
@@ -364,7 +365,8 @@ class Paste(BaseNode):
 
         image = await context.image_to_pil(self.image)
         paste = await context.image_to_pil(self.paste)
-        image.paste(paste, (self.left, self.top))
+        # Offload synchronous image processing to a thread
+        await asyncio.to_thread(image.paste, paste, (self.left, self.top))
         return await context.image_from_pil(image)
 
 
@@ -381,7 +383,10 @@ class Scale(BaseNode):
         image = await context.image_to_pil(self.image)
         width = int((image.width * self.scale))
         height = int((image.height * self.scale))
-        image = image.resize((width, height), PIL.Image.Resampling.LANCZOS)
+        # Offload synchronous image processing to a thread
+        image = await asyncio.to_thread(
+            image.resize, (width, height), PIL.Image.Resampling.LANCZOS
+        )
         return await context.image_from_pil(image)
 
 
@@ -397,7 +402,10 @@ class Resize(BaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image = await context.image_to_pil(self.image)
-        res = image.resize((self.width, self.height), PIL.Image.LANCZOS)  # type: ignore
+        # Offload synchronous image processing to a thread
+        res = await asyncio.to_thread(
+            image.resize, (self.width, self.height), PIL.Image.LANCZOS
+        )  # type: ignore
         return await context.image_from_pil(res)
 
 
@@ -417,7 +425,10 @@ class Crop(BaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image = await context.image_to_pil(self.image)
-        res = image.crop((self.left, self.top, self.right, self.bottom))
+        # Offload synchronous image processing to a thread
+        res = await asyncio.to_thread(
+            image.crop, (self.left, self.top, self.right, self.bottom)
+        )
         return await context.image_from_pil(res)
 
 
@@ -433,7 +444,10 @@ class Fit(BaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image = await context.image_to_pil(self.image)
-        res = PIL.ImageOps.fit(image, (self.width, self.height), PIL.Image.LANCZOS)  # type: ignore
+        # Offload synchronous image processing to a thread
+        res = await asyncio.to_thread(
+            PIL.ImageOps.fit, image, (self.width, self.height), PIL.Image.LANCZOS
+        )  # type: ignore
         return await context.image_from_pil(res)
 
 
