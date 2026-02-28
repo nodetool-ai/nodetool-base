@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.3-rc26",
+  "version": "0.6.3-rc.32",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -7259,7 +7259,7 @@
             "type": "enum",
             "values": [
               "single_line",
-              "multiline"
+              "multi_line"
             ]
           }
         }
@@ -21037,7 +21037,7 @@
             "edge_min_length": 3,
             "min_words_vertical": 3,
             "min_words_horizontal": 1,
-            "keep_blank_chars": false,
+            "text_keep_blank_chars": false,
             "text_tolerance": 3,
             "text_x_tolerance": 3,
             "text_y_tolerance": 3
@@ -43817,7 +43817,20 @@
         {
           "name": "index_id",
           "type": {
-            "type": "str"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "list",
+                "type_args": [
+                  {
+                    "type": "str"
+                  }
+                ]
+              }
+            ]
           },
           "default": "",
           "title": "Index Id",
@@ -43826,7 +43839,20 @@
         {
           "name": "metadata",
           "type": {
-            "type": "dict"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "dict"
+              },
+              {
+                "type": "list",
+                "type_args": [
+                  {
+                    "type": "dict"
+                  }
+                ]
+              }
+            ]
           },
           "default": {},
           "title": "Metadata",

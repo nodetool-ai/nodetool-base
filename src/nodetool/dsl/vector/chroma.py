@@ -254,10 +254,10 @@ class IndexEmbedding(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The embedding to index",
     )
-    index_id: str | OutputHandle[str] = connect_field(
+    index_id: str | list[str] | OutputHandle[str | list[str]] = connect_field(
         default="", description="The ID to associate with the embedding"
     )
-    metadata: dict | OutputHandle[dict] = connect_field(
+    metadata: dict | list[dict] | OutputHandle[dict | list[dict]] = connect_field(
         default={}, description="The metadata to associate with the embedding"
     )
 
