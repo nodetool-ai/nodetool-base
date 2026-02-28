@@ -110,7 +110,7 @@ class StringInput(InputNode):
         "single_line",
         title="Line mode",
         description="Controls whether the UI should render the input as single-line or multiline.",
-        json_schema_extra={"type": "enum", "values": ["single_line", "multiline"]},
+        json_schema_extra={"type": "enum", "values": ["single_line", "multi_line"]},
     )
 
     @classmethod
