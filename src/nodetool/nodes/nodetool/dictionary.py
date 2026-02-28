@@ -10,6 +10,7 @@ import os
 import csv
 import datetime
 
+from .utils import generate_timestamped_name
 from nodetool.config.environment import Environment
 import aiofiles
 
@@ -324,7 +325,7 @@ class SaveCSVFile(BaseNode):
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 
-        filename = datetime.datetime.now().strftime(self.filename)
+        filename = generate_timestamped_name(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
 
         # Use StringIO to build CSV content asynchronously

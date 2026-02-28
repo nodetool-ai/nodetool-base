@@ -1,4 +1,4 @@
-from datetime import datetime
+from .utils import generate_timestamped_name
 from io import StringIO
 from typing import AsyncGenerator, ClassVar, TypedDict
 import json
@@ -132,7 +132,7 @@ class SaveDataframe(BaseNode):
     async def process(self, context: ProcessingContext) -> DataframeRef:
         df = await context.dataframe_to_pandas(self.df)
         parent_id = self.folder.asset_id if self.folder.is_set() else None
-        filename = datetime.now().strftime(self.name)
+        filename = generate_timestamped_name(self.name)
         result = await context.dataframe_from_pandas(df, filename, parent_id)
 
         # Emit SaveUpdate event
@@ -892,7 +892,7 @@ class SaveCSVDataframeFile(BaseNode):
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 
-        filename = datetime.now().strftime(self.filename)
+        filename = generate_timestamped_name(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
         df = await context.dataframe_to_pandas(self.dataframe)
         df.to_csv(expanded_path, index=False)

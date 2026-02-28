@@ -1,6 +1,6 @@
 import io
 import os
-import datetime
+from .utils import generate_timestamped_name
 import base64
 import asyncio
 from typing import AsyncGenerator, TypedDict, ClassVar
@@ -190,7 +190,7 @@ class SaveAudio(BaseNode):
         audio.export(file)
         file.seek(0)
         parent_id = self.folder.asset_id if self.folder.is_set() else None
-        name = datetime.datetime.now().strftime(self.name)
+        name = generate_timestamped_name(self.name)
         result = await context.audio_from_segment(audio, name, parent_id=parent_id)
 
         # Emit SaveUpdate event
@@ -251,7 +251,7 @@ class SaveAudioFile(BaseNode):
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 
-        filename = datetime.datetime.now().strftime(self.filename)
+        filename = generate_timestamped_name(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
         os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
 

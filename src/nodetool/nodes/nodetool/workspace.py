@@ -14,7 +14,7 @@ from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import SaveUpdate
 from nodetool.io.uri_utils import create_file_uri
 from datetime import datetime
-import datetime as dt
+from .utils import generate_timestamped_name
 import aiofiles
 
 
@@ -472,7 +472,7 @@ class SaveImageFile(BaseNode):
             raise ValueError("filename cannot be empty")
 
         # Format filename with current date/time
-        filename = dt.datetime.now().strftime(self.filename)
+        filename = generate_timestamped_name(self.filename)
 
         # Build and validate the full path
         relative_path = os.path.join(self.folder, filename)
@@ -548,7 +548,7 @@ class SaveVideoFile(BaseNode):
             raise ValueError("filename cannot be empty")
 
         # Format filename with current date/time
-        filename = dt.datetime.now().strftime(self.filename)
+        filename = generate_timestamped_name(self.filename)
 
         # Build and validate the full path
         relative_path = os.path.join(self.folder, filename)

@@ -1,4 +1,4 @@
-from datetime import datetime
+from .utils import generate_timestamped_name
 from io import BytesIO
 import json
 import os
@@ -316,14 +316,14 @@ class SaveTextFile(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> TextRef:
-        filename = datetime.now().strftime(self.name)
+        filename = generate_timestamped_name(self.name)
         file_data = self.text.encode("utf-8")
         if not self.folder:
             raise ValueError("folder cannot be empty")
         expanded_folder = os.path.expanduser(self.folder)
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
-        filename = datetime.now().strftime(self.name)
+        filename = generate_timestamped_name(self.name)
         expanded_path = os.path.join(expanded_folder, filename)
 
         async with aiofiles.open(expanded_path, "wb") as f:
@@ -377,7 +377,7 @@ class SaveText(BaseNode):
         return "Save Text"
 
     async def process(self, context: ProcessingContext) -> TextRef:
-        filename = datetime.now().strftime(self.name)
+        filename = generate_timestamped_name(self.name)
         file = BytesIO(self.text.encode("utf-8"))
         parent_id = self.folder.asset_id if self.folder.is_set() else None
         asset = await context.create_asset(filename, "text/plain", file, parent_id)
