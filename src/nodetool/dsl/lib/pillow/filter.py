@@ -18,19 +18,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
+
 class Blur(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Apply a Gaussian blur effect to an image.
-        image, filter, blur
+    Apply a Gaussian blur effect to an image.
+    image, filter, blur
 
-        - Soften images or reduce noise and detail
-        - Make focal areas stand out by blurring surroundings
-        - Protect privacy by blurring sensitive information
+    - Soften images or reduce noise and detail
+    - Make focal areas stand out by blurring surroundings
+    - Protect privacy by blurring sensitive information
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to blur.')
-    radius: int | OutputHandle[int] = connect_field(default=2, description='Blur radius.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to blur.",
+    )
+    radius: int | OutputHandle[int] = connect_field(
+        default=2, description="Blur radius."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -47,20 +55,30 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
+
 class Canny(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Apply Canny edge detection to an image.
-        image, filter, edges
+    Apply Canny edge detection to an image.
+    image, filter, edges
 
-        - Highlight areas of rapid intensity change
-        - Outline object boundaries and structure
-        - Enhance inputs for object detection and image segmentation
+    - Highlight areas of rapid intensity change
+    - Outline object boundaries and structure
+    - Enhance inputs for object detection and image segmentation
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to canny.')
-    low_threshold: int | OutputHandle[int] = connect_field(default=100, description='Low threshold.')
-    high_threshold: int | OutputHandle[int] = connect_field(default=200, description='High threshold.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to canny.",
+    )
+    low_threshold: int | OutputHandle[int] = connect_field(
+        default=100, description="Low threshold."
+    )
+    high_threshold: int | OutputHandle[int] = connect_field(
+        default=200, description="High threshold."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -77,18 +95,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
+
 class Contour(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Apply a contour filter to highlight image edges.
-        image, filter, contour
+    Apply a contour filter to highlight image edges.
+    image, filter, contour
 
-        - Extract key features from complex images
-        - Aid pattern recognition and object detection
-        - Create stylized contour sketch art effects
+    - Extract key features from complex images
+    - Aid pattern recognition and object detection
+    - Create stylized contour sketch art effects
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to contour.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to contour.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -105,18 +129,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
-class ConvertToGrayscale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class ConvertToGrayscale(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
 
-        Convert an image to grayscale.
-        image, grayscale
+    Convert an image to grayscale.
+    image, grayscale
 
-        - Simplify images for feature and edge detection
-        - Prepare images for shape-based machine learning
-        - Create vintage or monochrome aesthetic effects
+    - Simplify images for feature and edge detection
+    - Prepare images for shape-based machine learning
+    - Create vintage or monochrome aesthetic effects
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to convert.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to convert.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -133,18 +165,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
+
 class Emboss(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Apply an emboss filter for a 3D raised effect.
-        image, filter, emboss
+    Apply an emboss filter for a 3D raised effect.
+    image, filter, emboss
 
-        - Add texture and depth to photos
-        - Create visually interesting graphics
-        - Incorporate unique effects in digital artwork
+    - Add texture and depth to photos
+    - Create visually interesting graphics
+    - Incorporate unique effects in digital artwork
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to emboss.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to emboss.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -161,20 +199,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
+
 class Expand(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Add a border around an image to increase its size.
-        image, border, expand
+    Add a border around an image to increase its size.
+    image, border, expand
 
-        - Make images stand out by adding a colored border
-        - Create framed photo effects
-        - Separate image content from surroundings
+    - Make images stand out by adding a colored border
+    - Create framed photo effects
+    - Separate image content from surroundings
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to expand.')
-    border: int | OutputHandle[int] = connect_field(default=0, description='Border size.')
-    fill: int | OutputHandle[int] = connect_field(default=0, description='Fill color.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to expand.",
+    )
+    border: int | OutputHandle[int] = connect_field(
+        default=0, description="Border size."
+    )
+    fill: int | OutputHandle[int] = connect_field(default=0, description="Fill color.")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -191,18 +237,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
+
 class FindEdges(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Detect and highlight edges in an image.
-        image, filter, edges
+    Detect and highlight edges in an image.
+    image, filter, edges
 
-        - Analyze structural patterns in images
-        - Aid object detection in computer vision
-        - Detect important features like corners and ridges
+    - Analyze structural patterns in images
+    - Aid object detection in computer vision
+    - Detect important features like corners and ridges
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to find edges.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to find edges.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -219,21 +271,32 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetChannel(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Extract a specific color channel from an image.
-        image, color, channel, isolate, extract
+    Extract a specific color channel from an image.
+    image, color, channel, isolate, extract
 
-        - Isolate color information for image analysis
-        - Manipulate specific color components in graphic design
-        - Enhance or reduce visibility of certain colors
+    - Isolate color information for image analysis
+    - Manipulate specific color components in graphic design
+    - Enhance or reduce visibility of certain colors
     """
 
-    ChannelEnum: typing.ClassVar[type] = nodetool.nodes.lib.pillow.filter.GetChannel.ChannelEnum
+    ChannelEnum: typing.ClassVar[type] = (
+        nodetool.nodes.lib.pillow.filter.GetChannel.ChannelEnum
+    )
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to get the channel from.')
-    channel: nodetool.nodes.lib.pillow.filter.GetChannel.ChannelEnum = Field(default=nodetool.nodes.lib.pillow.filter.GetChannel.ChannelEnum.RED, description=None)
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to get the channel from.",
+    )
+    channel: nodetool.nodes.lib.pillow.filter.GetChannel.ChannelEnum = Field(
+        default=nodetool.nodes.lib.pillow.filter.GetChannel.ChannelEnum.RED,
+        description=None,
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -250,18 +313,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
+
 class Invert(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Invert the colors of an image.
-        image, filter, invert
+    Invert the colors of an image.
+    image, filter, invert
 
-        - Create negative versions of images for visual effects
-        - Analyze image data by bringing out hidden details
-        - Preprocess images for operations that work better on inverted colors
+    - Create negative versions of images for visual effects
+    - Analyze image data by bringing out hidden details
+    - Preprocess images for operations that work better on inverted colors
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to adjust the brightness for.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to adjust the brightness for.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -278,19 +347,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
+
 class Posterize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Reduce the number of colors in an image for a poster-like effect.
-        image, filter, posterize
+    Reduce the number of colors in an image for a poster-like effect.
+    image, filter, posterize
 
-        - Create graphic art by simplifying image colors
-        - Apply artistic effects to photographs
-        - Generate visually compelling content for advertising
+    - Create graphic art by simplifying image colors
+    - Apply artistic effects to photographs
+    - Generate visually compelling content for advertising
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to posterize.')
-    bits: int | OutputHandle[int] = connect_field(default=4, description='Number of bits to posterize to.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to posterize.",
+    )
+    bits: int | OutputHandle[int] = connect_field(
+        default=4, description="Number of bits to posterize to."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -307,18 +384,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
+
 class Smooth(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Apply smoothing to reduce image noise and detail.
-        image, filter, smooth
+    Apply smoothing to reduce image noise and detail.
+    image, filter, smooth
 
-        - Enhance visual aesthetics of images
-        - Improve object detection by reducing irrelevant details
-        - Aid facial recognition by simplifying images
+    - Enhance visual aesthetics of images
+    - Improve object detection by reducing irrelevant details
+    - Aid facial recognition by simplifying images
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to smooth.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to smooth.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -335,19 +418,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
+
 class Solarize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Apply a solarize effect to partially invert image tones.
-        image, filter, solarize
+    Apply a solarize effect to partially invert image tones.
+    image, filter, solarize
 
-        - Create surreal artistic photo effects
-        - Enhance visual data by making certain elements more prominent
-        - Add a unique style to images for graphic design
+    - Create surreal artistic photo effects
+    - Enhance visual data by making certain elements more prominent
+    - Add a unique style to images for graphic design
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to solarize.')
-    threshold: int | OutputHandle[int] = connect_field(default=128, description='Threshold for solarization.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to solarize.",
+    )
+    threshold: int | OutputHandle[int] = connect_field(
+        default=128, description="Threshold for solarization."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -356,5 +447,3 @@ class Solarize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef])
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

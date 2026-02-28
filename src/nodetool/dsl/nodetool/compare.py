@@ -18,23 +18,38 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.compare
 from nodetool.workflows.base_node import BaseNode
 
+
 class CompareImages(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
 
-        Compare two images side-by-side with an interactive slider.
-        image, compare, comparison, diff, before, after, slider
+    Compare two images side-by-side with an interactive slider.
+    image, compare, comparison, diff, before, after, slider
 
-        Use this node to visually compare:
-        - Before/after processing results
-        - Different model outputs
-        - Original vs edited images
-        - A/B testing of image variations
+    Use this node to visually compare:
+    - Before/after processing results
+    - Different model outputs
+    - Original vs edited images
+    - A/B testing of image variations
     """
 
-    image_a: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='First image (displayed on left/top)')
-    image_b: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Second image (displayed on right/bottom)')
-    label_a: str | OutputHandle[str] = connect_field(default='A', description='Label for the first image')
-    label_b: str | OutputHandle[str] = connect_field(default='B', description='Label for the second image')
+    image_a: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="First image (displayed on left/top)",
+    )
+    image_b: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Second image (displayed on right/bottom)",
+    )
+    label_a: str | OutputHandle[str] = connect_field(
+        default="A", description="Label for the first image"
+    )
+    label_b: str | OutputHandle[str] = connect_field(
+        default="B", description="Label for the second image"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -43,5 +58,3 @@ class CompareImages(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

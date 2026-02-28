@@ -14,9 +14,15 @@ from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
+
 
 class ExecuteBash(GraphNode[nodetool.nodes.nodetool.code.ExecuteBash.OutputType]):
     """
@@ -32,15 +38,34 @@ class ExecuteBash(GraphNode[nodetool.nodes.nodetool.code.ExecuteBash.OutputType]
         node = ExecuteBash(prop1=value1, prop2=value2)
     """
 
-    BashImage: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecuteBash.BashImage
+    BashImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.ExecuteBash.BashImage
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    code: str | OutputHandle[str] = connect_field(default='', description="Bash script to execute as-is. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.")
-    image: nodetool.nodes.nodetool.code.ExecuteBash.BashImage = Field(default=nodetool.nodes.nodetool.code.ExecuteBash.BashImage.UBUNTU_22_04, description='Docker image to use for execution')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER, description="Execution mode: 'docker' or 'subprocess'")
-    stdin: str | OutputHandle[str] = connect_field(default='', description='String to write to process stdin before any streaming input. Use newlines to separate lines.')
+    code: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Bash script to execute as-is. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
+    )
+    image: nodetool.nodes.nodetool.code.ExecuteBash.BashImage = Field(
+        default=nodetool.nodes.nodetool.code.ExecuteBash.BashImage.UBUNTU_22_04,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+    stdin: str | OutputHandle[str] = connect_field(
+        default="",
+        description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecuteBash node.
 
@@ -72,21 +97,28 @@ class ExecuteBash(GraphNode[nodetool.nodes.nodetool.code.ExecuteBash.OutputType]
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ExecuteBashOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
+        return typing.cast(OutputHandle[str], self["stderr"])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
+
 
 class ExecuteCommand(GraphNode[nodetool.nodes.nodetool.code.ExecuteCommand.OutputType]):
     """
@@ -104,15 +136,34 @@ class ExecuteCommand(GraphNode[nodetool.nodes.nodetool.code.ExecuteCommand.Outpu
         node = ExecuteCommand(prop1=value1, prop2=value2)
     """
 
-    CommandImage: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecuteCommand.CommandImage
+    CommandImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.ExecuteCommand.CommandImage
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    command: str | OutputHandle[str] = connect_field(default='', description="Single command to run via the selected shell. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.")
-    image: nodetool.nodes.nodetool.code.ExecuteCommand.CommandImage = Field(default=nodetool.nodes.nodetool.code.ExecuteCommand.CommandImage.BASH_5_2, description='Docker image to use for execution')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER, description="Execution mode: 'docker' or 'subprocess'")
-    stdin: str | OutputHandle[str] = connect_field(default='', description='String to write to process stdin before any streaming input. Use newlines to separate lines.')
+    command: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Single command to run via the selected shell. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
+    )
+    image: nodetool.nodes.nodetool.code.ExecuteCommand.CommandImage = Field(
+        default=nodetool.nodes.nodetool.code.ExecuteCommand.CommandImage.BASH_5_2,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+    stdin: str | OutputHandle[str] = connect_field(
+        default="",
+        description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecuteCommand node.
 
@@ -144,23 +195,32 @@ class ExecuteCommand(GraphNode[nodetool.nodes.nodetool.code.ExecuteCommand.Outpu
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ExecuteCommandOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
+        return typing.cast(OutputHandle[str], self["stderr"])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
 
-class ExecuteJavaScript(GraphNode[nodetool.nodes.nodetool.code.ExecuteJavaScript.OutputType]):
+
+class ExecuteJavaScript(
+    GraphNode[nodetool.nodes.nodetool.code.ExecuteJavaScript.OutputType]
+):
     """
 
         Executes JavaScript (Node.js) code with safety restrictions.
@@ -174,15 +234,34 @@ class ExecuteJavaScript(GraphNode[nodetool.nodes.nodetool.code.ExecuteJavaScript
         node = ExecuteJavaScript(prop1=value1, prop2=value2)
     """
 
-    JavaScriptImage: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecuteJavaScript.JavaScriptImage
+    JavaScriptImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.ExecuteJavaScript.JavaScriptImage
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    code: str | OutputHandle[str] = connect_field(default='', description="JavaScript code to execute as-is under Node.js. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.")
-    image: nodetool.nodes.nodetool.code.ExecuteJavaScript.JavaScriptImage = Field(default=nodetool.nodes.nodetool.code.ExecuteJavaScript.JavaScriptImage.NODE_22_ALPINE, description='Docker image to use for execution')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER, description="Execution mode: 'docker' or 'subprocess'")
-    stdin: str | OutputHandle[str] = connect_field(default='', description='String to write to process stdin before any streaming input. Use newlines to separate lines.')
+    code: str | OutputHandle[str] = connect_field(
+        default="",
+        description="JavaScript code to execute as-is under Node.js. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
+    )
+    image: nodetool.nodes.nodetool.code.ExecuteJavaScript.JavaScriptImage = Field(
+        default=nodetool.nodes.nodetool.code.ExecuteJavaScript.JavaScriptImage.NODE_22_ALPINE,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+    stdin: str | OutputHandle[str] = connect_field(
+        default="",
+        description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecuteJavaScript node.
 
@@ -214,21 +293,28 @@ class ExecuteJavaScript(GraphNode[nodetool.nodes.nodetool.code.ExecuteJavaScript
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ExecuteJavaScriptOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
+        return typing.cast(OutputHandle[str], self["stderr"])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
+
 
 class ExecuteLua(GraphNode[nodetool.nodes.nodetool.code.ExecuteLua.OutputType]):
     """
@@ -244,16 +330,37 @@ class ExecuteLua(GraphNode[nodetool.nodes.nodetool.code.ExecuteLua.OutputType]):
         node = ExecuteLua(prop1=value1, prop2=value2)
     """
 
-    LuaExecutable: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecuteLua.LuaExecutable
+    LuaExecutable: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.ExecuteLua.LuaExecutable
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    code: str | OutputHandle[str] = connect_field(default='', description="Lua code to execute as-is in a restricted environment. Dynamic inputs are provided as variables. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.")
-    executable: nodetool.nodes.nodetool.code.ExecuteLua.LuaExecutable = Field(default=nodetool.nodes.nodetool.code.ExecuteLua.LuaExecutable.LUA, description='Lua executable to use')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.SUBPROCESS, description="Execution mode: 'docker' or 'subprocess'")
-    timeout_seconds: int | OutputHandle[int] = connect_field(default=10, description='Max seconds to allow execution before forced stop')
-    stdin: str | OutputHandle[str] = connect_field(default='', description='String to write to process stdin before any streaming input. Use newlines to separate lines.')
+    code: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Lua code to execute as-is in a restricted environment. Dynamic inputs are provided as variables. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
+    )
+    executable: nodetool.nodes.nodetool.code.ExecuteLua.LuaExecutable = Field(
+        default=nodetool.nodes.nodetool.code.ExecuteLua.LuaExecutable.LUA,
+        description="Lua executable to use",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.SUBPROCESS,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=10, description="Max seconds to allow execution before forced stop"
+    )
+    stdin: str | OutputHandle[str] = connect_field(
+        default="",
+        description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecuteLua node.
 
@@ -285,21 +392,28 @@ class ExecuteLua(GraphNode[nodetool.nodes.nodetool.code.ExecuteLua.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ExecuteLuaOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
+        return typing.cast(OutputHandle[str], self["stderr"])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
+
 
 class ExecutePython(GraphNode[nodetool.nodes.nodetool.code.ExecutePython.OutputType]):
     """
@@ -322,15 +436,34 @@ class ExecutePython(GraphNode[nodetool.nodes.nodetool.code.ExecutePython.OutputT
         node = ExecutePython(prop1=value1, prop2=value2)
     """
 
-    PythonImage: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutePython.PythonImage
+    PythonImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.ExecutePython.PythonImage
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    code: str | OutputHandle[str] = connect_field(default='', description="Python code to execute as-is. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.")
-    image: nodetool.nodes.nodetool.code.ExecutePython.PythonImage = Field(default=nodetool.nodes.nodetool.code.ExecutePython.PythonImage.PYTHON_3_11_SLIM, description='Docker image to use for execution')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER, description="Execution mode: 'docker' or 'subprocess'")
-    stdin: str | OutputHandle[str] = connect_field(default='', description='String to write to process stdin before any streaming input. Use newlines to separate lines.')
+    code: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Python code to execute as-is. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
+    )
+    image: nodetool.nodes.nodetool.code.ExecutePython.PythonImage = Field(
+        default=nodetool.nodes.nodetool.code.ExecutePython.PythonImage.PYTHON_3_11_SLIM,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+    stdin: str | OutputHandle[str] = connect_field(
+        default="",
+        description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecutePython node.
 
@@ -362,21 +495,28 @@ class ExecutePython(GraphNode[nodetool.nodes.nodetool.code.ExecutePython.OutputT
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ExecutePythonOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
+        return typing.cast(OutputHandle[str], self["stderr"])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
+
 
 class ExecuteRuby(GraphNode[nodetool.nodes.nodetool.code.ExecuteRuby.OutputType]):
     """
@@ -392,15 +532,34 @@ class ExecuteRuby(GraphNode[nodetool.nodes.nodetool.code.ExecuteRuby.OutputType]
         node = ExecuteRuby(prop1=value1, prop2=value2)
     """
 
-    RubyImage: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecuteRuby.RubyImage
+    RubyImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.ExecuteRuby.RubyImage
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    code: str | OutputHandle[str] = connect_field(default='', description="Ruby code to execute as-is. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.")
-    image: nodetool.nodes.nodetool.code.ExecuteRuby.RubyImage = Field(default=nodetool.nodes.nodetool.code.ExecuteRuby.RubyImage.RUBY_3_3_ALPINE, description='Docker image to use for execution')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER, description="Execution mode: 'docker' or 'subprocess'")
-    stdin: str | OutputHandle[str] = connect_field(default='', description='String to write to process stdin before any streaming input. Use newlines to separate lines.')
+    code: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Ruby code to execute as-is. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
+    )
+    image: nodetool.nodes.nodetool.code.ExecuteRuby.RubyImage = Field(
+        default=nodetool.nodes.nodetool.code.ExecuteRuby.RubyImage.RUBY_3_3_ALPINE,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+    stdin: str | OutputHandle[str] = connect_field(
+        default="",
+        description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecuteRuby node.
 
@@ -432,21 +591,28 @@ class ExecuteRuby(GraphNode[nodetool.nodes.nodetool.code.ExecuteRuby.OutputType]
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ExecuteRubyOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
+        return typing.cast(OutputHandle[str], self["stderr"])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
+
 
 class RunBashCommand(GraphNode[nodetool.nodes.nodetool.code.RunBashCommand.OutputType]):
     """
@@ -469,14 +635,29 @@ class RunBashCommand(GraphNode[nodetool.nodes.nodetool.code.RunBashCommand.Outpu
         node = RunBashCommand(prop1=value1, prop2=value2)
     """
 
-    BashImage: typing.ClassVar[type] = nodetool.nodes.nodetool.code.RunBashCommand.BashImage
+    BashImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunBashCommand.BashImage
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    command: str | OutputHandle[str] = connect_field(default='', description='Bash command to execute')
-    image: nodetool.nodes.nodetool.code.RunBashCommand.BashImage = Field(default=nodetool.nodes.nodetool.code.RunBashCommand.BashImage.UBUNTU_22_04, description='Docker image to use for execution')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER, description="Execution mode: 'docker' or 'subprocess'")
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="Bash command to execute"
+    )
+    image: nodetool.nodes.nodetool.code.RunBashCommand.BashImage = Field(
+        default=nodetool.nodes.nodetool.code.RunBashCommand.BashImage.UBUNTU_22_04,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a RunBashCommand node.
 
@@ -508,23 +689,32 @@ class RunBashCommand(GraphNode[nodetool.nodes.nodetool.code.RunBashCommand.Outpu
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class RunBashCommandOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
+        return typing.cast(OutputHandle[str], self["stderr"])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
 
-class RunJavaScriptCommand(GraphNode[nodetool.nodes.nodetool.code.RunJavaScriptCommand.OutputType]):
+
+class RunJavaScriptCommand(
+    GraphNode[nodetool.nodes.nodetool.code.RunJavaScriptCommand.OutputType]
+):
     """
 
         Executes a single JavaScript command and buffers the output.
@@ -545,14 +735,29 @@ class RunJavaScriptCommand(GraphNode[nodetool.nodes.nodetool.code.RunJavaScriptC
         node = RunJavaScriptCommand(prop1=value1, prop2=value2)
     """
 
-    JavaScriptImage: typing.ClassVar[type] = nodetool.nodes.nodetool.code.RunJavaScriptCommand.JavaScriptImage
+    JavaScriptImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunJavaScriptCommand.JavaScriptImage
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    command: str | OutputHandle[str] = connect_field(default='', description='JavaScript command to execute')
-    image: nodetool.nodes.nodetool.code.RunJavaScriptCommand.JavaScriptImage = Field(default=nodetool.nodes.nodetool.code.RunJavaScriptCommand.JavaScriptImage.NODE_22_ALPINE, description='Docker image to use for execution')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER, description="Execution mode: 'docker' or 'subprocess'")
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="JavaScript command to execute"
+    )
+    image: nodetool.nodes.nodetool.code.RunJavaScriptCommand.JavaScriptImage = Field(
+        default=nodetool.nodes.nodetool.code.RunJavaScriptCommand.JavaScriptImage.NODE_22_ALPINE,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a RunJavaScriptCommand node.
 
@@ -584,21 +789,28 @@ class RunJavaScriptCommand(GraphNode[nodetool.nodes.nodetool.code.RunJavaScriptC
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class RunJavaScriptCommandOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
+        return typing.cast(OutputHandle[str], self["stderr"])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
+
 
 class RunLuaCommand(GraphNode[nodetool.nodes.nodetool.code.RunLuaCommand.OutputType]):
     """
@@ -621,15 +833,32 @@ class RunLuaCommand(GraphNode[nodetool.nodes.nodetool.code.RunLuaCommand.OutputT
         node = RunLuaCommand(prop1=value1, prop2=value2)
     """
 
-    LuaExecutable: typing.ClassVar[type] = nodetool.nodes.nodetool.code.RunLuaCommand.LuaExecutable
+    LuaExecutable: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunLuaCommand.LuaExecutable
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    command: str | OutputHandle[str] = connect_field(default='', description='Lua command to execute')
-    executable: nodetool.nodes.nodetool.code.RunLuaCommand.LuaExecutable = Field(default=nodetool.nodes.nodetool.code.RunLuaCommand.LuaExecutable.LUA, description='Lua executable to use')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.SUBPROCESS, description="Execution mode: 'docker' or 'subprocess'")
-    timeout_seconds: int | OutputHandle[int] = connect_field(default=10, description='Max seconds to allow execution before forced stop')
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="Lua command to execute"
+    )
+    executable: nodetool.nodes.nodetool.code.RunLuaCommand.LuaExecutable = Field(
+        default=nodetool.nodes.nodetool.code.RunLuaCommand.LuaExecutable.LUA,
+        description="Lua executable to use",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.SUBPROCESS,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=10, description="Max seconds to allow execution before forced stop"
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a RunLuaCommand node.
 
@@ -661,23 +890,32 @@ class RunLuaCommand(GraphNode[nodetool.nodes.nodetool.code.RunLuaCommand.OutputT
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class RunLuaCommandOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
+        return typing.cast(OutputHandle[str], self["stderr"])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
 
-class RunPythonCommand(GraphNode[nodetool.nodes.nodetool.code.RunPythonCommand.OutputType]):
+
+class RunPythonCommand(
+    GraphNode[nodetool.nodes.nodetool.code.RunPythonCommand.OutputType]
+):
     """
 
         Executes a single Python command and buffers the output.
@@ -699,14 +937,29 @@ class RunPythonCommand(GraphNode[nodetool.nodes.nodetool.code.RunPythonCommand.O
         node = RunPythonCommand(prop1=value1, prop2=value2)
     """
 
-    PythonImage: typing.ClassVar[type] = nodetool.nodes.nodetool.code.RunPythonCommand.PythonImage
+    PythonImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunPythonCommand.PythonImage
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    command: str | OutputHandle[str] = connect_field(default='', description='Python command to execute')
-    image: nodetool.nodes.nodetool.code.RunPythonCommand.PythonImage = Field(default=nodetool.nodes.nodetool.code.RunPythonCommand.PythonImage.PYTHON_3_11_SLIM, description='Docker image to use for execution')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER, description="Execution mode: 'docker' or 'subprocess'")
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="Python command to execute"
+    )
+    image: nodetool.nodes.nodetool.code.RunPythonCommand.PythonImage = Field(
+        default=nodetool.nodes.nodetool.code.RunPythonCommand.PythonImage.PYTHON_3_11_SLIM,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a RunPythonCommand node.
 
@@ -738,21 +991,28 @@ class RunPythonCommand(GraphNode[nodetool.nodes.nodetool.code.RunPythonCommand.O
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class RunPythonCommandOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
+        return typing.cast(OutputHandle[str], self["stderr"])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
+
 
 class RunRubyCommand(GraphNode[nodetool.nodes.nodetool.code.RunRubyCommand.OutputType]):
     """
@@ -775,14 +1035,29 @@ class RunRubyCommand(GraphNode[nodetool.nodes.nodetool.code.RunRubyCommand.Outpu
         node = RunRubyCommand(prop1=value1, prop2=value2)
     """
 
-    RubyImage: typing.ClassVar[type] = nodetool.nodes.nodetool.code.RunRubyCommand.RubyImage
+    RubyImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunRubyCommand.RubyImage
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    command: str | OutputHandle[str] = connect_field(default='', description='Ruby command to execute')
-    image: nodetool.nodes.nodetool.code.RunRubyCommand.RubyImage = Field(default=nodetool.nodes.nodetool.code.RunRubyCommand.RubyImage.RUBY_3_3_ALPINE, description='Docker image to use for execution')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER, description="Execution mode: 'docker' or 'subprocess'")
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="Ruby command to execute"
+    )
+    image: nodetool.nodes.nodetool.code.RunRubyCommand.RubyImage = Field(
+        default=nodetool.nodes.nodetool.code.RunRubyCommand.RubyImage.RUBY_3_3_ALPINE,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a RunRubyCommand node.
 
@@ -814,23 +1089,32 @@ class RunRubyCommand(GraphNode[nodetool.nodes.nodetool.code.RunRubyCommand.Outpu
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class RunRubyCommandOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
+        return typing.cast(OutputHandle[str], self["stderr"])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
 
-class RunShellCommand(GraphNode[nodetool.nodes.nodetool.code.RunShellCommand.OutputType]):
+
+class RunShellCommand(
+    GraphNode[nodetool.nodes.nodetool.code.RunShellCommand.OutputType]
+):
     """
 
         Executes a single shell command and buffers the output.
@@ -852,14 +1136,29 @@ class RunShellCommand(GraphNode[nodetool.nodes.nodetool.code.RunShellCommand.Out
         node = RunShellCommand(prop1=value1, prop2=value2)
     """
 
-    CommandImage: typing.ClassVar[type] = nodetool.nodes.nodetool.code.RunShellCommand.CommandImage
+    CommandImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunShellCommand.CommandImage
+    )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
 
-    command: str | OutputHandle[str] = connect_field(default='', description='Shell command to execute')
-    image: nodetool.nodes.nodetool.code.RunShellCommand.CommandImage = Field(default=nodetool.nodes.nodetool.code.RunShellCommand.CommandImage.BASH_5_2, description='Docker image to use for execution')
-    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER, description="Execution mode: 'docker' or 'subprocess'")
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="Shell command to execute"
+    )
+    image: nodetool.nodes.nodetool.code.RunShellCommand.CommandImage = Field(
+        default=nodetool.nodes.nodetool.code.RunShellCommand.CommandImage.BASH_5_2,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
 
-    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a RunShellCommand node.
 
@@ -891,13 +1190,12 @@ class RunShellCommand(GraphNode[nodetool.nodes.nodetool.code.RunShellCommand.Out
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class RunShellCommandOutputs(DynamicOutputsProxy):
     @property
     def stdout(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stdout'])
+        return typing.cast(OutputHandle[str], self["stdout"])
 
     @property
     def stderr(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['stderr'])
-
-
+        return typing.cast(OutputHandle[str], self["stderr"])
