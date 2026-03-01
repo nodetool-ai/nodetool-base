@@ -459,10 +459,6 @@ class DynamicKie(KieBaseNode):
     def get_basic_fields(cls) -> list[str]:
         return ["model_info"]
 
-    @classmethod
-    def get_title(cls) -> str:
-        return "Kie AI"
-
     def _prime_from_docs(self) -> None:
         """Parse docs at init time to populate dynamic slots from saved state."""
         if not self.model_info.strip():
