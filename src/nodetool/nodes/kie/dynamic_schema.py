@@ -414,7 +414,7 @@ async def resolve_dynamic_schema(model_info: str) -> dict[str, Any]:
     return _bundle_to_resolve_result(bundle)
 
 
-class KieAI(KieBaseNode):
+class DynamicKie(KieBaseNode):
     """
     Dynamic Kie.ai node for running any kie.ai model.
     kie, dynamic, schema, api, inference, runtime, model
@@ -446,6 +446,14 @@ class KieAI(KieBaseNode):
         self._dynamic_input_types = {}
         self._parsed_bundle = None
         self._prime_from_docs()
+
+    @classmethod
+    def get_node_type(cls) -> str:
+        return "kie.DynamicKie"
+
+    @classmethod
+    def get_namespace(cls) -> str:
+        return "kie"
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
