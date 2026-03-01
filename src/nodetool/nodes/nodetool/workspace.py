@@ -6,6 +6,7 @@ for security and isolation. They automatically use context.workspace_dir as the 
 """
 
 import os
+import asyncio
 from typing import AsyncGenerator, TypedDict
 from pydantic import Field
 from nodetool.metadata.types import ImageRef, VideoRef
@@ -16,6 +17,7 @@ from nodetool.io.uri_utils import create_file_uri
 from datetime import datetime
 from .utils import generate_timestamped_name
 import aiofiles
+import aiofiles.ospath
 
 
 def _validate_workspace_path(workspace_dir: str, relative_path: str) -> str:
@@ -88,10 +90,10 @@ class ListWorkspaceFiles(BaseNode):
 
         if self.recursive:
             pattern_path = os.path.join(full_path, "**", self.pattern)
-            paths = glob.glob(pattern_path, recursive=True)
+            paths = await asyncio.to_thread(glob.glob, pattern_path, recursive=True)
         else:
             pattern_path = os.path.join(full_path, self.pattern)
-            paths = glob.glob(pattern_path)
+            paths = await asyncio.to_thread(glob.glob, pattern_path)
 
         # Return relative paths from workspace root
         for p in paths:
@@ -113,10 +115,10 @@ class ReadTextFile(BaseNode):
     async def process(self, context: ProcessingContext) -> str:
         full_path = _validate_workspace_path(context.workspace_dir, self.path)
 
-        if not os.path.exists(full_path):
+        if not await aiofiles.ospath.exists(full_path):
             raise FileNotFoundError(f"File not found: {self.path}")
 
-        if not os.path.isfile(full_path):
+        if not await aiofiles.ospath.isfile(full_path):
             raise ValueError(f"Path is not a file: {self.path}")
 
         async with aiofiles.open(full_path, "r", encoding=self.encoding) as f:
@@ -142,7 +144,7 @@ class WriteTextFile(BaseNode):
         full_path = _validate_workspace_path(context.workspace_dir, self.path)
 
         # Create parent directories if needed
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        await aiofiles.os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
         mode = "a" if self.append else "w"
         async with aiofiles.open(full_path, mode, encoding=self.encoding) as f:
@@ -164,10 +166,10 @@ class ReadBinaryFile(BaseNode):
 
         full_path = _validate_workspace_path(context.workspace_dir, self.path)
 
-        if not os.path.exists(full_path):
+        if not await aiofiles.ospath.exists(full_path):
             raise FileNotFoundError(f"File not found: {self.path}")
 
-        if not os.path.isfile(full_path):
+        if not await aiofiles.ospath.isfile(full_path):
             raise ValueError(f"Path is not a file: {self.path}")
 
         async with aiofiles.open(full_path, "rb") as f:
@@ -192,7 +194,7 @@ class WriteBinaryFile(BaseNode):
         full_path = _validate_workspace_path(context.workspace_dir, self.path)
 
         # Create parent directories if needed
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        await aiofiles.os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
         # Decode base64 and write
         data = base64.b64decode(self.content)
@@ -222,17 +224,17 @@ class DeleteWorkspaceFile(BaseNode):
 
         full_path = _validate_workspace_path(context.workspace_dir, self.path)
 
-        if not os.path.exists(full_path):
+        if not await aiofiles.ospath.exists(full_path):
             raise FileNotFoundError(f"Path not found: {self.path}")
 
-        if os.path.isdir(full_path):
+        if await aiofiles.ospath.isdir(full_path):
             if not self.recursive:
                 raise ValueError(
                     f"Path is a directory. Set recursive=True to delete: {self.path}"
                 )
-            shutil.rmtree(full_path)
+            await asyncio.to_thread(shutil.rmtree, full_path)
         else:
-            os.remove(full_path)
+            await aiofiles.os.remove(full_path)
 
 
 class CreateWorkspaceDirectory(BaseNode):
@@ -247,7 +249,7 @@ class CreateWorkspaceDirectory(BaseNode):
 
     async def process(self, context: ProcessingContext) -> str:
         full_path = _validate_workspace_path(context.workspace_dir, self.path)
-        os.makedirs(full_path, exist_ok=True)
+        await aiofiles.os.makedirs(full_path, exist_ok=True)
         return self.path
 
 
@@ -265,7 +267,7 @@ class WorkspaceFileExists(BaseNode):
 
     async def process(self, context: ProcessingContext) -> bool:
         full_path = _validate_workspace_path(context.workspace_dir, self.path)
-        return os.path.exists(full_path)
+        return await aiofiles.ospath.exists(full_path)
 
 
 class GetWorkspaceFileInfo(BaseNode):
@@ -283,17 +285,17 @@ class GetWorkspaceFileInfo(BaseNode):
     async def process(self, context: ProcessingContext) -> dict:
         full_path = _validate_workspace_path(context.workspace_dir, self.path)
 
-        if not os.path.exists(full_path):
+        if not await aiofiles.ospath.exists(full_path):
             raise FileNotFoundError(f"Path not found: {self.path}")
 
-        stats = os.stat(full_path)
+        stats = await aiofiles.os.stat(full_path)
 
         return {
             "path": self.path,
             "name": os.path.basename(self.path),
             "size": stats.st_size,
-            "is_file": os.path.isfile(full_path),
-            "is_directory": os.path.isdir(full_path),
+            "is_file": await aiofiles.ospath.isfile(full_path),
+            "is_directory": await aiofiles.ospath.isdir(full_path),
             "created": datetime.fromtimestamp(stats.st_ctime).isoformat(),
             "modified": datetime.fromtimestamp(stats.st_mtime).isoformat(),
             "accessed": datetime.fromtimestamp(stats.st_atime).isoformat(),
@@ -317,16 +319,16 @@ class CopyWorkspaceFile(BaseNode):
         source_path = _validate_workspace_path(context.workspace_dir, self.source)
         dest_path = _validate_workspace_path(context.workspace_dir, self.destination)
 
-        if not os.path.exists(source_path):
+        if not await aiofiles.ospath.exists(source_path):
             raise FileNotFoundError(f"Source file not found: {self.source}")
 
         # Create parent directories if needed
-        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+        await aiofiles.os.makedirs(os.path.dirname(dest_path), exist_ok=True)
 
-        if os.path.isdir(source_path):
-            shutil.copytree(source_path, dest_path)
+        if await aiofiles.ospath.isdir(source_path):
+            await asyncio.to_thread(shutil.copytree, source_path, dest_path)
         else:
-            shutil.copy2(source_path, dest_path)
+            await asyncio.to_thread(shutil.copy2, source_path, dest_path)
 
         return self.destination
 
@@ -348,13 +350,13 @@ class MoveWorkspaceFile(BaseNode):
         source_path = _validate_workspace_path(context.workspace_dir, self.source)
         dest_path = _validate_workspace_path(context.workspace_dir, self.destination)
 
-        if not os.path.exists(source_path):
+        if not await aiofiles.ospath.exists(source_path):
             raise FileNotFoundError(f"Source file not found: {self.source}")
 
         # Create parent directories if needed
-        os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+        await aiofiles.os.makedirs(os.path.dirname(dest_path), exist_ok=True)
 
-        shutil.move(source_path, dest_path)
+        await asyncio.to_thread(shutil.move, source_path, dest_path)
 
         return self.destination
 
@@ -374,13 +376,13 @@ class GetWorkspaceFileSize(BaseNode):
     async def process(self, context: ProcessingContext) -> int:
         full_path = _validate_workspace_path(context.workspace_dir, self.path)
 
-        if not os.path.exists(full_path):
+        if not await aiofiles.ospath.exists(full_path):
             raise FileNotFoundError(f"File not found: {self.path}")
 
-        if not os.path.isfile(full_path):
+        if not await aiofiles.ospath.isfile(full_path):
             raise ValueError(f"Path is not a file: {self.path}")
 
-        return os.path.getsize(full_path)
+        return await aiofiles.ospath.getsize(full_path)
 
 
 class IsWorkspaceFile(BaseNode):
@@ -397,7 +399,7 @@ class IsWorkspaceFile(BaseNode):
 
     async def process(self, context: ProcessingContext) -> bool:
         full_path = _validate_workspace_path(context.workspace_dir, self.path)
-        return os.path.isfile(full_path)
+        return await aiofiles.ospath.isfile(full_path)
 
 
 class IsWorkspaceDirectory(BaseNode):
@@ -414,7 +416,7 @@ class IsWorkspaceDirectory(BaseNode):
 
     async def process(self, context: ProcessingContext) -> bool:
         full_path = _validate_workspace_path(context.workspace_dir, self.path)
-        return os.path.isdir(full_path)
+        return await aiofiles.ospath.isdir(full_path)
 
 
 class JoinWorkspacePaths(BaseNode):
@@ -479,12 +481,12 @@ class SaveImageFile(BaseNode):
         full_path = _validate_workspace_path(context.workspace_dir, relative_path)
 
         # Create parent directories if needed
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        await aiofiles.os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
         # Handle filename conflicts if not overwriting
         if not self.overwrite:
             count = 1
-            while os.path.exists(full_path):
+            while await aiofiles.ospath.exists(full_path):
                 fname, ext = os.path.splitext(filename)
                 new_filename = f"{fname}_{count}{ext}"
                 relative_path = os.path.join(self.folder, new_filename)
@@ -555,12 +557,12 @@ class SaveVideoFile(BaseNode):
         full_path = _validate_workspace_path(context.workspace_dir, relative_path)
 
         # Create parent directories if needed
-        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        await aiofiles.os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
         # Handle filename conflicts if not overwriting
         if not self.overwrite:
             count = 1
-            while os.path.exists(full_path):
+            while await aiofiles.ospath.exists(full_path):
                 fname, ext = os.path.splitext(filename)
                 new_filename = f"{fname}_{count}{ext}"
                 relative_path = os.path.join(self.folder, new_filename)
