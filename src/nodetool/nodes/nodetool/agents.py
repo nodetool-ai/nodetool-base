@@ -1241,6 +1241,39 @@ class Agent(BaseNode):
 
         return tools
 
+    @staticmethod
+    def _normalize_tool_lookup_name(name: str | None) -> str:
+        """Normalize tool names for tolerant matching across providers."""
+        if not name:
+            return ""
+        normalized = re.sub(r"[^a-zA-Z0-9]+", "_", str(name)).strip("_").lower()
+        return re.sub(r"_+", "_", normalized)
+
+    def _tool_matches_call(self, tool_instance: Tool | None, call_name: str | None) -> bool:
+        """Match a model-emitted tool name against registered tool aliases."""
+        if tool_instance is None or not call_name:
+            return False
+
+        # Fast path: exact tool name match.
+        if tool_instance.name == call_name:
+            return True
+
+        normalized_call_name = self._normalize_tool_lookup_name(call_name)
+        if normalized_call_name and self._normalize_tool_lookup_name(tool_instance.name) == normalized_call_name:
+            return True
+
+        # Control tools may be called by target node id (raw or normalized).
+        from nodetool.agents.tools.control_tool import ControlNodeTool
+
+        if isinstance(tool_instance, ControlNodeTool):
+            target_node_id = getattr(tool_instance, "target_node_id", "")
+            if target_node_id == call_name:
+                return True
+            if normalized_call_name and self._normalize_tool_lookup_name(target_node_id) == normalized_call_name:
+                return True
+
+        return False
+
     async def _get_provider_safe(self, context: ProcessingContext):
         """
         Safely get provider with defensive check for coroutine issue.
@@ -1686,7 +1719,18 @@ class Agent(BaseNode):
                     assert assistant_message.tool_calls is not None
                     assistant_message.tool_calls.append(chunk)
                     for tool_instance in tools:
-                        if tool_instance and tool_instance.name == chunk.name:
+                        if self._tool_matches_call(tool_instance, chunk.name):
+                            canonical_name = tool_instance.name
+                            if chunk.name != canonical_name:
+                                log.info(
+                                    "Agent tool call name normalized: node_id=%s iteration=%d tool_call_id=%s requested_name=%s canonical_name=%s",
+                                    self.id,
+                                    iteration,
+                                    chunk.id,
+                                    chunk.name,
+                                    canonical_name,
+                                )
+                                chunk.name = canonical_name
                             # Check if this is a ControlNodeTool
                             from nodetool.agents.tools.control_tool import (
                                 ControlNodeTool,
@@ -1933,6 +1977,15 @@ class Agent(BaseNode):
                         iteration_effective_tool_calls += 1
                         total_effective_tool_calls += 1
                         should_continue = True
+                    else:
+                        log.warning(
+                            "Agent tool call ignored (no matching tool): node_id=%s iteration=%d tool_call_id=%s requested_name=%s available_tools=%s",
+                            self.id,
+                            iteration,
+                            chunk.id,
+                            chunk.name,
+                            [tool.name for tool in tools if tool is not None],
+                        )
 
             log.debug(
                 f"_execute_agent_loop async for exited: iteration={iteration}, "
