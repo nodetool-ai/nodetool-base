@@ -803,24 +803,14 @@ class RunPythonCommand(BaseNode):
     _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
-    class PythonImage(Enum):
-        PYTHON_3_11_SLIM = "python:3.11-slim"
-        JUPYTER_SCIPY_NOTEBOOK = "jupyter/scipy-notebook:latest"
-
     command: str = Field(
         default="",
         description="Python command to execute",
     )
 
-    image: PythonImage = Field(
-        default=PythonImage.PYTHON_3_11_SLIM,
-        description="Docker image to use for execution",
-    )
-
-    execution_mode: ExecutionMode = Field(
-        default=ExecutionMode.DOCKER,
-        description="Execution mode: 'docker' or 'subprocess'",
-    )
+    class PythonImage(Enum):
+        PYTHON_3_11_SLIM = "python:3.11-slim"
+        JUPYTER_SCIPY_NOTEBOOK = "jupyter/scipy-notebook:latest"
 
     @classmethod
     def is_streaming_input(cls):
@@ -838,12 +828,15 @@ class RunPythonCommand(BaseNode):
     def is_streaming_output(cls):
         return False
 
+    def _create_runner(self):
+        return PythonDockerRunner(
+            image=self.PythonImage.PYTHON_3_11_SLIM.value,
+            mode=ExecutionMode.SUBPROCESS.value,
+        )
+
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         # Create runner once
-        runner = PythonDockerRunner(
-            image=self.image.value,
-            mode=self.execution_mode.value,
-        )
+        runner = self._create_runner()
         self._runner = runner
 
         command = self.command
@@ -868,7 +861,7 @@ class RunPythonCommand(BaseNode):
             if value is None:
                 continue
             text_value = value if isinstance(value, str) else str(value)
-            
+
             if slot == "stdout":
                 stdout_buf.append(text_value)
                 context.post_message(
@@ -889,7 +882,7 @@ class RunPythonCommand(BaseNode):
                         severity="error",
                     )
                 )
-        
+
         await outputs.emit("stdout", "".join(stdout_buf))
         await outputs.emit("stderr", "".join(stderr_buf))
 
@@ -899,6 +892,24 @@ class RunPythonCommand(BaseNode):
                 self._runner.stop()
         except Exception as e:
             log.debug(f"RunPythonCommand finalize: {e}")
+
+
+class RunPythonCommandDocker(RunPythonCommand):
+    """
+    Executes a single Python command in Docker and buffers the output.
+    python, code, execute, command, docker
+    """
+
+    image: RunPythonCommand.PythonImage = Field(
+        default=RunPythonCommand.PythonImage.PYTHON_3_11_SLIM,
+        description="Docker image to use for execution",
+    )
+
+    def _create_runner(self):
+        return PythonDockerRunner(
+            image=self.image.value,
+            mode=ExecutionMode.DOCKER.value,
+        )
 
 
 class RunJavaScriptCommand(BaseNode):
@@ -918,23 +929,13 @@ class RunJavaScriptCommand(BaseNode):
     _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
-    class JavaScriptImage(Enum):
-        NODE_22_ALPINE = "node:22-alpine"
-
     command: str = Field(
         default="",
         description="JavaScript command to execute",
     )
 
-    image: JavaScriptImage = Field(
-        default=JavaScriptImage.NODE_22_ALPINE,
-        description="Docker image to use for execution",
-    )
-
-    execution_mode: ExecutionMode = Field(
-        default=ExecutionMode.DOCKER,
-        description="Execution mode: 'docker' or 'subprocess'",
-    )
+    class JavaScriptImage(Enum):
+        NODE_22_ALPINE = "node:22-alpine"
 
     @classmethod
     def is_streaming_input(cls):
@@ -952,12 +953,15 @@ class RunJavaScriptCommand(BaseNode):
     def is_streaming_output(cls):
         return False
 
+    def _create_runner(self):
+        return JavaScriptDockerRunner(
+            image=self.JavaScriptImage.NODE_22_ALPINE.value,
+            mode=ExecutionMode.SUBPROCESS.value,
+        )
+
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         # Create runner once
-        runner = JavaScriptDockerRunner(
-            image=self.image.value,
-            mode=self.execution_mode.value,
-        )
+        runner = self._create_runner()
         self._runner = runner
 
         command = self.command
@@ -982,7 +986,7 @@ class RunJavaScriptCommand(BaseNode):
             if value is None:
                 continue
             text_value = value if isinstance(value, str) else str(value)
-            
+
             if slot == "stdout":
                 stdout_buf.append(text_value)
                 context.post_message(
@@ -1003,7 +1007,7 @@ class RunJavaScriptCommand(BaseNode):
                         severity="error",
                     )
                 )
-        
+
         await outputs.emit("stdout", "".join(stdout_buf))
         await outputs.emit("stderr", "".join(stderr_buf))
 
@@ -1013,6 +1017,24 @@ class RunJavaScriptCommand(BaseNode):
                 self._runner.stop()
         except Exception as e:
             log.debug(f"RunJavaScriptCommand finalize: {e}")
+
+
+class RunJavaScriptCommandDocker(RunJavaScriptCommand):
+    """
+    Executes a single JavaScript command in Docker and buffers the output.
+    javascript, nodejs, code, execute, command, docker
+    """
+
+    image: RunJavaScriptCommand.JavaScriptImage = Field(
+        default=RunJavaScriptCommand.JavaScriptImage.NODE_22_ALPINE,
+        description="Docker image to use for execution",
+    )
+
+    def _create_runner(self):
+        return JavaScriptDockerRunner(
+            image=self.image.value,
+            mode=ExecutionMode.DOCKER.value,
+        )
 
 
 class RunBashCommand(BaseNode):
@@ -1032,27 +1054,17 @@ class RunBashCommand(BaseNode):
     _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
+    command: str = Field(
+        default="",
+        description="Bash command to execute",
+    )
+
     class BashImage(Enum):
         BASH_5_2 = "bash:5.2"
         DEBIAN_12 = "debian:12"
         UBUNTU_22_04 = "ubuntu:22.04"
         UBUNTU_24_04 = "ubuntu:24.04"
         JUPYTER_SCIPY_NOTEBOOK = "jupyter/scipy-notebook:latest"
-
-    command: str = Field(
-        default="",
-        description="Bash command to execute",
-    )
-
-    image: BashImage = Field(
-        default=BashImage.UBUNTU_22_04,
-        description="Docker image to use for execution",
-    )
-
-    execution_mode: ExecutionMode = Field(
-        default=ExecutionMode.DOCKER,
-        description="Execution mode: 'docker' or 'subprocess'",
-    )
 
     @classmethod
     def is_streaming_input(cls):
@@ -1070,12 +1082,15 @@ class RunBashCommand(BaseNode):
     def return_type(cls):
         return cls.OutputType
 
+    def _create_runner(self):
+        return BashDockerRunner(
+            image=self.BashImage.UBUNTU_22_04.value,
+            mode=ExecutionMode.SUBPROCESS.value,
+        )
+
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         # Create runner once
-        runner = BashDockerRunner(
-            image=self.image.value,
-            mode=self.execution_mode.value,
-        )
+        runner = self._create_runner()
         self._runner = runner
 
         command = self.command
@@ -1100,7 +1115,7 @@ class RunBashCommand(BaseNode):
             if value is None:
                 continue
             text_value = value if isinstance(value, str) else str(value)
-            
+
             if slot == "stdout":
                 stdout_buf.append(text_value)
                 context.post_message(
@@ -1121,7 +1136,7 @@ class RunBashCommand(BaseNode):
                         severity="error",
                     )
                 )
-        
+
         await outputs.emit("stdout", "".join(stdout_buf))
         await outputs.emit("stderr", "".join(stderr_buf))
 
@@ -1131,6 +1146,24 @@ class RunBashCommand(BaseNode):
                 self._runner.stop()
         except Exception as e:
             log.debug(f"RunBashCommand finalize: {e}")
+
+
+class RunBashCommandDocker(RunBashCommand):
+    """
+    Executes a single Bash command in Docker and buffers the output.
+    bash, shell, code, execute, command, docker
+    """
+
+    image: RunBashCommand.BashImage = Field(
+        default=RunBashCommand.BashImage.UBUNTU_22_04,
+        description="Docker image to use for execution",
+    )
+
+    def _create_runner(self):
+        return BashDockerRunner(
+            image=self.image.value,
+            mode=ExecutionMode.DOCKER.value,
+        )
 
 
 class RunRubyCommand(BaseNode):
@@ -1150,23 +1183,13 @@ class RunRubyCommand(BaseNode):
     _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
-    class RubyImage(Enum):
-        RUBY_3_3_ALPINE = "ruby:3.3-alpine"
-
     command: str = Field(
         default="",
         description="Ruby command to execute",
     )
 
-    image: RubyImage = Field(
-        default=RubyImage.RUBY_3_3_ALPINE,
-        description="Docker image to use for execution",
-    )
-
-    execution_mode: ExecutionMode = Field(
-        default=ExecutionMode.DOCKER,
-        description="Execution mode: 'docker' or 'subprocess'",
-    )
+    class RubyImage(Enum):
+        RUBY_3_3_ALPINE = "ruby:3.3-alpine"
 
     @classmethod
     def is_streaming_input(cls):
@@ -1184,12 +1207,15 @@ class RunRubyCommand(BaseNode):
     def return_type(cls):
         return cls.OutputType
 
+    def _create_runner(self):
+        return RubyDockerRunner(
+            image=self.RubyImage.RUBY_3_3_ALPINE.value,
+            mode=ExecutionMode.SUBPROCESS.value,
+        )
+
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         # Create runner once
-        runner = RubyDockerRunner(
-            image=self.image.value,
-            mode=self.execution_mode.value,
-        )
+        runner = self._create_runner()
         self._runner = runner
 
         command = self.command
@@ -1214,7 +1240,7 @@ class RunRubyCommand(BaseNode):
             if value is None:
                 continue
             text_value = value if isinstance(value, str) else str(value)
-            
+
             if slot == "stdout":
                 stdout_buf.append(text_value)
                 context.post_message(
@@ -1235,7 +1261,7 @@ class RunRubyCommand(BaseNode):
                         severity="error",
                     )
                 )
-        
+
         await outputs.emit("stdout", "".join(stdout_buf))
         await outputs.emit("stderr", "".join(stderr_buf))
 
@@ -1245,6 +1271,24 @@ class RunRubyCommand(BaseNode):
                 self._runner.stop()
         except Exception as e:
             log.debug(f"RunRubyCommand finalize: {e}")
+
+
+class RunRubyCommandDocker(RunRubyCommand):
+    """
+    Executes a single Ruby command in Docker and buffers the output.
+    ruby, code, execute, command, docker
+    """
+
+    image: RunRubyCommand.RubyImage = Field(
+        default=RunRubyCommand.RubyImage.RUBY_3_3_ALPINE,
+        description="Docker image to use for execution",
+    )
+
+    def _create_runner(self):
+        return RubyDockerRunner(
+            image=self.image.value,
+            mode=ExecutionMode.DOCKER.value,
+        )
 
 
 class RunLuaCommand(BaseNode):
@@ -1264,22 +1308,126 @@ class RunLuaCommand(BaseNode):
     _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
+    command: str = Field(
+        default="",
+        description="Lua command to execute",
+    )
+
     class LuaExecutable(Enum):
         LUA = "lua"
         LUAJIT = "luajit"
+
+    executable: LuaExecutable = Field(
+        default=LuaExecutable.LUA, description="Lua executable to use"
+    )
+
+    timeout_seconds: int = Field(
+        default=10, description="Max seconds to allow execution before forced stop"
+    )
+
+    @classmethod
+    def is_streaming_input(cls):
+        return False
+
+    @classmethod
+    def is_streaming_output(cls):
+        return False
+
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
+
+    def _create_runner(self):
+        return LuaSubprocessRunner(
+            executable=self.executable.value,
+            timeout_seconds=int(self.timeout_seconds),
+        )
+
+    async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
+        # Create runner once (reused for all commands)
+        runner = self._create_runner()
+        self._runner = runner
+
+        command = self.command
+        if not command.strip():
+            val = await inputs.first("command")
+            if val:
+                command = str(val)
+
+        if not command.strip():
+            return
+
+        stdout_buf = []
+        stderr_buf = []
+
+        async for slot, value in runner.stream(
+            user_code=command,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            stdin_stream=None,
+        ):
+            if value is None:
+                continue
+            text_value = value if isinstance(value, str) else str(value)
+
+            if slot == "stdout":
+                stdout_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
+                    )
+                )
+            elif slot == "stderr":
+                stderr_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
+                    )
+                )
+
+        await outputs.emit("stdout", "".join(stdout_buf))
+        await outputs.emit("stderr", "".join(stderr_buf))
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        try:
+            if self._runner and hasattr(self._runner, "stop"):
+                self._runner.stop()
+        except Exception as e:
+            log.debug(f"RunLuaCommand finalize: {e}")
+
+
+class RunLuaCommandDocker(BaseNode):
+    """
+    Executes a single Lua command in Docker and buffers the output.
+    lua, code, execute, command, sandbox, docker
+    """
+
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
+    _runner: StreamRunnerBase | None = None
+
+    class LuaImage(Enum):
+        LUA_5_2_4_LUAROCKS_UBUNTU = "nickblah/lua:5.2.4-luarocks-ubuntu"
 
     command: str = Field(
         default="",
         description="Lua command to execute",
     )
 
-    executable: LuaExecutable = Field(
-        default=LuaExecutable.LUA, description="Lua executable to use"
-    )
-
-    execution_mode: ExecutionMode = Field(
-        default=ExecutionMode.SUBPROCESS,
-        description="Execution mode: 'docker' or 'subprocess'",
+    image: LuaImage = Field(
+        default=LuaImage.LUA_5_2_4_LUAROCKS_UBUNTU,
+        description="Docker image to use for execution",
     )
 
     timeout_seconds: int = Field(
@@ -1303,135 +1451,10 @@ class RunLuaCommand(BaseNode):
         return cls.OutputType
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
-        # Create runner once (reused for all commands)
-        if self.execution_mode == ExecutionMode.SUBPROCESS:
-            runner = LuaSubprocessRunner(
-                executable=self.executable.value,
-                timeout_seconds=int(self.timeout_seconds),
-            )
-        else:
-            runner = LuaRunner(
-                image="nickblah/lua:5.2.4-luarocks-ubuntu",
-                timeout_seconds=int(self.timeout_seconds),
-                mode=self.execution_mode.value,
-            )
-        self._runner = runner
-
-        command = self.command
-        if not command.strip():
-            val = await inputs.first("command")
-            if val:
-                command = str(val)
-
-        if not command.strip():
-            return
-
-        stdout_buf = []
-        stderr_buf = []
-
-        async for slot, value in runner.stream(
-            user_code=command,
-            env_locals=self._dynamic_properties,
-            context=context,
-            node=self,
-            stdin_stream=None,
-        ):
-            if value is None:
-                continue
-            text_value = value if isinstance(value, str) else str(value)
-            
-            if slot == "stdout":
-                stdout_buf.append(text_value)
-                context.post_message(
-                    LogUpdate(
-                        node_id=self.id,
-                        node_name=self.get_title(),
-                        content=str(value).rstrip("\n"),
-                        severity="info",
-                    )
-                )
-            elif slot == "stderr":
-                stderr_buf.append(text_value)
-                context.post_message(
-                    LogUpdate(
-                        node_id=self.id,
-                        node_name=self.get_title(),
-                        content=str(value).rstrip("\n"),
-                        severity="error",
-                    )
-                )
-        
-        await outputs.emit("stdout", "".join(stdout_buf))
-        await outputs.emit("stderr", "".join(stderr_buf))
-
-    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
-        try:
-            if self._runner and hasattr(self._runner, "stop"):
-                self._runner.stop()
-        except Exception as e:
-            log.debug(f"RunLuaCommand finalize: {e}")
-
-
-class RunShellCommand(BaseNode):
-    """
-    Executes a single shell command and buffers the output.
-    command, execute, shell, bash, sh
-
-    Use cases:
-    - Run a single shell command
-    - Execute shell commands with buffered stdout/stderr output
-    - One-shot command execution without streaming
-
-    The command is executed once and the complete output is returned.
-    IMPORTANT: Only enabled in non-production environments
-    """
-
-    _is_dynamic: ClassVar[bool] = True
-    _supports_dynamic_outputs: ClassVar[bool] = True
-    _runner: StreamRunnerBase | None = None
-
-    class CommandImage(Enum):
-        BASH_5_2 = "bash:5.2"
-        ALPINE_3 = "alpine:3"
-        UBUNTU_22_04 = "ubuntu:22.04"
-        UBUNTU_24_04 = "ubuntu:24.04"
-
-    command: str = Field(
-        default="",
-        description="Shell command to execute",
-    )
-
-    image: CommandImage = Field(
-        default=CommandImage.BASH_5_2,
-        description="Docker image to use for execution",
-    )
-
-    execution_mode: ExecutionMode = Field(
-        default=ExecutionMode.DOCKER,
-        description="Execution mode: 'docker' or 'subprocess'",
-    )
-
-    @classmethod
-    def is_streaming_input(cls):
-        return False
-
-    @classmethod
-    def is_streaming_output(cls):
-        return False
-
-    class OutputType(TypedDict):
-        stdout: str
-        stderr: str
-
-    @classmethod
-    def return_type(cls):
-        return cls.OutputType
-
-    async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
-        # Create runner once
-        runner = CommandDockerRunner(
+        runner = LuaRunner(
             image=self.image.value,
-            mode=self.execution_mode.value,
+            timeout_seconds=int(self.timeout_seconds),
+            mode=ExecutionMode.DOCKER.value,
         )
         self._runner = runner
 
@@ -1457,7 +1480,7 @@ class RunShellCommand(BaseNode):
             if value is None:
                 continue
             text_value = value if isinstance(value, str) else str(value)
-            
+
             if slot == "stdout":
                 stdout_buf.append(text_value)
                 context.post_message(
@@ -1478,7 +1501,118 @@ class RunShellCommand(BaseNode):
                         severity="error",
                     )
                 )
-        
+
+        await outputs.emit("stdout", "".join(stdout_buf))
+        await outputs.emit("stderr", "".join(stderr_buf))
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        try:
+            if self._runner and hasattr(self._runner, "stop"):
+                self._runner.stop()
+        except Exception as e:
+            log.debug(f"RunLuaCommandDocker finalize: {e}")
+
+
+class RunShellCommand(BaseNode):
+    """
+    Executes a single shell command and buffers the output.
+    command, execute, shell, bash, sh
+
+    Use cases:
+    - Run a single shell command
+    - Execute shell commands with buffered stdout/stderr output
+    - One-shot command execution without streaming
+
+    The command is executed once and the complete output is returned.
+    IMPORTANT: Only enabled in non-production environments
+    """
+
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
+    _runner: StreamRunnerBase | None = None
+
+    command: str = Field(
+        default="",
+        description="Shell command to execute",
+    )
+
+    class CommandImage(Enum):
+        BASH_5_2 = "bash:5.2"
+        ALPINE_3 = "alpine:3"
+        UBUNTU_22_04 = "ubuntu:22.04"
+        UBUNTU_24_04 = "ubuntu:24.04"
+
+    @classmethod
+    def is_streaming_input(cls):
+        return False
+
+    @classmethod
+    def is_streaming_output(cls):
+        return False
+
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
+
+    def _create_runner(self):
+        return CommandDockerRunner(
+            image=self.CommandImage.BASH_5_2.value,
+            mode=ExecutionMode.SUBPROCESS.value,
+        )
+
+    async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
+        # Create runner once
+        runner = self._create_runner()
+        self._runner = runner
+
+        command = self.command
+        if not command.strip():
+            val = await inputs.first("command")
+            if val:
+                command = str(val)
+
+        if not command.strip():
+            return
+
+        stdout_buf = []
+        stderr_buf = []
+
+        async for slot, value in runner.stream(
+            user_code=command,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            stdin_stream=None,
+        ):
+            if value is None:
+                continue
+            text_value = value if isinstance(value, str) else str(value)
+
+            if slot == "stdout":
+                stdout_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
+                    )
+                )
+            elif slot == "stderr":
+                stderr_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
+                    )
+                )
+
         await outputs.emit("stdout", "".join(stdout_buf))
         await outputs.emit("stderr", "".join(stderr_buf))
 
@@ -1488,3 +1622,21 @@ class RunShellCommand(BaseNode):
                 self._runner.stop()
         except Exception as e:
             log.debug(f"RunShellCommand finalize: {e}")
+
+
+class RunShellCommandDocker(RunShellCommand):
+    """
+    Executes a single shell command in Docker and buffers the output.
+    command, execute, shell, bash, sh, docker
+    """
+
+    image: RunShellCommand.CommandImage = Field(
+        default=RunShellCommand.CommandImage.BASH_5_2,
+        description="Docker image to use for execution",
+    )
+
+    def _create_runner(self):
+        return CommandDockerRunner(
+            image=self.image.value,
+            mode=ExecutionMode.DOCKER.value,
+        )

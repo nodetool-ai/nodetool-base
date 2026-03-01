@@ -13,11 +13,17 @@ from nodetool.nodes.nodetool.code import (
     ExecuteLua,
     ExecuteCommand,
     RunPythonCommand,
+    RunPythonCommandDocker,
     RunJavaScriptCommand,
+    RunJavaScriptCommandDocker,
     RunBashCommand,
+    RunBashCommandDocker,
     RunRubyCommand,
+    RunRubyCommandDocker,
     RunLuaCommand,
+    RunLuaCommandDocker,
     RunShellCommand,
+    RunShellCommandDocker,
     ExecutionMode,
 )
 
@@ -210,6 +216,72 @@ async def test_run_lua_command_is_not_streaming_input():
 async def test_run_shell_command_is_not_streaming_input():
     """Test that RunShellCommand does not stream input."""
     assert not RunShellCommand.is_streaming_input()
+
+
+@pytest.mark.parametrize(
+    "node_class",
+    [
+        RunPythonCommand,
+        RunJavaScriptCommand,
+        RunBashCommand,
+        RunRubyCommand,
+        RunLuaCommand,
+        RunShellCommand,
+    ],
+)
+def test_run_command_nodes_do_not_expose_execution_mode(node_class):
+    assert "execution_mode" not in node_class.model_fields
+
+
+@pytest.mark.parametrize(
+    "node_class",
+    [
+        RunPythonCommandDocker,
+        RunJavaScriptCommandDocker,
+        RunBashCommandDocker,
+        RunRubyCommandDocker,
+        RunLuaCommandDocker,
+        RunShellCommandDocker,
+    ],
+)
+def test_run_docker_nodes_expose_image_field(node_class):
+    assert "image" in node_class.model_fields
+
+
+@pytest.mark.asyncio
+async def test_run_bash_command_uses_subprocess_mode(context: ProcessingContext):
+    node = RunBashCommand(command="echo test")  # type: ignore[call-arg]
+
+    async def fake_stream(self, *args, **kwargs):
+        assert getattr(self, "mode", None) == "subprocess"
+        yield ("stdout", "ok")
+
+    with patch("nodetool.nodes.nodetool.code.BashDockerRunner.stream", new=fake_stream):
+        inbox = NodeInbox()
+        inputs = NodeInputs(inbox)
+        runner = WorkflowRunner(job_id="test")
+        outputs = NodeOutputs(
+            runner=runner, node=node, context=context, capture_only=True
+        )
+        await node.run(context, inputs, outputs)
+
+
+@pytest.mark.asyncio
+async def test_run_bash_command_docker_uses_docker_mode(context: ProcessingContext):
+    node = RunBashCommandDocker(command="echo test")  # type: ignore[call-arg]
+
+    async def fake_stream(self, *args, **kwargs):
+        assert getattr(self, "mode", None) == "docker"
+        yield ("stdout", "ok")
+
+    with patch("nodetool.nodes.nodetool.code.BashDockerRunner.stream", new=fake_stream):
+        inbox = NodeInbox()
+        inputs = NodeInputs(inbox)
+        runner = WorkflowRunner(job_id="test")
+        outputs = NodeOutputs(
+            runner=runner, node=node, context=context, capture_only=True
+        )
+        await node.run(context, inputs, outputs)
 
 
 @pytest.mark.asyncio
