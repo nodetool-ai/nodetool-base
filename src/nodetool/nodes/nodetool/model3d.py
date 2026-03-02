@@ -509,7 +509,7 @@ class Transform3D(BaseNode):
 
 class Decimate(BaseNode):
     """
-    Reduce polygon count while preserving shape using Quadric Error Metrics.
+    Reduce polygon count while preserving shape using Fast Quadric Mesh Reduction.
     3d, mesh, model, decimate, simplify, reduce, polygon, optimize, LOD
 
     Use cases:
@@ -528,11 +528,22 @@ class Decimate(BaseNode):
         le=1.0,
         description="Target ratio of faces to keep (0.5 = 50% reduction)",
     )
+    aggressiveness: float = Field(
+        default=7.0,
+        ge=1.0,
+        le=12.0,
+        description="Controls decimation speed vs quality. Lower values preserve geometry better but run slower.",
+    )
+    preserve_border: bool = Field(
+        default=True,
+        description="Preserve mesh boundary edges to maintain topology",
+    )
 
     async def process(self, context: ProcessingContext) -> Model3DRef:
         if self.model.is_empty():
             raise ValueError("The input model is not connected.")
 
+        import pyfqmr
         import trimesh
 
         # Get the model data
@@ -552,8 +563,19 @@ class Decimate(BaseNode):
         original_faces = len(mesh.faces)
         target_faces = max(4, int(original_faces * self.target_ratio))
 
-        # Simplify using quadric decimation
-        simplified = mesh.simplify_quadric_decimation(face_count=target_faces)
+        # Simplify using pyfqmr (Fast Quadric Mesh Reduction)
+        simplifier = pyfqmr.Simplify()
+        simplifier.setMesh(mesh.vertices, mesh.faces)
+        simplifier.simplify_mesh(
+            target_count=target_faces,
+            aggressiveness=self.aggressiveness,
+            preserve_border=self.preserve_border,
+        )
+        vertices, faces, normals = simplifier.getMesh()
+
+        simplified = trimesh.Trimesh(
+            vertices=vertices, faces=faces, vertex_normals=normals
+        )
 
         # Export
         output_format = self.model.format or "glb"

@@ -25509,7 +25509,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 155187,
+          "downloads": 157070,
           "likes": 135
         },
         {
@@ -25560,7 +25560,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 28872,
+          "downloads": 27444,
           "likes": 49
         },
         {
@@ -25611,7 +25611,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 242230,
+          "downloads": 235919,
           "likes": 30
         },
         {
@@ -25631,7 +25631,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2978,
+          "downloads": 3088,
           "likes": 29
         },
         {
@@ -25657,7 +25657,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 54769,
+          "downloads": 62061,
           "likes": 7
         },
         {
@@ -25678,8 +25678,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 43080,
-          "likes": 12
+          "downloads": 43013,
+          "likes": 13
         },
         {
           "id": "ggml-org/gemma-3-270m-GGUF:gemma-3-270m-Q8_0.gguf",
@@ -25697,7 +25697,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 647,
+          "downloads": 624,
           "likes": 19
         },
         {
@@ -25748,7 +25748,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2668,
+          "downloads": 2624,
           "likes": 23
         },
         {
@@ -25773,7 +25773,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 17774,
+          "downloads": 17825,
           "likes": 65
         },
         {
@@ -25797,7 +25797,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 28205,
+          "downloads": 28025,
           "likes": 64
         },
         {
@@ -25821,7 +25821,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 59016,
+          "downloads": 58992,
           "likes": 73
         },
         {
@@ -25846,8 +25846,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 99204,
-          "likes": 153
+          "downloads": 94824,
+          "likes": 154
         },
         {
           "id": "Qwen/Qwen3-4B-GGUF:Qwen3-4B-Q4_K_M.gguf",
@@ -25871,8 +25871,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 54661,
-          "likes": 82
+          "downloads": 52838,
+          "likes": 83
         }
       ],
       "basic_fields": [
@@ -26075,7 +26075,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 28872,
+          "downloads": 27444,
           "likes": 49
         }
       ],
@@ -26384,7 +26384,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 28872,
+          "downloads": 27444,
           "likes": 49
         }
       ],
@@ -26503,7 +26503,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 155187,
+          "downloads": 157070,
           "likes": 135
         },
         {
@@ -26554,7 +26554,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 242230,
+          "downloads": 235919,
           "likes": 30
         }
       ],
@@ -26747,7 +26747,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 28872,
+          "downloads": 27444,
           "likes": 49
         }
       ],
@@ -38029,7 +38029,7 @@
     },
     {
       "title": "Decimate",
-      "description": "Reduce polygon count while preserving shape using Quadric Error Metrics.\n    3d, mesh, model, decimate, simplify, reduce, polygon, optimize, LOD\n\n    Use cases:\n    - Create level-of-detail (LOD) versions\n    - Optimize models for real-time rendering\n    - Reduce file size for web deployment\n    - Prepare models for mobile/VR applications",
+      "description": "Reduce polygon count while preserving shape using Fast Quadric Mesh Reduction.\n    3d, mesh, model, decimate, simplify, reduce, polygon, optimize, LOD\n\n    Use cases:\n    - Create level-of-detail (LOD) versions\n    - Optimize models for real-time rendering\n    - Reduce file size for web deployment\n    - Prepare models for mobile/VR applications",
       "namespace": "nodetool.model3d",
       "node_type": "nodetool.model3d.Decimate",
       "properties": [
@@ -38061,6 +38061,26 @@
           "description": "Target ratio of faces to keep (0.5 = 50% reduction)",
           "min": 0.01,
           "max": 1.0
+        },
+        {
+          "name": "aggressiveness",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.0,
+          "title": "Aggressiveness",
+          "description": "Controls decimation speed vs quality. Lower values preserve geometry better but run slower.",
+          "min": 1.0,
+          "max": 12.0
+        },
+        {
+          "name": "preserve_border",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Preserve Border",
+          "description": "Preserve mesh boundary edges to maintain topology"
         }
       ],
       "outputs": [
@@ -38073,7 +38093,9 @@
       ],
       "basic_fields": [
         "model",
-        "target_ratio"
+        "target_ratio",
+        "aggressiveness",
+        "preserve_border"
       ]
     },
     {
