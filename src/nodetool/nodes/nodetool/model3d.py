@@ -211,7 +211,6 @@ class SaveModel3DFile(BaseNode):
 
         result = Model3DRef(
             uri=create_file_uri(expanded_path),
-            data=model_data,
             format=model_format,
         )
 
@@ -347,8 +346,9 @@ class FormatConverter(BaseNode):
         mesh = _load_mesh(model_data, file_type=self.model.format)
         converted_data = _export_mesh(mesh, self.output_format.value)
 
-        return Model3DRef(
-            data=converted_data,
+        return await context.model3d_from_bytes(
+            converted_data,
+            name=f"converted_{self.id}.{self.output_format.value}",
             format=self.output_format.value,
         )
 
@@ -500,8 +500,9 @@ class Transform3D(BaseNode):
         output_format = self.model.format or "glb"
         converted_data = _export_mesh(mesh, output_format)
 
-        return Model3DRef(
-            data=converted_data,
+        return await context.model3d_from_bytes(
+            converted_data,
+            name=f"transformed_{self.id}.{output_format}",
             format=output_format,
         )
 
@@ -558,8 +559,9 @@ class Decimate(BaseNode):
         output_format = self.model.format or "glb"
         converted_data = _export_mesh(simplified, output_format)
 
-        return Model3DRef(
-            data=converted_data,
+        return await context.model3d_from_bytes(
+            converted_data,
+            name=f"decimated_{self.id}.{output_format}",
             format=output_format,
             metadata={
                 "original_faces": original_faces,
@@ -636,8 +638,9 @@ class Boolean3D(BaseNode):
         output_format = self.model_a.format or "glb"
         converted_data = _export_mesh(result, output_format)
 
-        return Model3DRef(
-            data=converted_data,
+        return await context.model3d_from_bytes(
+            converted_data,
+            name=f"boolean_{self.id}.{output_format}",
             format=output_format,
         )
 
@@ -709,8 +712,9 @@ class RecalculateNormals(BaseNode):
         output_format = self.model.format or "glb"
         converted_data = _export_mesh(mesh, output_format)
 
-        return Model3DRef(
-            data=converted_data,
+        return await context.model3d_from_bytes(
+            converted_data,
+            name=f"normals_{self.id}.{output_format}",
             format=output_format,
         )
 
@@ -765,8 +769,9 @@ class CenterMesh(BaseNode):
         output_format = self.model.format or "glb"
         converted_data = _export_mesh(mesh, output_format)
 
-        return Model3DRef(
-            data=converted_data,
+        return await context.model3d_from_bytes(
+            converted_data,
+            name=f"centered_{self.id}.{output_format}",
             format=output_format,
         )
 
@@ -812,8 +817,9 @@ class FlipNormals(BaseNode):
         output_format = self.model.format or "glb"
         converted_data = _export_mesh(mesh, output_format)
 
-        return Model3DRef(
-            data=converted_data,
+        return await context.model3d_from_bytes(
+            converted_data,
+            name=f"flipped_{self.id}.{output_format}",
             format=output_format,
         )
 
@@ -876,8 +882,9 @@ class MergeMeshes(BaseNode):
         output_format = output_format or "glb"
         converted_data = _export_mesh(merged, output_format)
 
-        return Model3DRef(
-            data=converted_data,
+        return await context.model3d_from_bytes(
+            converted_data,
+            name=f"merged_{self.id}.{output_format}",
             format=output_format,
             metadata={
                 "mesh_count": len(meshes),
