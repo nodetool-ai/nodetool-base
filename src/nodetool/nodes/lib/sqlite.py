@@ -275,10 +275,12 @@ class Query(BaseNode):
                 # Try to parse JSON values
                 for key, value in row_dict.items():
                     if isinstance(value, str):
-                        try:
-                            row_dict[key] = json.loads(value)
-                        except (json.JSONDecodeError, TypeError):
-                            pass
+                        val_stripped = value.strip()
+                        if val_stripped.startswith(('{', '[')) and val_stripped.endswith(('}', ']')):
+                            try:
+                                row_dict[key] = json.loads(value)
+                            except (json.JSONDecodeError, TypeError):
+                                pass
                 results.append(row_dict)
 
             return results
@@ -459,10 +461,12 @@ class ExecuteSQL(BaseNode):
                     row_dict = dict(row)
                     for key, value in row_dict.items():
                         if isinstance(value, str):
-                            try:
-                                row_dict[key] = json.loads(value)
-                            except (json.JSONDecodeError, TypeError):
-                                pass
+                            val_stripped = value.strip()
+                            if val_stripped.startswith(('{', '[')) and val_stripped.endswith(('}', ']')):
+                                try:
+                                    row_dict[key] = json.loads(value)
+                                except (json.JSONDecodeError, TypeError):
+                                    pass
                     results.append(row_dict)
 
                 return {
