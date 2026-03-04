@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.3-rc.37",
+  "version": "0.6.3-rc.38",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -25509,7 +25509,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 157070,
+          "downloads": 156909,
           "likes": 135
         },
         {
@@ -25560,8 +25560,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 27444,
-          "likes": 49
+          "downloads": 25779,
+          "likes": 48
         },
         {
           "id": "ggml-org/gemma-3-12b-it-GGUF:gemma-3-12b-it-Q4_K_M.gguf",
@@ -25611,7 +25611,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 235919,
+          "downloads": 214667,
           "likes": 30
         },
         {
@@ -25631,7 +25631,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 3088,
+          "downloads": 3039,
           "likes": 29
         },
         {
@@ -25657,7 +25657,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 62061,
+          "downloads": 80721,
           "likes": 7
         },
         {
@@ -25678,7 +25678,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 43013,
+          "downloads": 44304,
           "likes": 13
         },
         {
@@ -25697,7 +25697,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 624,
+          "downloads": 595,
           "likes": 19
         },
         {
@@ -25748,7 +25748,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2624,
+          "downloads": 2604,
           "likes": 23
         },
         {
@@ -25773,7 +25773,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 17825,
+          "downloads": 17644,
           "likes": 65
         },
         {
@@ -25797,7 +25797,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 28025,
+          "downloads": 27381,
           "likes": 64
         },
         {
@@ -25821,7 +25821,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 58992,
+          "downloads": 61212,
           "likes": 73
         },
         {
@@ -25846,8 +25846,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 94824,
-          "likes": 154
+          "downloads": 94189,
+          "likes": 156
         },
         {
           "id": "Qwen/Qwen3-4B-GGUF:Qwen3-4B-Q4_K_M.gguf",
@@ -25871,8 +25871,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 52838,
-          "likes": 83
+          "downloads": 48252,
+          "likes": 84
         }
       ],
       "basic_fields": [
@@ -26075,8 +26075,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 27444,
-          "likes": 49
+          "downloads": 25779,
+          "likes": 48
         }
       ],
       "basic_fields": [
@@ -26384,8 +26384,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 27444,
-          "likes": 49
+          "downloads": 25779,
+          "likes": 48
         }
       ],
       "basic_fields": [
@@ -26503,7 +26503,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 157070,
+          "downloads": 156909,
           "likes": 135
         },
         {
@@ -26554,7 +26554,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 235919,
+          "downloads": 214667,
           "likes": 30
         }
       ],
@@ -26747,8 +26747,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 27444,
-          "likes": 49
+          "downloads": 25779,
+          "likes": 48
         }
       ],
       "basic_fields": [
