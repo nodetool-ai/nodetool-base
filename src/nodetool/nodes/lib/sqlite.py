@@ -274,7 +274,9 @@ class Query(BaseNode):
                 row_dict = dict(row)
                 # Try to parse JSON values
                 for key, value in row_dict.items():
-                    if isinstance(value, str):
+                    # Optimization: only attempt to parse strings that look like JSON objects or arrays
+                    # This avoids the severe performance overhead of handling JSONDecodeError for regular text
+                    if isinstance(value, str) and value.strip().startswith(('{', '[')):
                         try:
                             row_dict[key] = json.loads(value)
                         except (json.JSONDecodeError, TypeError):
@@ -458,7 +460,9 @@ class ExecuteSQL(BaseNode):
                 for row in cursor:
                     row_dict = dict(row)
                     for key, value in row_dict.items():
-                        if isinstance(value, str):
+                        # Optimization: only attempt to parse strings that look like JSON objects or arrays
+                        # This avoids the severe performance overhead of handling JSONDecodeError for regular text
+                        if isinstance(value, str) and value.strip().startswith(('{', '[')):
                             try:
                                 row_dict[key] = json.loads(value)
                             except (json.JSONDecodeError, TypeError):
