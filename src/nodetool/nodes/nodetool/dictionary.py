@@ -286,10 +286,15 @@ class LoadCSVFile(BaseNode):
         if not self.path:
             raise ValueError("path cannot be empty")
         expanded_path = os.path.expanduser(self.path)
-        async with aiofiles.open(expanded_path, "r") as f:
-            content = await f.read()
-            reader = csv.DictReader(content.splitlines())
-            return [row for row in reader]
+
+        import asyncio
+
+        def _read_csv(path: str) -> list[dict]:
+            with open(path, "r", newline="") as f:
+                return list(csv.DictReader(f))
+
+        # Offload CPU-intensive task to thread to prevent blocking event loop and avoid large memory allocations
+        return await asyncio.to_thread(_read_csv, expanded_path)
 
 
 class SaveCSVFile(BaseNode):
@@ -328,18 +333,16 @@ class SaveCSVFile(BaseNode):
         filename = generate_timestamped_name(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
 
-        # Use StringIO to build CSV content asynchronously
-        import io
+        import asyncio
 
-        output = io.StringIO()
-        writer = csv.DictWriter(output, fieldnames=self.data[0].keys())
-        writer.writeheader()
-        for row in self.data:
-            writer.writerow(row)
+        def _write_csv(path: str, data: list[dict]):
+            with open(path, "w", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=data[0].keys())
+                writer.writeheader()
+                writer.writerows(data)
 
-        # Write the CSV content to file
-        async with aiofiles.open(expanded_path, "w") as f:
-            await f.write(output.getvalue())
+        # Offload CPU-intensive task to thread to prevent blocking event loop and avoid large memory allocations
+        await asyncio.to_thread(_write_csv, expanded_path, self.data)
 
 
 class FilterDictByValue(BaseNode):
