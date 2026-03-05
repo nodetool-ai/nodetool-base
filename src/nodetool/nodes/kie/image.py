@@ -1488,6 +1488,156 @@ class QwenImageToImage(KieBaseNode):
         )
 
 
+class QwenImageEdit(KieBaseNode):
+    """Edit images using Qwen's Image Edit model via Kie.ai.
+
+    kie, qwen, alibaba, image editing, ai, image-to-image, semantic editing
+
+    Qwen Image Edit is an advanced image editing model based on Qwen-Image
+    that supports both semantic and appearance editing with precise,
+    visually coherent results. It also handles bilingual (Chinese and English)
+    text editing while preserving font, size, and style.
+
+    Use cases:
+    - Edit specific parts of images with precise control
+    - Perform semantic edits (changing objects, backgrounds, etc.)
+    - Apply appearance modifications (style, colors, textures)
+    - Edit text within images while maintaining typography
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Qwen Image Edit"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the desired edit.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to edit.",
+    )
+
+    negative_prompt: str = Field(
+        default="blurry, ugly",
+        description="Negative prompt to avoid certain attributes (max 500 chars).",
+    )
+
+    class Acceleration(str, Enum):
+        NONE = "none"
+        REGULAR = "regular"
+        HIGH = "high"
+
+    acceleration: Acceleration = Field(
+        default=Acceleration.NONE,
+        description="Processing acceleration mode.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "square"
+        SQUARE_HD = "square_hd"
+        PORTRAIT_4_3 = "portrait_4_3"
+        PORTRAIT_16_9 = "portrait_16_9"
+        LANDSCAPE_4_3 = "landscape_4_3"
+        LANDSCAPE_16_9 = "landscape_16_9"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.LANDSCAPE_4_3,
+        description="Output image size/aspect ratio.",
+    )
+
+    num_inference_steps: int = Field(
+        default=25,
+        ge=2,
+        le=49,
+        description="Number of inference steps (2-49).",
+    )
+
+    guidance_scale: float = Field(
+        default=4.0,
+        ge=0.0,
+        le=20.0,
+        description="Guidance scale for prompt adherence (0-20).",
+    )
+
+    seed: int | None = Field(
+        default=None,
+        description="Random seed for reproducibility.",
+    )
+
+    class NumImages(str, Enum):
+        ONE = "1"
+        TWO = "2"
+        THREE = "3"
+        FOUR = "4"
+
+    num_images: NumImages = Field(
+        default=NumImages.ONE,
+        description="Number of images to generate.",
+    )
+
+    enable_safety_checker: bool = Field(
+        default=True,
+        description="Enable safety checker.",
+    )
+
+    class OutputFormat(str, Enum):
+        JPEG = "jpeg"
+        PNG = "png"
+
+    output_format: OutputFormat = Field(
+        default=OutputFormat.PNG,
+        description="Output image format.",
+    )
+
+    def _get_model(self) -> str:
+        return "qwen/image-edit"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        input_url = await self._upload_image(context, self.image)
+
+        params = {
+            "prompt": self.prompt,
+            "image_url": input_url,
+            "acceleration": self.acceleration.value,
+            "image_size": self.image_size.value,
+            "num_inference_steps": self.num_inference_steps,
+            "guidance_scale": self.guidance_scale,
+            "num_images": self.num_images.value,
+            "enable_safety_checker": self.enable_safety_checker,
+            "output_format": self.output_format.value,
+        }
+
+        if self.negative_prompt:
+            params["negative_prompt"] = self.negative_prompt[:500]
+
+        if self.seed is not None:
+            params["seed"] = self.seed
+
+        return params
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
 class TopazImageUpscale(KieBaseNode):
     """Upscale and enhance images using Topaz Labs AI via Kie.ai.
 
