@@ -757,9 +757,46 @@ class FilterDictByQuery(BaseNode):
         import pandas as pd
 
         current_condition = self.condition
+        batch = []
+        batch_size = 100
+
+        # Optimization: Evaluating a pandas query on a 1-row DataFrame is very slow.
+        # We accumulate dictionaries in a batch and evaluate them together to avoid overhead.
+        def _process_batch(condition: str, items: list[dict]) -> list[dict]:
+            if not items:
+                return []
+            try:
+                df = pd.DataFrame(items)
+                # Pass empty dictionaries to prevent access to local and global variables
+                filtered_df = df.query(
+                    condition, local_dict={}, global_dict={}
+                )
+
+                # Use the indices from the filtered DataFrame to yield the *original* dictionaries.
+                # This prevents pandas from upcasting types (e.g. int to float) or inserting NaNs
+                # for missing keys when converting back to dicts via to_dict('records').
+                return [items[i] for i in filtered_df.index]
+            except Exception:
+                # If the batch query fails (e.g., due to a type mismatch in one row),
+                # fall back to evaluating each item individually so we only skip the bad ones.
+                results = []
+                for item in items:
+                    try:
+                        single_df = pd.DataFrame([item])
+                        single_filtered = single_df.query(condition, local_dict={}, global_dict={})
+                        if not single_filtered.empty:
+                            results.append(item)
+                    except Exception:
+                        pass
+                return results
 
         async for handle, item in self.iter_any_input():
             if handle == "condition":
+                # Flush existing batch with the old condition before updating
+                if batch and current_condition:
+                    for d in _process_batch(current_condition, batch):
+                        yield {"output": d}
+                batch = []
                 current_condition = item
                 continue
             elif handle == "value":
@@ -768,18 +805,18 @@ class FilterDictByQuery(BaseNode):
                     continue
 
                 if current_condition:
-                    try:
-                        df = pd.DataFrame([d])
-                        # Pass empty dictionaries to prevent access to local and global variables
-                        filtered_df = df.query(
-                            current_condition, local_dict={}, global_dict={}
-                        )
-                        if not filtered_df.empty:
-                            yield {"output": d}
-                    except Exception:
-                        pass  # Query failure or other error, skip
+                    batch.append(d)
+                    if len(batch) >= batch_size:
+                        for out_d in _process_batch(current_condition, batch):
+                            yield {"output": out_d}
+                        batch = []
                 else:
                     yield {"output": d}
+
+        # Flush any remaining items in the batch
+        if batch and current_condition:
+            for out_d in _process_batch(current_condition, batch):
+                yield {"output": out_d}
 
 
 class ToJSON(BaseNode):
