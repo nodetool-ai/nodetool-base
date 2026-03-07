@@ -43,6 +43,22 @@ Repository configured with OpenCode memory and automated Kie.ai sync workflow.
 
 ---
 
+## 2026-03-07 - Qwen Image Edit Node
+
+- **Model ID:** `qwen/image-edit`
+
+- **Category:** image
+
+- **Description:** Added Qwen Image Edit node for advanced image editing capabilities via Kie.ai. The node supports:
+  - Text-guided image editing with detailed control
+  - Multiple image sizes (square, portrait, landscape variants)
+  - Acceleration levels for speed optimization
+  - Configurable inference steps, guidance scale, and seed
+  - Safety checker and multiple output formats
+  - Negative prompts for refined control
+
+---
+
 ## 2026-02-19 - Ideogram Character Nodes
 
 - **Model IDs:**
