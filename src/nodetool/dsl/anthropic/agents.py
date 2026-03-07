@@ -18,56 +18,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.anthropic.agents
 from nodetool.workflows.base_node import BaseNode
 
-
 class ClaudeAgent(GraphNode[nodetool.nodes.anthropic.agents.ClaudeAgent.OutputType]):
     """
 
-    Run Claude as an agent in a sandboxed environment with tool use capabilities.
-    claude, agent, ai, anthropic, sandbox, assistant
+        Run Claude as an agent in a sandboxed environment with tool use capabilities.
+        claude, agent, ai, anthropic, sandbox, assistant
 
-    Uses the Claude Agent SDK to run Claude with access to tools in a secure sandbox.
-    The agent can execute commands, read/write files, and use various tools while
-    maintaining security through sandbox isolation.
+        Uses the Claude Agent SDK to run Claude with access to tools in a secure sandbox.
+        The agent can execute commands, read/write files, and use various tools while
+        maintaining security through sandbox isolation.
 
-    Use cases:
-    - Automated coding and debugging tasks
-    - File manipulation and analysis
-    - Complex multi-step workflows
-    - Research and data gathering
+        Use cases:
+        - Automated coding and debugging tasks
+        - File manipulation and analysis
+        - Complex multi-step workflows
+        - Research and data gathering
     """
 
-    PermissionMode: typing.ClassVar[type] = (
-        nodetool.nodes.anthropic.agents.PermissionMode
-    )
+    PermissionMode: typing.ClassVar[type] = nodetool.nodes.anthropic.agents.PermissionMode
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="", description="The task or question for the Claude agent to work on."
-    )
-    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
-        default=types.LanguageModel(
-            type="language_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="The Claude compatible model to use for the agent.",
-    )
-    system_prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Optional system prompt to guide the agent's behavior."
-    )
-    max_turns: int | OutputHandle[int] = connect_field(
-        default=20, description="Maximum number of turns the agent can take."
-    )
-    allowed_tools: list[str] | OutputHandle[list[str]] = connect_field(
-        default=["Read", "Write", "Bash"],
-        description="List of tools the agent is allowed to use (e.g., 'Read', 'Write', 'Bash').",
-    )
-    permission_mode: nodetool.nodes.anthropic.agents.PermissionMode = Field(
-        default=nodetool.nodes.anthropic.agents.PermissionMode.ACCEPT_EDITS,
-        description="Permission mode for tool usage.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='', description='The task or question for the Claude agent to work on.')
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(default=types.LanguageModel(type='language_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, supported_tasks=[]), description='The Claude compatible model to use for the agent.')
+    system_prompt: str | OutputHandle[str] = connect_field(default='', description="Optional system prompt to guide the agent's behavior.")
+    max_turns: int | OutputHandle[int] = connect_field(default=20, description='Maximum number of turns the agent can take.')
+    allowed_tools: list[str] | OutputHandle[list[str]] = connect_field(default=['Read', 'Write', 'Bash'], description="List of tools the agent is allowed to use (e.g., 'Read', 'Write', 'Bash').")
+    permission_mode: nodetool.nodes.anthropic.agents.PermissionMode = Field(default=nodetool.nodes.anthropic.agents.PermissionMode.ACCEPT_EDITS, description='Permission mode for tool usage.')
 
     @property
     def out(self) -> "ClaudeAgentOutputs":
@@ -81,12 +56,13 @@ class ClaudeAgent(GraphNode[nodetool.nodes.anthropic.agents.ClaudeAgent.OutputTy
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class ClaudeAgentOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def chunk(self) -> OutputHandle[types.Chunk]:
-        return typing.cast(OutputHandle[types.Chunk], self["chunk"])
+        return typing.cast(OutputHandle[types.Chunk], self['chunk'])
+
+

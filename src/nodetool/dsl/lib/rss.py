@@ -18,22 +18,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.rss
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractFeedMetadata(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-    Extracts metadata from an RSS feed.
-    rss, metadata, feed
+        Extracts metadata from an RSS feed.
+        rss, metadata, feed
 
-    Use cases:
-    - Get feed information
-    - Validate feed details
-    - Extract feed metadata
+        Use cases:
+        - Get feed information
+        - Validate feed details
+        - Extract feed metadata
     """
 
-    url: str | OutputHandle[str] = connect_field(
-        default="", description="URL of the RSS feed"
-    )
+    url: str | OutputHandle[str] = connect_field(default='', description='URL of the RSS feed')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -50,22 +47,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.rss
 from nodetool.workflows.base_node import BaseNode
 
-
 class FetchRSSFeed(GraphNode[nodetool.nodes.lib.rss.FetchRSSFeed.OutputType]):
     """
 
-    Fetches and parses an RSS feed from a URL.
-    rss, feed, network
+        Fetches and parses an RSS feed from a URL.
+        rss, feed, network
 
-    Use cases:
-    - Monitor news feeds
-    - Aggregate content from multiple sources
-    - Process blog updates
+        Use cases:
+        - Monitor news feeds
+        - Aggregate content from multiple sources
+        - Process blog updates
     """
 
-    url: str | OutputHandle[str] = connect_field(
-        default="", description="URL of the RSS feed to fetch"
-    )
+    url: str | OutputHandle[str] = connect_field(default='', description='URL of the RSS feed to fetch')
 
     @property
     def out(self) -> "FetchRSSFeedOutputs":
@@ -79,24 +73,25 @@ class FetchRSSFeed(GraphNode[nodetool.nodes.lib.rss.FetchRSSFeed.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class FetchRSSFeedOutputs(OutputsProxy):
     @property
     def title(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["title"])
+        return typing.cast(OutputHandle[str], self['title'])
 
     @property
     def link(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["link"])
+        return typing.cast(OutputHandle[str], self['link'])
 
     @property
     def published(self) -> OutputHandle[types.Datetime]:
-        return typing.cast(OutputHandle[types.Datetime], self["published"])
+        return typing.cast(OutputHandle[types.Datetime], self['published'])
 
     @property
     def summary(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["summary"])
+        return typing.cast(OutputHandle[str], self['summary'])
 
     @property
     def author(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["author"])
+        return typing.cast(OutputHandle[str], self['author'])
+
+

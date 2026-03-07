@@ -14,17 +14,11 @@ from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import (
-    OutputHandle,
-    OutputsProxy,
-    DynamicOutputsProxy,
-    connect_field,
-)
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
 import nodetool.nodes.kie.dynamic_schema
 from nodetool.workflows.base_node import BaseNode
 
-
-class KieAI(GraphNode[dict[str, Any]]):
+class DynamicKie(GraphNode[dict[str, Any]]):
     """
 
         Dynamic Kie.ai node for running any kie.ai model.
@@ -41,25 +35,15 @@ class KieAI(GraphNode[dict[str, Any]]):
     dynamic_properties dictionary.
 
     Example:
-        node = KieAI(prop1=value1, prop2=value2)
+        node = DynamicKie(prop1=value1, prop2=value2)
     """
 
-    timeout_seconds: int | OutputHandle[int] = connect_field(
-        default=0, description="Timeout in seconds for API calls (0 = use default)"
-    )
-    model_info: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Paste the full API documentation from the kie.ai model page.",
-    )
+    timeout_seconds: int | OutputHandle[int] = connect_field(default=0, description='Timeout in seconds for API calls (0 = use default)')
+    model_info: str | OutputHandle[str] = connect_field(default='', description='Paste the full API documentation from the kie.ai model page.')
 
-    def __init__(
-        self,
-        *,
-        dynamic_outputs: dict[str, typing.Any] | None = None,
-        **kwargs: typing.Any,
-    ) -> None:
+    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
         """
-        Initialize a KieAI node.
+        Initialize a DynamicKie node.
 
         Extra keyword arguments beyond the defined fields will be treated as
         dynamic properties and automatically passed to the underlying BaseNode
@@ -83,8 +67,10 @@ class KieAI(GraphNode[dict[str, Any]]):
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.kie.dynamic_schema.KieAI
+        return nodetool.nodes.kie.dynamic_schema.DynamicKie
 
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

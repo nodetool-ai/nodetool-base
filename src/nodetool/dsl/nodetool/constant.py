@@ -18,10 +18,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
-class ASRModelConstant(
-    SingleOutputGraphNode[types.ASRModel], GraphNode[types.ASRModel]
-):
+class ASRModelConstant(SingleOutputGraphNode[types.ASRModel], GraphNode[types.ASRModel]):
     """
     Represents an automatic speech recognition model constant in the workflow.
         asr, speech, recognition, transcription, model
@@ -32,9 +29,7 @@ class ASRModelConstant(
         - Configure model selection without user input
     """
 
-    value: types.ASRModel | OutputHandle[types.ASRModel] = connect_field(
-        default=PydanticUndefined, description=None
-    )
+    value: types.ASRModel | OutputHandle[types.ASRModel] = connect_field(default=PydanticUndefined, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -51,7 +46,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class Audio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Represents an audio file constant in the workflow.
@@ -63,12 +57,7 @@ class Audio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         - Set default audio for testing or demonstration purposes
     """
 
-    value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description=None,
-    )
+    value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -85,10 +74,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
-class AudioList(
-    SingleOutputGraphNode[list[types.AudioRef]], GraphNode[list[types.AudioRef]]
-):
+class AudioList(SingleOutputGraphNode[list[types.AudioRef]], GraphNode[list[types.AudioRef]]):
     """
     Represents a list of audio file constants in the workflow.
         audios, sounds, audio files, collection
@@ -99,9 +85,7 @@ class AudioList(
         - Set default audio list for testing or demonstration purposes
     """
 
-    value: list[types.AudioRef] | OutputHandle[list[types.AudioRef]] = connect_field(
-        default=PydanticUndefined, description="List of audio references"
-    )
+    value: list[types.AudioRef] | OutputHandle[list[types.AudioRef]] = connect_field(default=PydanticUndefined, description='List of audio references')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -117,7 +101,6 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
-
 
 class Bool(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
@@ -147,7 +130,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class Constant(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Base class for fixed-value nodes.
@@ -175,10 +157,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
-class DataFrame(
-    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
-):
+class DataFrame(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
     Represents a fixed DataFrame constant in the workflow.
         table, data, dataframe, pandas
@@ -189,17 +168,7 @@ class DataFrame(
         - Set sample data for testing or demonstration
     """
 
-    value: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
-        default=types.DataframeRef(
-            type="dataframe",
-            uri="",
-            asset_id=None,
-            data=None,
-            metadata=None,
-            columns=None,
-        ),
-        description=None,
-    )
+    value: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(default=types.DataframeRef(type='dataframe', uri='', asset_id=None, data=None, metadata=None, columns=None), description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -216,23 +185,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class Date(SingleOutputGraphNode[types.Date], GraphNode[types.Date]):
     """
 
-    Make a date object from year, month, day.
-    date, make, create
+        Make a date object from year, month, day.
+        date, make, create
     """
 
-    year: int | OutputHandle[int] = connect_field(
-        default=1900, description="Year of the date"
-    )
-    month: int | OutputHandle[int] = connect_field(
-        default=1, description="Month of the date"
-    )
-    day: int | OutputHandle[int] = connect_field(
-        default=1, description="Day of the date"
-    )
+    year: int | OutputHandle[int] = connect_field(default=1900, description='Year of the date')
+    month: int | OutputHandle[int] = connect_field(default=1, description='Month of the date')
+    day: int | OutputHandle[int] = connect_field(default=1, description='Day of the date')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -249,41 +211,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class DateTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
 
-    Make a datetime object from year, month, day, hour, minute, second.
-    datetime, make, create
+        Make a datetime object from year, month, day, hour, minute, second.
+        datetime, make, create
     """
 
-    year: int | OutputHandle[int] = connect_field(
-        default=1900, description="Year of the datetime"
-    )
-    month: int | OutputHandle[int] = connect_field(
-        default=1, description="Month of the datetime"
-    )
-    day: int | OutputHandle[int] = connect_field(
-        default=1, description="Day of the datetime"
-    )
-    hour: int | OutputHandle[int] = connect_field(
-        default=0, description="Hour of the datetime"
-    )
-    minute: int | OutputHandle[int] = connect_field(
-        default=0, description="Minute of the datetime"
-    )
-    second: int | OutputHandle[int] = connect_field(
-        default=0, description="Second of the datetime"
-    )
-    millisecond: int | OutputHandle[int] = connect_field(
-        default=0, description="Millisecond of the datetime"
-    )
-    tzinfo: str | OutputHandle[str] = connect_field(
-        default="UTC", description="Timezone of the datetime"
-    )
-    utc_offset: int | OutputHandle[int] = connect_field(
-        default=0, description="UTC offset of the datetime in minutes"
-    )
+    year: int | OutputHandle[int] = connect_field(default=1900, description='Year of the datetime')
+    month: int | OutputHandle[int] = connect_field(default=1, description='Month of the datetime')
+    day: int | OutputHandle[int] = connect_field(default=1, description='Day of the datetime')
+    hour: int | OutputHandle[int] = connect_field(default=0, description='Hour of the datetime')
+    minute: int | OutputHandle[int] = connect_field(default=0, description='Minute of the datetime')
+    second: int | OutputHandle[int] = connect_field(default=0, description='Second of the datetime')
+    millisecond: int | OutputHandle[int] = connect_field(default=0, description='Millisecond of the datetime')
+    tzinfo: str | OutputHandle[str] = connect_field(default='UTC', description='Timezone of the datetime')
+    utc_offset: int | OutputHandle[int] = connect_field(default=0, description='UTC offset of the datetime in minutes')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -300,7 +243,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class Dict(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
     Represents a dictionary constant in the workflow.
@@ -312,9 +254,7 @@ class Dict(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
         - Define parameter sets for other nodes
     """
 
-    value: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={}, description=None
-    )
+    value: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={}, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -331,19 +271,13 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class Document(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
     Represents a document constant in the workflow.
         document, pdf, word, docx
     """
 
-    value: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description=None,
-    )
+    value: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -360,10 +294,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
-class EmbeddingModelConstant(
-    SingleOutputGraphNode[types.EmbeddingModel], GraphNode[types.EmbeddingModel]
-):
+class EmbeddingModelConstant(SingleOutputGraphNode[types.EmbeddingModel], GraphNode[types.EmbeddingModel]):
     """
     Represents an embedding model constant in the workflow.
         embedding, model, vector, semantic
@@ -374,9 +305,7 @@ class EmbeddingModelConstant(
         - Configure model selection without user input
     """
 
-    value: types.EmbeddingModel | OutputHandle[types.EmbeddingModel] = connect_field(
-        default=PydanticUndefined, description=None
-    )
+    value: types.EmbeddingModel | OutputHandle[types.EmbeddingModel] = connect_field(default=PydanticUndefined, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -392,7 +321,6 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
-
 
 class Float(SingleOutputGraphNode[float], GraphNode[float]):
     """
@@ -422,7 +350,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class Image(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Represents an image file constant in the workflow.
@@ -434,12 +361,7 @@ class Image(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         - Set default image for testing or demonstration purposes
     """
 
-    value: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description=None,
-    )
+    value: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -456,10 +378,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
-class ImageList(
-    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
-):
+class ImageList(SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]):
     """
     Represents a list of image file constants in the workflow.
         pictures, photos, images, collection
@@ -470,9 +389,7 @@ class ImageList(
         - Set default image list for testing or demonstration purposes
     """
 
-    value: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(
-        default=PydanticUndefined, description="List of image references"
-    )
+    value: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(default=PydanticUndefined, description='List of image references')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -489,10 +406,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
-class ImageModelConstant(
-    SingleOutputGraphNode[types.ImageModel], GraphNode[types.ImageModel]
-):
+class ImageModelConstant(SingleOutputGraphNode[types.ImageModel], GraphNode[types.ImageModel]):
     """
     Represents an image generation model constant in the workflow.
         image, model, ai, generation, diffusion
@@ -503,9 +417,7 @@ class ImageModelConstant(
         - Configure model selection without user input
     """
 
-    value: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(
-        default=PydanticUndefined, description=None
-    )
+    value: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(default=PydanticUndefined, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -522,11 +434,8 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class ImageSize(GraphNode[nodetool.nodes.nodetool.constant.ImageSize.OutputType]):
-    value: types.ImageSize | OutputHandle[types.ImageSize] = connect_field(
-        default=PydanticUndefined, description=None
-    )
+    value: types.ImageSize | OutputHandle[types.ImageSize] = connect_field(default=PydanticUndefined, description=None)
 
     @property
     def out(self) -> "ImageSizeOutputs":
@@ -540,19 +449,18 @@ class ImageSize(GraphNode[nodetool.nodes.nodetool.constant.ImageSize.OutputType]
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class ImageSizeOutputs(OutputsProxy):
     @property
     def image_size(self) -> OutputHandle[types.ImageSize]:
-        return typing.cast(OutputHandle[types.ImageSize], self["image_size"])
+        return typing.cast(OutputHandle[types.ImageSize], self['image_size'])
 
     @property
     def width(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["width"])
+        return typing.cast(OutputHandle[int], self['width'])
 
     @property
     def height(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["height"])
+        return typing.cast(OutputHandle[int], self['height'])
 
 
 import typing
@@ -560,7 +468,6 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
-
 
 class Integer(SingleOutputGraphNode[int], GraphNode[int]):
     """
@@ -590,19 +497,13 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class JSON(SingleOutputGraphNode[types.JSONRef], GraphNode[types.JSONRef]):
     """
     Represents a JSON constant in the workflow.
         json, object, dictionary
     """
 
-    value: types.JSONRef | OutputHandle[types.JSONRef] = connect_field(
-        default=types.JSONRef(
-            type="json", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description=None,
-    )
+    value: types.JSONRef | OutputHandle[types.JSONRef] = connect_field(default=types.JSONRef(type='json', uri='', asset_id=None, data=None, metadata=None), description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -619,10 +520,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
-class LanguageModelConstant(
-    SingleOutputGraphNode[types.LanguageModel], GraphNode[types.LanguageModel]
-):
+class LanguageModelConstant(SingleOutputGraphNode[types.LanguageModel], GraphNode[types.LanguageModel]):
     """
     Represents a language model constant in the workflow.
         llm, language, model, ai, chat, gpt
@@ -633,9 +531,7 @@ class LanguageModelConstant(
         - Configure model selection without user input
     """
 
-    value: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
-        default=PydanticUndefined, description=None
-    )
+    value: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(default=PydanticUndefined, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -652,7 +548,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class List(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Represents a list constant in the workflow.
@@ -664,9 +559,7 @@ class List(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         - Define sequences for iteration in other nodes
     """
 
-    value: list[Any] | OutputHandle[list[Any]] = connect_field(
-        default=[], description=None
-    )
+    value: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -683,7 +576,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class Model3D(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3DRef]):
     """
     Represents a 3D model constant in the workflow.
@@ -695,19 +587,7 @@ class Model3D(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3DRe
         - Set default 3D model for testing or demonstration purposes
     """
 
-    value: types.Model3DRef | OutputHandle[types.Model3DRef] = connect_field(
-        default=types.Model3DRef(
-            type="model_3d",
-            uri="",
-            asset_id=None,
-            data=None,
-            metadata=None,
-            format=None,
-            material_file=None,
-            texture_files=[],
-        ),
-        description=None,
-    )
+    value: types.Model3DRef | OutputHandle[types.Model3DRef] = connect_field(default=types.Model3DRef(type='model_3d', uri='', asset_id=None, data=None, metadata=None, format=None, material_file=None, texture_files=[]), description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -724,7 +604,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class Select(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Represents a selection from a predefined set of options in the workflow.
@@ -738,16 +617,9 @@ class Select(SingleOutputGraphNode[str], GraphNode[str]):
         The output is a string that can be connected to enum-typed inputs.
     """
 
-    value: str | OutputHandle[str] = connect_field(
-        default="", description="The currently selected value."
-    )
-    options: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[], description="The list of available options to choose from."
-    )
-    enum_type_name: str | OutputHandle[str] = connect_field(
-        default="",
-        description="The enum type name this select corresponds to (for type matching).",
-    )
+    value: str | OutputHandle[str] = connect_field(default='', description='The currently selected value.')
+    options: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='The list of available options to choose from.')
+    enum_type_name: str | OutputHandle[str] = connect_field(default='', description='The enum type name this select corresponds to (for type matching).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -764,7 +636,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class String(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Represents a string constant in the workflow.
@@ -776,7 +647,7 @@ class String(SingleOutputGraphNode[str], GraphNode[str]):
         - Set default text values for configuration
     """
 
-    value: str | OutputHandle[str] = connect_field(default="", description=None)
+    value: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -793,10 +664,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
-class TTSModelConstant(
-    SingleOutputGraphNode[types.TTSModel], GraphNode[types.TTSModel]
-):
+class TTSModelConstant(SingleOutputGraphNode[types.TTSModel], GraphNode[types.TTSModel]):
     """
     Represents a text-to-speech model constant in the workflow.
         tts, speech, voice, model, audio
@@ -807,9 +675,7 @@ class TTSModelConstant(
         - Configure model selection without user input
     """
 
-    value: types.TTSModel | OutputHandle[types.TTSModel] = connect_field(
-        default=PydanticUndefined, description=None
-    )
+    value: types.TTSModel | OutputHandle[types.TTSModel] = connect_field(default=PydanticUndefined, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -826,7 +692,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class TextList(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
     Represents a list of text strings in the workflow.
@@ -838,9 +703,7 @@ class TextList(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
         - Set default text list for testing or demonstration purposes
     """
 
-    value: list[str] | OutputHandle[list[str]] = connect_field(
-        default=PydanticUndefined, description="List of text strings"
-    )
+    value: list[str] | OutputHandle[list[str]] = connect_field(default=PydanticUndefined, description='List of text strings')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -857,7 +720,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
 class Video(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Represents a video file constant in the workflow.
@@ -869,18 +731,7 @@ class Video(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
         - Set default video for testing or demonstration purposes
     """
 
-    value: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
-        default=types.VideoRef(
-            type="video",
-            uri="",
-            asset_id=None,
-            data=None,
-            metadata=None,
-            duration=None,
-            format=None,
-        ),
-        description=None,
-    )
+    value: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -897,10 +748,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
-class VideoList(
-    SingleOutputGraphNode[list[types.VideoRef]], GraphNode[list[types.VideoRef]]
-):
+class VideoList(SingleOutputGraphNode[list[types.VideoRef]], GraphNode[list[types.VideoRef]]):
     """
     Represents a list of video file constants in the workflow.
         videos, movies, clips, collection
@@ -911,9 +759,7 @@ class VideoList(
         - Set default video list for testing or demonstration purposes
     """
 
-    value: list[types.VideoRef] | OutputHandle[list[types.VideoRef]] = connect_field(
-        default=PydanticUndefined, description="List of video references"
-    )
+    value: list[types.VideoRef] | OutputHandle[list[types.VideoRef]] = connect_field(default=PydanticUndefined, description='List of video references')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -930,10 +776,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
-
-class VideoModelConstant(
-    SingleOutputGraphNode[types.VideoModel], GraphNode[types.VideoModel]
-):
+class VideoModelConstant(SingleOutputGraphNode[types.VideoModel], GraphNode[types.VideoModel]):
     """
     Represents a video generation model constant in the workflow.
         video, model, ai, generation
@@ -944,9 +787,7 @@ class VideoModelConstant(
         - Configure model selection without user input
     """
 
-    value: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(
-        default=PydanticUndefined, description=None
-    )
+    value: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(default=PydanticUndefined, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -955,3 +796,5 @@ class VideoModelConstant(
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

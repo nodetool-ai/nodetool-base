@@ -3,11 +3,13 @@
 This module provides nodes for generating images using Kie.ai's various APIs:
 - 4O Image API (GPT-4o powered image generation)
 - Seedream 4.5 (ByteDance's image generation model)
+- Seedream 4.0 (ByteDance's image generation and editing model)
 - Z-Image Turbo (Alibaba's photorealistic image generation)
 - Nano Banana (Google Gemini 2.5 image model)
 - Nano Banana Pro (Google Gemini 3.0 image model)
 - Flux Kontext (Black Forest Labs advanced image generation)
 - Flux Pro (Black Forest Labs text-to-image)
+- Qwen Image Edit (Alibaba's image editing model)
 - Topaz Image Upscaler (AI image upscaling and enhancement)
 - Grok Imagine (xAI multimodal image generation)
 """
@@ -3006,6 +3008,147 @@ class Seedream40ImageToImage(KieBaseNode):
             "image_url": image_url,
             "aspect_ratio": self.aspect_ratio.value,
             "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class QwenImageEdit(KieBaseNode):
+    """Edit images using Qwen's Image Edit model via Kie.ai.
+
+    kie, qwen, alibaba, image editing, ai, image-edit
+
+    Qwen Image Edit is a powerful image editing model that transforms images
+    based on text prompts while maintaining high quality and offering
+    flexible control over the generation process.
+
+    Use cases:
+    - Edit and modify existing images with text guidance
+    - Apply specific changes or effects to photos
+    - Create variations with detailed control
+    - Professional image editing with AI assistance
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Qwen Image Edit"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to edit the image (max 2000 characters).",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to edit.",
+    )
+
+    class Acceleration(str, Enum):
+        NONE = "none"
+        REGULAR = "regular"
+        HIGH = "high"
+
+    acceleration: Acceleration = Field(
+        default=Acceleration.NONE,
+        description="Acceleration level for image generation. Higher acceleration increases speed.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "square"
+        SQUARE_HD = "square_hd"
+        PORTRAIT_4_3 = "portrait_4_3"
+        PORTRAIT_16_9 = "portrait_16_9"
+        LANDSCAPE_4_3 = "landscape_4_3"
+        LANDSCAPE_16_9 = "landscape_16_9"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.LANDSCAPE_4_3,
+        description="The size of the generated image.",
+    )
+
+    num_inference_steps: int = Field(
+        default=25,
+        description="The number of inference steps to perform (2-49).",
+        ge=2,
+        le=49,
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random.",
+    )
+
+    guidance_scale: float = Field(
+        default=4.0,
+        description="Classifier Free Guidance scale (0-20). Higher values stick closer to prompt.",
+        ge=0.0,
+        le=20.0,
+    )
+
+    class NumImages(str, Enum):
+        ONE = "1"
+        TWO = "2"
+        THREE = "3"
+        FOUR = "4"
+
+    num_images: NumImages = Field(
+        default=NumImages.ONE,
+        description="Number of images to generate.",
+    )
+
+    enable_safety_checker: bool = Field(
+        default=True,
+        description="Enable the safety checker for content filtering.",
+    )
+
+    class OutputFormat(str, Enum):
+        JPEG = "jpeg"
+        PNG = "png"
+
+    output_format: OutputFormat = Field(
+        default=OutputFormat.PNG,
+        description="The format of the generated image.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Negative prompt for the generation (max 500 characters).",
+    )
+
+    def _get_model(self) -> str:
+        return "qwen/image-edit"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        image_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "acceleration": self.acceleration.value,
+            "image_size": self.image_size.value,
+            "num_inference_steps": self.num_inference_steps,
+            "guidance_scale": self.guidance_scale,
+            "num_images": self.num_images.value,
+            "enable_safety_checker": self.enable_safety_checker,
+            "output_format": self.output_format.value,
+            "negative_prompt": self.negative_prompt,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:

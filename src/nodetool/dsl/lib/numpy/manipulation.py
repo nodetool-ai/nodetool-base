@@ -18,29 +18,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.manipulation
 from nodetool.workflows.base_node import BaseNode
 
-
 class IndexArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Select specific indices from an array along a specified axis.
-    array, index, select, subset
+        Select specific indices from an array along a specified axis.
+        array, index, select, subset
 
-    Use cases:
-    - Extract specific samples from a dataset
-    - Select particular features or dimensions
-    - Implement batch sampling operations
+        Use cases:
+        - Extract specific samples from a dataset
+        - Select particular features or dimensions
+        - Implement batch sampling operations
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The input array to index",
-    )
-    indices: str | OutputHandle[str] = connect_field(
-        default="", description="The comma separated indices to select"
-    )
-    axis: int | OutputHandle[int] = connect_field(
-        default=0, description="Axis along which to index"
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The input array to index')
+    indices: str | OutputHandle[str] = connect_field(default='', description='The comma separated indices to select')
+    axis: int | OutputHandle[int] = connect_field(default=0, description='Axis along which to index')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -57,27 +49,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.manipulation
 from nodetool.workflows.base_node import BaseNode
 
-
 class MatMul(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Perform matrix multiplication on two input arrays.
-    array, matrix, multiplication, linear algebra
+        Perform matrix multiplication on two input arrays.
+        array, matrix, multiplication, linear algebra
 
-    Use cases:
-    - Implement linear transformations
-    - Calculate dot products of vectors
-    - Perform matrix operations in neural networks
+        Use cases:
+        - Implement linear transformations
+        - Calculate dot products of vectors
+        - Perform matrix operations in neural networks
     """
 
-    a: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="First input array",
-    )
-    b: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Second input array",
-    )
+    a: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='First input array')
+    b: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Second input array')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -94,35 +79,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.manipulation
 from nodetool.workflows.base_node import BaseNode
 
-
 class SliceArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Extract a slice of an array along a specified axis.
-    array, slice, subset, index
+        Extract a slice of an array along a specified axis.
+        array, slice, subset, index
 
-    Use cases:
-    - Extract specific time periods from time series data
-    - Select subset of features from datasets
-    - Create sliding windows over sequential data
+        Use cases:
+        - Extract specific time periods from time series data
+        - Select subset of features from datasets
+        - Create sliding windows over sequential data
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The input array to slice",
-    )
-    start: int | OutputHandle[int] = connect_field(
-        default=0, description="Starting index (inclusive)"
-    )
-    stop: int | OutputHandle[int] = connect_field(
-        default=0, description="Ending index (exclusive)"
-    )
-    step: int | OutputHandle[int] = connect_field(
-        default=1, description="Step size between elements"
-    )
-    axis: int | OutputHandle[int] = connect_field(
-        default=0, description="Axis along which to slice"
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The input array to slice')
+    start: int | OutputHandle[int] = connect_field(default=0, description='Starting index (inclusive)')
+    stop: int | OutputHandle[int] = connect_field(default=0, description='Ending index (exclusive)')
+    step: int | OutputHandle[int] = connect_field(default=1, description='Step size between elements')
+    axis: int | OutputHandle[int] = connect_field(default=0, description='Axis along which to slice')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -139,31 +112,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.manipulation
 from nodetool.workflows.base_node import BaseNode
 
-
-class SplitArray(
-    SingleOutputGraphNode[list[types.NPArray]], GraphNode[list[types.NPArray]]
-):
+class SplitArray(SingleOutputGraphNode[list[types.NPArray]], GraphNode[list[types.NPArray]]):
     """
 
-    Split an array into multiple sub-arrays along a specified axis.
-    array, split, divide, partition
+        Split an array into multiple sub-arrays along a specified axis.
+        array, split, divide, partition
 
-    Use cases:
-    - Divide datasets into training/validation splits
-    - Create batches from large arrays
-    - Separate multi-channel data
+        Use cases:
+        - Divide datasets into training/validation splits
+        - Create batches from large arrays
+        - Separate multi-channel data
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The input array to split",
-    )
-    num_splits: int | OutputHandle[int] = connect_field(
-        default=0, description="Number of equal splits to create"
-    )
-    axis: int | OutputHandle[int] = connect_field(
-        default=0, description="Axis along which to split"
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The input array to split')
+    num_splits: int | OutputHandle[int] = connect_field(default=0, description='Number of equal splits to create')
+    axis: int | OutputHandle[int] = connect_field(default=0, description='Axis along which to split')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -180,25 +143,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.manipulation
 from nodetool.workflows.base_node import BaseNode
 
-
 class Stack(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Stack multiple arrays along a specified axis.
-    array, stack, concatenate, join, merge, axis
+        Stack multiple arrays along a specified axis.
+        array, stack, concatenate, join, merge, axis
 
-    Use cases:
-    - Combine multiple 2D arrays into a 3D array
-    - Stack time series data from multiple sources
-    - Merge feature vectors for machine learning models
+        Use cases:
+        - Combine multiple 2D arrays into a 3D array
+        - Stack time series data from multiple sources
+        - Merge feature vectors for machine learning models
     """
 
-    arrays: list[types.NPArray] | OutputHandle[list[types.NPArray]] = connect_field(
-        default=[], description="Arrays to stack"
-    )
-    axis: int | OutputHandle[int] = connect_field(
-        default=0, description="The axis to stack along."
-    )
+    arrays: list[types.NPArray] | OutputHandle[list[types.NPArray]] = connect_field(default=[], description='Arrays to stack')
+    axis: int | OutputHandle[int] = connect_field(default=0, description='The axis to stack along.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -215,23 +173,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.manipulation
 from nodetool.workflows.base_node import BaseNode
 
-
 class TransposeArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Transpose the dimensions of the input array.
-    array, transpose, reshape, dimensions
+        Transpose the dimensions of the input array.
+        array, transpose, reshape, dimensions
 
-    Use cases:
-    - Convert row vectors to column vectors
-    - Rearrange data for compatibility with other operations
-    - Implement certain linear algebra operations
+        Use cases:
+        - Convert row vectors to column vectors
+        - Rearrange data for compatibility with other operations
+        - Implement certain linear algebra operations
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Array to transpose",
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Array to transpose')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -240,3 +194,5 @@ class TransposeArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArr
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

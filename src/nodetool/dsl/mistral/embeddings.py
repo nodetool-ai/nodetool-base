@@ -18,38 +18,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.mistral.embeddings
 from nodetool.workflows.base_node import BaseNode
 
-
 class Embedding(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Generate vector embeddings using Mistral AI.
-    mistral, embeddings, vectors, semantic, similarity, search
+        Generate vector embeddings using Mistral AI.
+        mistral, embeddings, vectors, semantic, similarity, search
 
-    Uses Mistral AI's embedding model to create dense vector representations of text.
-    These vectors capture semantic meaning, enabling:
-    - Semantic search
-    - Text clustering
-    - Document classification
-    - Recommendation systems
-    - Measuring text similarity
+        Uses Mistral AI's embedding model to create dense vector representations of text.
+        These vectors capture semantic meaning, enabling:
+        - Semantic search
+        - Text clustering
+        - Document classification
+        - Recommendation systems
+        - Measuring text similarity
 
-    Requires a Mistral API key.
+        Requires a Mistral API key.
     """
 
-    EmbeddingModel: typing.ClassVar[type] = (
-        nodetool.nodes.mistral.embeddings.EmbeddingModel
-    )
+    EmbeddingModel: typing.ClassVar[type] = nodetool.nodes.mistral.embeddings.EmbeddingModel
 
-    input: str | OutputHandle[str] = connect_field(
-        default="", description="The text to embed"
-    )
-    model: nodetool.nodes.mistral.embeddings.EmbeddingModel = Field(
-        default=nodetool.nodes.mistral.embeddings.EmbeddingModel.MISTRAL_EMBED,
-        description="The embedding model to use",
-    )
-    chunk_size: int | OutputHandle[int] = connect_field(
-        default=4096, description="Size of text chunks for embedding"
-    )
+    input: str | OutputHandle[str] = connect_field(default='', description='The text to embed')
+    model: nodetool.nodes.mistral.embeddings.EmbeddingModel = Field(default=nodetool.nodes.mistral.embeddings.EmbeddingModel.MISTRAL_EMBED, description='The embedding model to use')
+    chunk_size: int | OutputHandle[int] = connect_field(default=4096, description='Size of text chunks for embedding')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -58,3 +48,5 @@ class Embedding(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
