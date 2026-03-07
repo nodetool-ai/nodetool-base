@@ -18,37 +18,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.messaging.telegram
 from nodetool.workflows.base_node import BaseNode
 
-
 class TelegramBotTrigger(GraphNode[TelegramBotTriggerOutput]):
     """
 
-    Trigger node that listens for Telegram messages using long polling.
+        Trigger node that listens for Telegram messages using long polling.
 
-    This trigger connects to Telegram using a bot token and emits events
-    for incoming messages.
+        This trigger connects to Telegram using a bot token and emits events
+        for incoming messages.
     """
 
-    max_events: int | OutputHandle[int] = connect_field(
-        default=0, description="Maximum number of events to process (0 = unlimited)"
-    )
-    token: str | OutputHandle[str] = connect_field(
-        default="", description="Telegram bot token"
-    )
-    chat_id: int | OutputHandle[int] | None = connect_field(
-        default=None, description="Optional chat ID to filter messages"
-    )
-    allow_bot_messages: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Include messages authored by bots"
-    )
-    include_edited_messages: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Include edited messages"
-    )
-    poll_timeout_seconds: int | OutputHandle[int] = connect_field(
-        default=30, description="Long polling timeout in seconds"
-    )
-    poll_interval_seconds: float | OutputHandle[float] = connect_field(
-        default=0.2, description="Delay between polling requests"
-    )
+    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
+    token: str | OutputHandle[str] = connect_field(default='', description='Telegram bot token')
+    chat_id: int | OutputHandle[int] | None = connect_field(default=None, description='Optional chat ID to filter messages')
+    allow_bot_messages: bool | OutputHandle[bool] = connect_field(default=False, description='Include messages authored by bots')
+    include_edited_messages: bool | OutputHandle[bool] = connect_field(default=False, description='Include edited messages')
+    poll_timeout_seconds: int | OutputHandle[int] = connect_field(default=30, description='Long polling timeout in seconds')
+    poll_interval_seconds: float | OutputHandle[float] = connect_field(default=0.2, description='Delay between polling requests')
 
     @property
     def out(self) -> "TelegramBotTriggerOutputs":
@@ -62,55 +47,54 @@ class TelegramBotTrigger(GraphNode[TelegramBotTriggerOutput]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class TelegramBotTriggerOutputs(OutputsProxy):
     @property
     def update_id(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["update_id"])
+        return typing.cast(OutputHandle[int], self['update_id'])
 
     @property
     def update_type(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["update_type"])
+        return typing.cast(OutputHandle[str], self['update_type'])
 
     @property
     def message_id(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["message_id"])
+        return typing.cast(OutputHandle[int], self['message_id'])
 
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def caption(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["caption"])
+        return typing.cast(OutputHandle[str], self['caption'])
 
     @property
     def entities(self) -> OutputHandle[list[dict[str, Any]]]:
-        return typing.cast(OutputHandle[list[dict[str, Any]]], self["entities"])
+        return typing.cast(OutputHandle[list[dict[str, Any]]], self['entities'])
 
     @property
     def chat(self) -> OutputHandle[dict[str, Any]]:
-        return typing.cast(OutputHandle[dict[str, Any]], self["chat"])
+        return typing.cast(OutputHandle[dict[str, Any]], self['chat'])
 
     @property
     def from_user(self) -> OutputHandle[dict[str, Any]]:
-        return typing.cast(OutputHandle[dict[str, Any]], self["from_user"])
+        return typing.cast(OutputHandle[dict[str, Any]], self['from_user'])
 
     @property
     def attachments(self) -> OutputHandle[list[dict[str, Any]]]:
-        return typing.cast(OutputHandle[list[dict[str, Any]]], self["attachments"])
+        return typing.cast(OutputHandle[list[dict[str, Any]]], self['attachments'])
 
     @property
     def timestamp(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["timestamp"])
+        return typing.cast(OutputHandle[str], self['timestamp'])
 
     @property
     def source(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["source"])
+        return typing.cast(OutputHandle[str], self['source'])
 
     @property
     def event_type(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["event_type"])
+        return typing.cast(OutputHandle[str], self['event_type'])
 
 
 import typing
@@ -119,36 +103,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.messaging.telegram
 from nodetool.workflows.base_node import BaseNode
 
-
-class TelegramSendMessage(
-    SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]
-):
+class TelegramSendMessage(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
-    Node that sends a message to a Telegram chat using a bot token.
+        Node that sends a message to a Telegram chat using a bot token.
     """
 
-    token: str | OutputHandle[str] = connect_field(
-        default="", description="Telegram bot token"
-    )
-    chat_id: int | OutputHandle[int] = connect_field(
-        default=0, description="Target chat ID"
-    )
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="Message text"
-    )
-    parse_mode: str | OutputHandle[str] = connect_field(
-        default="", description="Optional parse mode (MarkdownV2 or HTML)"
-    )
-    disable_web_page_preview: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Disable link previews"
-    )
-    disable_notification: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Send silently"
-    )
-    reply_to_message_id: int | OutputHandle[int] | None = connect_field(
-        default=None, description="Reply to a specific message ID"
-    )
+    token: str | OutputHandle[str] = connect_field(default='', description='Telegram bot token')
+    chat_id: int | OutputHandle[int] = connect_field(default=0, description='Target chat ID')
+    text: str | OutputHandle[str] = connect_field(default='', description='Message text')
+    parse_mode: str | OutputHandle[str] = connect_field(default='', description='Optional parse mode (MarkdownV2 or HTML)')
+    disable_web_page_preview: bool | OutputHandle[bool] = connect_field(default=False, description='Disable link previews')
+    disable_notification: bool | OutputHandle[bool] = connect_field(default=False, description='Send silently')
+    reply_to_message_id: int | OutputHandle[int] | None = connect_field(default=None, description='Reply to a specific message ID')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -165,31 +132,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.triggers
 from nodetool.workflows.base_node import BaseNode
 
-
 class TriggerNode(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Base class for trigger nodes that enable infinite-running workflows.
+        Base class for trigger nodes that enable infinite-running workflows.
 
-    Trigger nodes are special streaming nodes that:
-    1. Wait for external events (webhooks, file changes, timers, etc.)
-    2. Emit event data when triggered
-    3. Loop back to wait for the next event
-    4. Only terminate when the workflow is explicitly stopped
+        Trigger nodes are special streaming nodes that:
+        1. Wait for external events (webhooks, file changes, timers, etc.)
+        2. Emit event data when triggered
+        3. Loop back to wait for the next event
+        4. Only terminate when the workflow is explicitly stopped
 
-    Subclasses must implement:
-    - setup_trigger(): Initialize the event source
-    - wait_for_event(): Block until an event occurs and return event data
-    - cleanup_trigger(): Clean up the event source
+        Subclasses must implement:
+        - setup_trigger(): Initialize the event source
+        - wait_for_event(): Block until an event occurs and return event data
+        - cleanup_trigger(): Clean up the event source
 
-    Attributes:
-        _is_running: Flag to control the trigger loop
-        _event_queue: Queue for receiving events from external sources
+        Attributes:
+            _is_running: Flag to control the trigger loop
+            _event_queue: Queue for receiving events from external sources
     """
 
-    max_events: int | OutputHandle[int] = connect_field(
-        default=0, description="Maximum number of events to process (0 = unlimited)"
-    )
+    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -198,3 +162,5 @@ class TriggerNode(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

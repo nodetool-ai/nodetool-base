@@ -18,32 +18,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
-class AutomaticSpeechRecognition(
-    GraphNode[nodetool.nodes.nodetool.text.AutomaticSpeechRecognition.OutputType]
-):
+class AutomaticSpeechRecognition(GraphNode[nodetool.nodes.nodetool.text.AutomaticSpeechRecognition.OutputType]):
     """
 
-    Transcribe audio to text using automatic speech recognition models.
-    audio, speech, recognition, transcription, ASR, whisper
+        Transcribe audio to text using automatic speech recognition models.
+        audio, speech, recognition, transcription, ASR, whisper
     """
 
-    model: types.ASRModel | OutputHandle[types.ASRModel] = connect_field(
-        default=types.ASRModel(
-            type="asr_model",
-            provider=nodetool.metadata.types.Provider.FalAI,
-            id="openai/whisper-large-v3",
-            name="",
-            path=None,
-        ),
-        description=None,
-    )
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The audio to transcribe",
-    )
+    model: types.ASRModel | OutputHandle[types.ASRModel] = connect_field(default=types.ASRModel(type='asr_model', provider=nodetool.metadata.types.Provider.FalAI, id='openai/whisper-large-v3', name='', path=None), description=None)
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio to transcribe')
 
     @property
     def out(self) -> "AutomaticSpeechRecognitionOutputs":
@@ -57,11 +40,10 @@ class AutomaticSpeechRecognition(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class AutomaticSpeechRecognitionOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
 
 import typing
@@ -70,20 +52,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class CapitalizeText(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Capitalizes only the first character.
-    text, transform, capitalize, format
+        Capitalizes only the first character.
+        text, transform, capitalize, format
 
-    Use cases:
-    - Formatting short labels or sentences
-    - Cleaning up LLM output before UI rendering
-    - Quickly fixing lowercase starts after concatenation
+        Use cases:
+        - Formatting short labels or sentences
+        - Cleaning up LLM output before UI rendering
+        - Quickly fixing lowercase starts after concatenation
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -100,18 +81,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Chunk(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-    Splits text into chunks of specified word length.
-    text, chunk, split
+        Splits text into chunks of specified word length.
+        text, chunk, split
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
     length: int | OutputHandle[int] = connect_field(default=100, description=None)
     overlap: int | OutputHandle[int] = connect_field(default=0, description=None)
-    separator: str | OutputHandle[str] = connect_field(default=" ", description=None)
+    separator: str | OutputHandle[str] = connect_field(default=' ', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -128,24 +108,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class CollapseWhitespace(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Collapses consecutive whitespace into single separators.
-    text, whitespace, normalize, clean, remove
+        Collapses consecutive whitespace into single separators.
+        text, whitespace, normalize, clean, remove
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    preserve_newlines: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Keep newline characters instead of replacing them"
-    )
-    replacement: str | OutputHandle[str] = connect_field(
-        default=" ", description="String used to replace whitespace runs"
-    )
-    trim_edges: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Strip whitespace before collapsing"
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    preserve_newlines: bool | OutputHandle[bool] = connect_field(default=False, description='Keep newline characters instead of replacing them')
+    replacement: str | OutputHandle[str] = connect_field(default=' ', description='String used to replace whitespace runs')
+    trim_edges: bool | OutputHandle[bool] = connect_field(default=True, description='Strip whitespace before collapsing')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -162,16 +135,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Collect(GraphNode[nodetool.nodes.nodetool.text.Collect.OutputType]):
     """
 
-    Collects a stream of text inputs into a single concatenated string.
-    text, collect, list, stream, aggregate
+        Collects a stream of text inputs into a single concatenated string.
+        text, collect, list, stream, aggregate
     """
 
-    input_item: str | OutputHandle[str] = connect_field(default="", description=None)
-    separator: str | OutputHandle[str] = connect_field(default="", description=None)
+    input_item: str | OutputHandle[str] = connect_field(default='', description=None)
+    separator: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @property
     def out(self) -> "CollectOutputs":
@@ -185,11 +157,10 @@ class Collect(GraphNode[nodetool.nodes.nodetool.text.Collect.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class CollectOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["output"])
+        return typing.cast(OutputHandle[str], self['output'])
 
 
 import typing
@@ -198,27 +169,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Compare(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Compares two text values and reports ordering.
-    text, compare, equality, sort, equals, =
+        Compares two text values and reports ordering.
+        text, compare, equality, sort, equals, =
 
-    Use cases:
-    - Checking if two strings are identical before branching
-    - Determining lexical order for sorting or deduplication
-    - Normalizing casing/spacing before compares
+        Use cases:
+        - Checking if two strings are identical before branching
+        - Determining lexical order for sorting or deduplication
+        - Normalizing casing/spacing before compares
     """
 
-    text_a: str | OutputHandle[str] = connect_field(default="", description=None)
-    text_b: str | OutputHandle[str] = connect_field(default="", description=None)
-    case_sensitive: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Compare without lowercasing"
-    )
-    trim_whitespace: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Strip leading/trailing whitespace before comparing"
-    )
+    text_a: str | OutputHandle[str] = connect_field(default='', description=None)
+    text_b: str | OutputHandle[str] = connect_field(default='', description=None)
+    case_sensitive: bool | OutputHandle[bool] = connect_field(default=True, description='Compare without lowercasing')
+    trim_whitespace: bool | OutputHandle[bool] = connect_field(default=False, description='Strip leading/trailing whitespace before comparing')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -235,16 +201,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Concat(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Concatenates two text inputs into a single output.
-    text, combine, add, +, concatenate, merge, join, append
+        Concatenates two text inputs into a single output.
+        text, combine, add, +, concatenate, merge, join, append
     """
 
-    a: str | OutputHandle[str] = connect_field(default="", description=None)
-    b: str | OutputHandle[str] = connect_field(default="", description=None)
+    a: str | OutputHandle[str] = connect_field(default='', description=None)
+    b: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -261,28 +226,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Contains(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Checks if text contains a specified substring.
-    text, compare, validate, substring, string
+        Checks if text contains a specified substring.
+        text, compare, validate, substring, string
     """
 
     MatchMode: typing.ClassVar[type] = nodetool.nodes.nodetool.text.Contains.MatchMode
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    substring: str | OutputHandle[str] = connect_field(default="", description=None)
-    search_values: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[], description="Optional list of additional substrings to check"
-    )
-    case_sensitive: bool | OutputHandle[bool] = connect_field(
-        default=True, description=None
-    )
-    match_mode: nodetool.nodes.nodetool.text.Contains.MatchMode = Field(
-        default=nodetool.nodes.nodetool.text.Contains.MatchMode.ANY,
-        description="ANY requires one match, ALL needs every value, NONE ensures none",
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    substring: str | OutputHandle[str] = connect_field(default='', description=None)
+    search_values: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='Optional list of additional substrings to check')
+    case_sensitive: bool | OutputHandle[bool] = connect_field(default=True, description=None)
+    match_mode: nodetool.nodes.nodetool.text.Contains.MatchMode = Field(default=nodetool.nodes.nodetool.text.Contains.MatchMode.ANY, description='ANY requires one match, ALL needs every value, NONE ensures none')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -299,23 +256,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class CountTokens(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
-    Counts the number of tokens in text using tiktoken.
-    text, tokens, count, encoding
+        Counts the number of tokens in text using tiktoken.
+        text, tokens, count, encoding
     """
 
-    TiktokenEncoding: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding
-    )
+    TiktokenEncoding: typing.ClassVar[type] = nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    encoding: nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding = Field(
-        default=nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding.CL100K_BASE,
-        description="The tiktoken encoding to use for token counting",
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    encoding: nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding = Field(default=nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding.CL100K_BASE, description='The tiktoken encoding to use for token counting')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -332,41 +283,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Embedding(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Generate vector representations of text using any supported embedding provider.
-    Automatically routes to the appropriate backend (OpenAI, Gemini, Mistral).
-    embeddings, similarity, search, clustering, classification, vectors, semantic
+        Generate vector representations of text using any supported embedding provider.
+        Automatically routes to the appropriate backend (OpenAI, Gemini, Mistral).
+        embeddings, similarity, search, clustering, classification, vectors, semantic
 
-    Uses embedding models to create dense vector representations of text.
-    These vectors capture semantic meaning, enabling:
-    - Semantic search
-    - Text clustering
-    - Document classification
-    - Recommendation systems
-    - Anomaly detection
-    - Measuring text similarity and diversity
+        Uses embedding models to create dense vector representations of text.
+        These vectors capture semantic meaning, enabling:
+        - Semantic search
+        - Text clustering
+        - Document classification
+        - Recommendation systems
+        - Anomaly detection
+        - Measuring text similarity and diversity
     """
 
-    model: types.EmbeddingModel | OutputHandle[types.EmbeddingModel] = connect_field(
-        default=types.EmbeddingModel(
-            type="embedding_model",
-            provider=nodetool.metadata.types.Provider.OpenAI,
-            id="text-embedding-3-small",
-            name="Text Embedding 3 Small",
-            dimensions=0,
-        ),
-        description="The embedding model to use",
-    )
-    input: str | OutputHandle[str] = connect_field(
-        default="", description="The text to embed"
-    )
-    chunk_size: int | OutputHandle[int] = connect_field(
-        default=4096,
-        description="Size of text chunks for embedding (used when input exceeds model limits)",
-    )
+    model: types.EmbeddingModel | OutputHandle[types.EmbeddingModel] = connect_field(default=types.EmbeddingModel(type='embedding_model', provider=nodetool.metadata.types.Provider.OpenAI, id='text-embedding-3-small', name='Text Embedding 3 Small', dimensions=0), description='The embedding model to use')
+    input: str | OutputHandle[str] = connect_field(default='', description='The text to embed')
+    chunk_size: int | OutputHandle[int] = connect_field(default=4096, description='Size of text chunks for embedding (used when input exceeds model limits)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -383,21 +319,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class EndsWith(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Checks if text ends with a specified suffix.
-    text, check, suffix, compare, validate, substring, string
+        Checks if text ends with a specified suffix.
+        text, check, suffix, compare, validate, substring, string
 
-    Use cases:
-    - Validating file extensions
-    - Checking string endings
-    - Filtering text based on ending content
+        Use cases:
+        - Validating file extensions
+        - Checking string endings
+        - Filtering text based on ending content
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    suffix: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    suffix: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -414,23 +349,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Equals(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Checks if two text inputs are equal.
-    text, compare, equals, match, =
+        Checks if two text inputs are equal.
+        text, compare, equals, match, =
     """
 
-    text_a: str | OutputHandle[str] = connect_field(default="", description=None)
-    text_b: str | OutputHandle[str] = connect_field(default="", description=None)
-    case_sensitive: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Disable lowercasing before compare"
-    )
-    trim_whitespace: bool | OutputHandle[bool] = connect_field(
-        default=False,
-        description="Strip leading/trailing whitespace prior to comparison",
-    )
+    text_a: str | OutputHandle[str] = connect_field(default='', description=None)
+    text_b: str | OutputHandle[str] = connect_field(default='', description=None)
+    case_sensitive: bool | OutputHandle[bool] = connect_field(default=True, description='Disable lowercasing before compare')
+    trim_whitespace: bool | OutputHandle[bool] = connect_field(default=False, description='Strip leading/trailing whitespace prior to comparison')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -447,15 +376,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Extract(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Extracts a substring from input text.
-    text, extract, substring
+        Extracts a substring from input text.
+        text, extract, substring
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
     start: int | OutputHandle[int] = connect_field(default=0, description=None)
     end: int | OutputHandle[int] = connect_field(default=0, description=None)
 
@@ -474,16 +402,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractJSON(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-    Extracts data from JSON using JSONPath expressions.
-    json, extract, jsonpath
+        Extracts data from JSON using JSONPath expressions.
+        json, extract, jsonpath
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    json_path: str | OutputHandle[str] = connect_field(default="$.*", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    json_path: str | OutputHandle[str] = connect_field(default='$.*', description=None)
     find_all: bool | OutputHandle[bool] = connect_field(default=False, description=None)
 
     @classmethod
@@ -501,28 +428,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractRegex(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-    Extracts substrings matching regex groups from text.
-    text, regex, extract
+        Extracts substrings matching regex groups from text.
+        text, regex, extract
 
-    Use cases:
-    - Extracting structured data (e.g., dates, emails) from unstructured text
-    - Parsing specific patterns in log files or documents
-    - Isolating relevant information from complex text formats
+        Use cases:
+        - Extracting structured data (e.g., dates, emails) from unstructured text
+        - Parsing specific patterns in log files or documents
+        - Isolating relevant information from complex text formats
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    regex: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    regex: str | OutputHandle[str] = connect_field(default='', description=None)
     dotall: bool | OutputHandle[bool] = connect_field(default=False, description=None)
-    ignorecase: bool | OutputHandle[bool] = connect_field(
-        default=False, description=None
-    )
-    multiline: bool | OutputHandle[bool] = connect_field(
-        default=False, description=None
-    )
+    ignorecase: bool | OutputHandle[bool] = connect_field(default=False, description=None)
+    multiline: bool | OutputHandle[bool] = connect_field(default=False, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -539,26 +461,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
-class FilterRegexString(
-    GraphNode[nodetool.nodes.nodetool.text.FilterRegexString.OutputType]
-):
+class FilterRegexString(GraphNode[nodetool.nodes.nodetool.text.FilterRegexString.OutputType]):
     """
 
-    Filters a stream of strings using regular expressions.
-    filter, regex, pattern, text, stream
+        Filters a stream of strings using regular expressions.
+        filter, regex, pattern, text, stream
     """
 
-    value: str | OutputHandle[str] = connect_field(
-        default="", description="Input string stream"
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="", description="The regular expression pattern to match against."
-    )
-    full_match: bool | OutputHandle[bool] = connect_field(
-        default=False,
-        description="Whether to match the entire string or find pattern anywhere in string",
-    )
+    value: str | OutputHandle[str] = connect_field(default='', description='Input string stream')
+    pattern: str | OutputHandle[str] = connect_field(default='', description='The regular expression pattern to match against.')
+    full_match: bool | OutputHandle[bool] = connect_field(default=False, description='Whether to match the entire string or find pattern anywhere in string')
 
     @property
     def out(self) -> "FilterRegexStringOutputs":
@@ -572,11 +484,10 @@ class FilterRegexString(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class FilterRegexStringOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["output"])
+        return typing.cast(OutputHandle[str], self['output'])
 
 
 import typing
@@ -585,29 +496,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class FilterString(GraphNode[nodetool.nodes.nodetool.text.FilterString.OutputType]):
     """
 
-    Filters a stream of strings based on various criteria.
-    filter, strings, text, stream
+        Filters a stream of strings based on various criteria.
+        filter, strings, text, stream
     """
 
-    FilterType: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.text.FilterString.FilterType
-    )
+    FilterType: typing.ClassVar[type] = nodetool.nodes.nodetool.text.FilterString.FilterType
 
-    value: str | OutputHandle[str] = connect_field(
-        default="", description="Input string stream"
-    )
-    filter_type: nodetool.nodes.nodetool.text.FilterString.FilterType = Field(
-        default=nodetool.nodes.nodetool.text.FilterString.FilterType.CONTAINS,
-        description="The type of filter to apply",
-    )
-    criteria: str | OutputHandle[str] = connect_field(
-        default="",
-        description="The filtering criteria (text to match or length as string)",
-    )
+    value: str | OutputHandle[str] = connect_field(default='', description='Input string stream')
+    filter_type: nodetool.nodes.nodetool.text.FilterString.FilterType = Field(default=nodetool.nodes.nodetool.text.FilterString.FilterType.CONTAINS, description='The type of filter to apply')
+    criteria: str | OutputHandle[str] = connect_field(default='', description='The filtering criteria (text to match or length as string)')
 
     @property
     def out(self) -> "FilterStringOutputs":
@@ -621,11 +521,10 @@ class FilterString(GraphNode[nodetool.nodes.nodetool.text.FilterString.OutputTyp
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class FilterStringOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["output"])
+        return typing.cast(OutputHandle[str], self['output'])
 
 
 import typing
@@ -634,23 +533,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class FindAllRegex(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-    Finds all regex matches in text as separate substrings.
-    text, regex, find
+        Finds all regex matches in text as separate substrings.
+        text, regex, find
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    regex: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    regex: str | OutputHandle[str] = connect_field(default='', description=None)
     dotall: bool | OutputHandle[bool] = connect_field(default=False, description=None)
-    ignorecase: bool | OutputHandle[bool] = connect_field(
-        default=False, description=None
-    )
-    multiline: bool | OutputHandle[bool] = connect_field(
-        default=False, description=None
-    )
+    ignorecase: bool | OutputHandle[bool] = connect_field(default=False, description=None)
+    multiline: bool | OutputHandle[bool] = connect_field(default=False, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -666,7 +560,6 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
-
 
 class FormatText(SingleOutputGraphNode[str], GraphNode[str]):
     """
@@ -689,10 +582,7 @@ class FormatText(SingleOutputGraphNode[str], GraphNode[str]):
         node = FormatText(prop1=value1, prop2=value2)
     """
 
-    template: str | OutputHandle[str] = connect_field(
-        default="",
-        description="\n    Example: Hello, {{ name }} or {{ title|truncate(20) }}\n\n    Available filters: truncate, upper, lower, title, trim, replace, default, first, last, length, sort, join\n",
-    )
+    template: str | OutputHandle[str] = connect_field(default='', description='\n    Example: Hello, {{ name }} or {{ title|truncate(20) }}\n\n    Available filters: truncate, upper, lower, title, trim, replace, default, first, last, length, sort, join\n')
 
     def __init__(self, **kwargs: typing.Any) -> None:
         """
@@ -723,15 +613,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class HasLength(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Checks if text length meets specified conditions.
-    text, check, length, compare, validate, whitespace, string
+        Checks if text length meets specified conditions.
+        text, check, length, compare, validate, whitespace, string
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
     min_length: int | OutputHandle[int] = connect_field(default=0, description=None)
     max_length: int | OutputHandle[int] = connect_field(default=0, description=None)
     exact_length: int | OutputHandle[int] = connect_field(default=0, description=None)
@@ -751,29 +640,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class HtmlToText(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Converts HTML content to plain text using html2text.
-    html, convert, text, parse, extract
+        Converts HTML content to plain text using html2text.
+        html, convert, text, parse, extract
     """
 
-    html: str | OutputHandle[str] = connect_field(
-        default="", description="HTML content to convert"
-    )
-    base_url: str | OutputHandle[str] = connect_field(
-        default="", description="Base URL for resolving relative links"
-    )
-    body_width: int | OutputHandle[int] = connect_field(
-        default=1000, description="Width for text wrapping"
-    )
-    ignore_images: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to ignore image tags"
-    )
-    ignore_mailto_links: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to ignore mailto links"
-    )
+    html: str | OutputHandle[str] = connect_field(default='', description='HTML content to convert')
+    base_url: str | OutputHandle[str] = connect_field(default='', description='Base URL for resolving relative links')
+    body_width: int | OutputHandle[int] = connect_field(default=1000, description='Width for text wrapping')
+    ignore_images: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to ignore image tags')
+    ignore_mailto_links: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to ignore mailto links')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -790,28 +668,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class IndexOf(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
-    Finds the position of a substring in text.
-    text, search, find, substring
+        Finds the position of a substring in text.
+        text, search, find, substring
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    substring: str | OutputHandle[str] = connect_field(default="", description=None)
-    case_sensitive: bool | OutputHandle[bool] = connect_field(
-        default=True, description=None
-    )
-    start_index: int | OutputHandle[int] = connect_field(
-        default=0, description="Index to begin the search from"
-    )
-    end_index: int | OutputHandle[int] = connect_field(
-        default=0, description="Optional exclusive end index for the search"
-    )
-    search_from_end: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Use the last occurrence instead of the first"
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    substring: str | OutputHandle[str] = connect_field(default='', description=None)
+    case_sensitive: bool | OutputHandle[bool] = connect_field(default=True, description=None)
+    start_index: int | OutputHandle[int] = connect_field(default=0, description='Index to begin the search from')
+    end_index: int | OutputHandle[int] = connect_field(default=0, description='Optional exclusive end index for the search')
+    search_from_end: bool | OutputHandle[bool] = connect_field(default=False, description='Use the last occurrence instead of the first')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -828,18 +697,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class IsEmpty(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Checks if text is empty or contains only whitespace.
-    text, check, empty, compare, validate, whitespace, string
+        Checks if text is empty or contains only whitespace.
+        text, check, empty, compare, validate, whitespace, string
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    trim_whitespace: bool | OutputHandle[bool] = connect_field(
-        default=True, description=None
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    trim_whitespace: bool | OutputHandle[bool] = connect_field(default=True, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -856,18 +722,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Join(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Joins a list of strings into a single string using a specified separator.
-    text, join, combine, +, add, concatenate, merge
+        Joins a list of strings into a single string using a specified separator.
+        text, join, combine, +, add, concatenate, merge
     """
 
-    strings: list[Any] | OutputHandle[list[Any]] = connect_field(
-        default=[], description=None
-    )
-    separator: str | OutputHandle[str] = connect_field(default="", description=None)
+    strings: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    separator: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -884,24 +747,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Length(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
-    Measures text length as characters, words, or lines.
-    text, analyze, length, count
+        Measures text length as characters, words, or lines.
+        text, analyze, length, count
     """
 
     Measure: typing.ClassVar[type] = nodetool.nodes.nodetool.text.Length.Measure
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    measure: nodetool.nodes.nodetool.text.Length.Measure = Field(
-        default=nodetool.nodes.nodetool.text.Length.Measure.CHARACTERS,
-        description="Choose whether to count characters, words, or lines",
-    )
-    trim_whitespace: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Strip whitespace before counting"
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    measure: nodetool.nodes.nodetool.text.Length.Measure = Field(default=nodetool.nodes.nodetool.text.Length.Measure.CHARACTERS, description='Choose whether to count characters, words, or lines')
+    trim_whitespace: bool | OutputHandle[bool] = connect_field(default=False, description='Strip whitespace before counting')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -918,20 +775,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class LoadTextAssets(GraphNode[nodetool.nodes.nodetool.text.LoadTextAssets.OutputType]):
     """
 
-    Load text files from an asset folder.
-    load, text, file, import
+        Load text files from an asset folder.
+        load, text, file, import
     """
 
-    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(
-            type="folder", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The asset folder to load the text files from.",
-    )
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None, metadata=None), description='The asset folder to load the text files from.')
 
     @property
     def out(self) -> "LoadTextAssetsOutputs":
@@ -945,15 +796,14 @@ class LoadTextAssets(GraphNode[nodetool.nodes.nodetool.text.LoadTextAssets.Outpu
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class LoadTextAssetsOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[types.TextRef]:
-        return typing.cast(OutputHandle[types.TextRef], self["text"])
+        return typing.cast(OutputHandle[types.TextRef], self['text'])
 
     @property
     def name(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["name"])
+        return typing.cast(OutputHandle[str], self['name'])
 
 
 import typing
@@ -962,27 +812,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class LoadTextFolder(GraphNode[nodetool.nodes.nodetool.text.LoadTextFolder.OutputType]):
     """
 
-    Load all text files from a folder, optionally including subfolders.
-    text, load, folder, files
+        Load all text files from a folder, optionally including subfolders.
+        text, load, folder, files
     """
 
-    folder: str | OutputHandle[str] = connect_field(
-        default="", description="Folder to scan for text files"
-    )
-    include_subdirectories: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Include text files in subfolders"
-    )
-    extensions: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[".txt", ".csv", ".json", ".xml", ".md", ".html", ".pdf"],
-        description="Text file extensions to include",
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="", description="Pattern to match text files"
-    )
+    folder: str | OutputHandle[str] = connect_field(default='', description='Folder to scan for text files')
+    include_subdirectories: bool | OutputHandle[bool] = connect_field(default=False, description='Include text files in subfolders')
+    extensions: list[str] | OutputHandle[list[str]] = connect_field(default=['.txt', '.csv', '.json', '.xml', '.md', '.html', '.pdf'], description='Text file extensions to include')
+    pattern: str | OutputHandle[str] = connect_field(default='', description='Pattern to match text files')
 
     @property
     def out(self) -> "LoadTextFolderOutputs":
@@ -996,15 +836,14 @@ class LoadTextFolder(GraphNode[nodetool.nodes.nodetool.text.LoadTextFolder.Outpu
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class LoadTextFolderOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def path(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["path"])
+        return typing.cast(OutputHandle[str], self['path'])
 
 
 import typing
@@ -1013,27 +852,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class PadText(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Pads text to a target length.
-    text, pad, length, format
+        Pads text to a target length.
+        text, pad, length, format
     """
 
-    PadDirection: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.text.PadText.PadDirection
-    )
+    PadDirection: typing.ClassVar[type] = nodetool.nodes.nodetool.text.PadText.PadDirection
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
     length: int | OutputHandle[int] = connect_field(default=0, description=None)
-    pad_character: str | OutputHandle[str] = connect_field(
-        default=" ", description="Single character to use for padding"
-    )
-    direction: nodetool.nodes.nodetool.text.PadText.PadDirection = Field(
-        default=nodetool.nodes.nodetool.text.PadText.PadDirection.RIGHT,
-        description="Where padding should be applied",
-    )
+    pad_character: str | OutputHandle[str] = connect_field(default=' ', description='Single character to use for padding')
+    direction: nodetool.nodes.nodetool.text.PadText.PadDirection = Field(default=nodetool.nodes.nodetool.text.PadText.PadDirection.RIGHT, description='Where padding should be applied')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1050,15 +881,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class ParseJSON(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-    Parses a JSON string into a Python object.
-    json, parse, convert
+        Parses a JSON string into a Python object.
+        json, parse, convert
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1075,28 +905,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class RegexMatch(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-    Find all matches of a regex pattern in text.
-    regex, search, pattern, match
+        Find all matches of a regex pattern in text.
+        regex, search, pattern, match
 
-    Use cases:
-    - Extract specific patterns from text
-    - Validate text against patterns
-    - Find all occurrences of a pattern
+        Use cases:
+        - Extract specific patterns from text
+        - Validate text against patterns
+        - Find all occurrences of a pattern
     """
 
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="Text to search in"
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="", description="Regular expression pattern"
-    )
-    group: int | OutputHandle[int] = connect_field(
-        default=0, description="Capture group to extract (0 for full match)"
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description='Text to search in')
+    pattern: str | OutputHandle[str] = connect_field(default='', description='Regular expression pattern')
+    group: int | OutputHandle[int] = connect_field(default=0, description='Capture group to extract (0 for full match)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1113,31 +936,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class RegexReplace(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Replace text matching a regex pattern.
-    regex, replace, substitute
+        Replace text matching a regex pattern.
+        regex, replace, substitute
 
-    Use cases:
-    - Clean or standardize text
-    - Remove unwanted patterns
-    - Transform text formats
+        Use cases:
+        - Clean or standardize text
+        - Remove unwanted patterns
+        - Transform text formats
     """
 
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="Text to perform replacements on"
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="", description="Regular expression pattern"
-    )
-    replacement: str | OutputHandle[str] = connect_field(
-        default="", description="Replacement text"
-    )
-    count: int | OutputHandle[int] = connect_field(
-        default=0, description="Maximum replacements (0 for unlimited)"
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description='Text to perform replacements on')
+    pattern: str | OutputHandle[str] = connect_field(default='', description='Regular expression pattern')
+    replacement: str | OutputHandle[str] = connect_field(default='', description='Replacement text')
+    count: int | OutputHandle[int] = connect_field(default=0, description='Maximum replacements (0 for unlimited)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1154,28 +968,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class RegexSplit(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-    Split text using a regex pattern as delimiter.
-    regex, split, tokenize
+        Split text using a regex pattern as delimiter.
+        regex, split, tokenize
 
-    Use cases:
-    - Parse structured text
-    - Extract fields from formatted strings
-    - Tokenize text
+        Use cases:
+        - Parse structured text
+        - Extract fields from formatted strings
+        - Tokenize text
     """
 
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="Text to split"
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="", description="Regular expression pattern to split on"
-    )
-    maxsplit: int | OutputHandle[int] = connect_field(
-        default=0, description="Maximum number of splits (0 for unlimited)"
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description='Text to split')
+    pattern: str | OutputHandle[str] = connect_field(default='', description='Regular expression pattern to split on')
+    maxsplit: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of splits (0 for unlimited)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1192,25 +999,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class RegexValidate(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Check if text matches a regex pattern.
-    regex, validate, check
+        Check if text matches a regex pattern.
+        regex, validate, check
 
-    Use cases:
-    - Validate input formats (email, phone, etc)
-    - Check text structure
-    - Filter text based on patterns
+        Use cases:
+        - Validate input formats (email, phone, etc)
+        - Check text structure
+        - Filter text based on patterns
     """
 
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="Text to validate"
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="", description="Regular expression pattern"
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description='Text to validate')
+    pattern: str | OutputHandle[str] = connect_field(default='', description='Regular expression pattern')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1227,22 +1029,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class RemovePunctuation(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Removes punctuation characters from text.
-    text, cleanup, punctuation, normalize
+        Removes punctuation characters from text.
+        text, cleanup, punctuation, normalize
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    replacement: str | OutputHandle[str] = connect_field(
-        default="", description="String to insert where punctuation was removed"
-    )
-    punctuation: str | OutputHandle[str] = connect_field(
-        default="!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
-        description="Characters that should be removed or replaced",
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    replacement: str | OutputHandle[str] = connect_field(default='', description='String to insert where punctuation was removed')
+    punctuation: str | OutputHandle[str] = connect_field(default='!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~', description='Characters that should be removed or replaced')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1259,22 +1055,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Replace(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Replaces a substring in a text with another substring.
-    text, replace, substitute
+        Replaces a substring in a text with another substring.
+        text, replace, substitute
 
-    Use cases:
-    - Correcting or updating specific text patterns
-    - Sanitizing or normalizing text data
-    - Implementing simple text transformations
+        Use cases:
+        - Correcting or updating specific text patterns
+        - Sanitizing or normalizing text data
+        - Implementing simple text transformations
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    old: str | OutputHandle[str] = connect_field(default="", description=None)
-    new: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    old: str | OutputHandle[str] = connect_field(default='', description=None)
+    new: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1291,30 +1086,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class SaveText(SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]):
     """
 
-    Saves input text to a file in the assets folder.
-    text, save, file
+        Saves input text to a file in the assets folder.
+        text, save, file
 
-    Use cases:
-    - Persisting processed text results
-    - Creating text files for downstream nodes or external use
-    - Archiving text data within the workflow
+        Use cases:
+        - Persisting processed text results
+        - Creating text files for downstream nodes or external use
+        - Archiving text data within the workflow
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(
-            type="folder", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Name of the output folder.",
-    )
-    name: str | OutputHandle[str] = connect_field(
-        default="%Y-%m-%d-%H-%M-%S.txt",
-        description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None, metadata=None), description='Name of the output folder.')
+    name: str | OutputHandle[str] = connect_field(default='%Y-%m-%d-%H-%M-%S.txt', description='\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1331,22 +1117,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class SaveTextFile(SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]):
     """
 
-    Saves input text to a file in the assets folder.
-    text, save, file
+        Saves input text to a file in the assets folder.
+        text, save, file
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    folder: str | OutputHandle[str] = connect_field(
-        default="", description="Path to the output folder."
-    )
-    name: str | OutputHandle[str] = connect_field(
-        default="%Y-%m-%d-%H-%M-%S.txt",
-        description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    folder: str | OutputHandle[str] = connect_field(default='', description='Path to the output folder.')
+    name: str | OutputHandle[str] = connect_field(default='%Y-%m-%d-%H-%M-%S.txt', description='\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1363,26 +1143,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Slice(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Slices text using Python's slice notation (start:stop:step).
-    text, slice, substring
+        Slices text using Python's slice notation (start:stop:step).
+        text, slice, substring
 
-    Use cases:
-    - Extracting specific portions of text with flexible indexing
-    - Reversing text using negative step
-    - Taking every nth character with step parameter
+        Use cases:
+        - Extracting specific portions of text with flexible indexing
+        - Reversing text using negative step
+        - Taking every nth character with step parameter
 
-    Examples:
-    - start=0, stop=5: first 5 characters
-    - start=-5: last 5 characters
-    - step=2: every second character
-    - step=-1: reverse the text
+        Examples:
+        - start=0, stop=5: first 5 characters
+        - start=-5: last 5 characters
+        - step=2: every second character
+        - step=-1: reverse the text
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
     start: int | OutputHandle[int] = connect_field(default=0, description=None)
     stop: int | OutputHandle[int] = connect_field(default=0, description=None)
     step: int | OutputHandle[int] = connect_field(default=1, description=None)
@@ -1402,20 +1181,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Slugify(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Converts text into a slug suitable for URLs or IDs.
-    text, slug, normalize, id
+        Converts text into a slug suitable for URLs or IDs.
+        text, slug, normalize, id
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    separator: str | OutputHandle[str] = connect_field(default="-", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    separator: str | OutputHandle[str] = connect_field(default='-', description=None)
     lowercase: bool | OutputHandle[bool] = connect_field(default=True, description=None)
-    allow_unicode: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Keep unicode letters instead of converting to ASCII"
-    )
+    allow_unicode: bool | OutputHandle[bool] = connect_field(default=False, description='Keep unicode letters instead of converting to ASCII')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1432,16 +1208,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Split(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-    Separates text into a list of strings based on a specified delimiter.
-    text, split, tokenize
+        Separates text into a list of strings based on a specified delimiter.
+        text, split, tokenize
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    delimiter: str | OutputHandle[str] = connect_field(default=",", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    delimiter: str | OutputHandle[str] = connect_field(default=',', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1458,21 +1233,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class StartsWith(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Checks if text starts with a specified prefix.
-    text, check, prefix, compare, validate, substring, string
+        Checks if text starts with a specified prefix.
+        text, check, prefix, compare, validate, substring, string
 
-    Use cases:
-    - Validating string prefixes
-    - Filtering text based on starting content
-    - Checking file name patterns
+        Use cases:
+        - Validating string prefixes
+        - Filtering text based on starting content
+        - Checking file name patterns
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    prefix: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    prefix: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1489,18 +1263,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class StripAccents(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Removes accent marks while keeping base characters.
-    text, cleanup, accents, normalize
+        Removes accent marks while keeping base characters.
+        text, cleanup, accents, normalize
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    preserve_non_ascii: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Keep non-ASCII characters that are not accents"
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    preserve_non_ascii: bool | OutputHandle[bool] = connect_field(default=True, description='Keep non-ASCII characters that are not accents')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1517,20 +1288,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class SurroundWith(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Wraps text with the provided prefix and suffix.
-    text, format, surround, decorate
+        Wraps text with the provided prefix and suffix.
+        text, format, surround, decorate
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    prefix: str | OutputHandle[str] = connect_field(default="", description=None)
-    suffix: str | OutputHandle[str] = connect_field(default="", description=None)
-    skip_if_wrapped: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Do not add duplicates if the text is already wrapped"
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    prefix: str | OutputHandle[str] = connect_field(default='', description=None)
+    suffix: str | OutputHandle[str] = connect_field(default='', description=None)
+    skip_if_wrapped: bool | OutputHandle[bool] = connect_field(default=True, description='Do not add duplicates if the text is already wrapped')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1546,7 +1314,6 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
-
 
 class Template(SingleOutputGraphNode[str], GraphNode[str]):
     """
@@ -1586,14 +1353,8 @@ class Template(SingleOutputGraphNode[str], GraphNode[str]):
         node = Template(prop1=value1, prop2=value2)
     """
 
-    string: str | OutputHandle[str] = connect_field(
-        default="",
-        description='\n    Examples:\n    - text: "Hello, {{ name }}!"\n    - text: "Title: {{ title|truncate(20) }}"\n    - text: "Name: {{ name|upper }}"\n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter\n',
-    )
-    values: Any | OutputHandle[Any] = connect_field(
-        default={},
-        description="\n        The values to replace in the string.\n        - If a string, it will be used as the format string.\n        - If a list, it will be used as the format arguments.\n        - If a dictionary, it will be used as the template variables.\n        - If an object, it will be converted to a dictionary using the object's __dict__ method.\n        ",
-    )
+    string: str | OutputHandle[str] = connect_field(default='', description='\n    Examples:\n    - text: "Hello, {{ name }}!"\n    - text: "Title: {{ title|truncate(20) }}"\n    - text: "Name: {{ name|upper }}"\n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter\n')
+    values: Any | OutputHandle[Any] = connect_field(default={}, description="\n        The values to replace in the string.\n        - If a string, it will be used as the format string.\n        - If a list, it will be used as the format arguments.\n        - If a dictionary, it will be used as the template variables.\n        - If an object, it will be converted to a dictionary using the object's __dict__ method.\n        ")
 
     def __init__(self, **kwargs: typing.Any) -> None:
         """
@@ -1624,15 +1385,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class ToLowercase(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Converts text to lowercase.
-    text, transform, lowercase, format
+        Converts text to lowercase.
+        text, transform, lowercase, format
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1649,21 +1409,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class ToString(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Converts any input value to its string representation.
-    text, string, convert, repr, str, cast
+        Converts any input value to its string representation.
+        text, string, convert, repr, str, cast
     """
 
     Mode: typing.ClassVar[type] = nodetool.nodes.nodetool.text.ToString.Mode
 
     value: Any | OutputHandle[Any] = connect_field(default=(), description=None)
-    mode: nodetool.nodes.nodetool.text.ToString.Mode = Field(
-        default=nodetool.nodes.nodetool.text.ToString.Mode.STR,
-        description="Conversion mode: use `str(value)` or `repr(value)`.",
-    )
+    mode: nodetool.nodes.nodetool.text.ToString.Mode = Field(default=nodetool.nodes.nodetool.text.ToString.Mode.STR, description='Conversion mode: use `str(value)` or `repr(value)`.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1680,20 +1436,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class ToTitlecase(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Converts text to title case.
-    text, transform, titlecase, format
+        Converts text to title case.
+        text, transform, titlecase, format
 
-    Use cases:
-    - Cleaning user provided titles before display
-    - Normalizing headings in generated documents
-    - Making list entries easier to scan
+        Use cases:
+        - Cleaning user provided titles before display
+        - Normalizing headings in generated documents
+        - Making list entries easier to scan
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1710,15 +1465,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class ToUppercase(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Converts text to uppercase.
-    text, transform, uppercase, format
+        Converts text to uppercase.
+        text, transform, uppercase, format
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1735,18 +1489,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class TrimWhitespace(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Trims whitespace from the start and/or end of text.
-    text, whitespace, clean, remove
+        Trims whitespace from the start and/or end of text.
+        text, whitespace, clean, remove
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
-    trim_start: bool | OutputHandle[bool] = connect_field(
-        default=True, description=None
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
+    trim_start: bool | OutputHandle[bool] = connect_field(default=True, description=None)
     trim_end: bool | OutputHandle[bool] = connect_field(default=True, description=None)
 
     @classmethod
@@ -1764,19 +1515,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class TruncateText(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Truncates text to a maximum length.
-    text, truncate, length, clip
+        Truncates text to a maximum length.
+        text, truncate, length, clip
     """
 
-    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default='', description=None)
     max_length: int | OutputHandle[int] = connect_field(default=100, description=None)
-    ellipsis: str | OutputHandle[str] = connect_field(
-        default="", description="Optional suffix appended when truncation occurs"
-    )
+    ellipsis: str | OutputHandle[str] = connect_field(default='', description='Optional suffix appended when truncation occurs')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1785,3 +1533,5 @@ class TruncateText(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

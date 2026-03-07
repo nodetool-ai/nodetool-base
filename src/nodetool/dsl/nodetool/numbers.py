@@ -18,34 +18,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.numbers
 from nodetool.workflows.base_node import BaseNode
 
-
 class FilterNumber(GraphNode[nodetool.nodes.nodetool.numbers.FilterNumber.OutputType]):
     """
 
-    Filters a stream of numbers based on various numerical conditions.
-    filter, numbers, numeric, stream
-
-    Use cases:
-    - Filter numbers by comparison (greater than, less than, equal to)
-    - Filter even/odd numbers
-    - Filter positive/negative numbers
+        Filters a stream of numbers based on various numerical conditions.
+        filter, numbers, numeric, stream
+        
+        Use cases:
+        - Filter numbers by comparison (greater than, less than, equal to)
+        - Filter even/odd numbers
+        - Filter positive/negative numbers
     """
 
-    FilterNumberType: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.numbers.FilterNumber.FilterNumberType
-    )
+    FilterNumberType: typing.ClassVar[type] = nodetool.nodes.nodetool.numbers.FilterNumber.FilterNumberType
 
-    value: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Input number stream"
-    )
-    filter_type: nodetool.nodes.nodetool.numbers.FilterNumber.FilterNumberType = Field(
-        default=nodetool.nodes.nodetool.numbers.FilterNumber.FilterNumberType.GREATER_THAN,
-        description="The type of filter to apply",
-    )
-    compare_value: float | OutputHandle[float] = connect_field(
-        default=0,
-        description="The comparison value (for greater_than, less_than, equal_to)",
-    )
+    value: float | OutputHandle[float] = connect_field(default=0.0, description='Input number stream')
+    filter_type: nodetool.nodes.nodetool.numbers.FilterNumber.FilterNumberType = Field(default=nodetool.nodes.nodetool.numbers.FilterNumber.FilterNumberType.GREATER_THAN, description='The type of filter to apply')
+    compare_value: float | OutputHandle[float] = connect_field(default=0, description='The comparison value (for greater_than, less_than, equal_to)')
 
     @property
     def out(self) -> "FilterNumberOutputs":
@@ -59,11 +48,10 @@ class FilterNumber(GraphNode[nodetool.nodes.nodetool.numbers.FilterNumber.Output
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class FilterNumberOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self["output"])
+        return typing.cast(OutputHandle[float], self['output'])
 
 
 import typing
@@ -72,33 +60,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.numbers
 from nodetool.workflows.base_node import BaseNode
 
-
-class FilterNumberRange(
-    GraphNode[nodetool.nodes.nodetool.numbers.FilterNumberRange.OutputType]
-):
+class FilterNumberRange(GraphNode[nodetool.nodes.nodetool.numbers.FilterNumberRange.OutputType]):
     """
 
-    Filters a stream of numbers to find values within a specified range.
-    filter, numbers, range, between, stream
+        Filters a stream of numbers to find values within a specified range.
+        filter, numbers, range, between, stream
 
-    Use cases:
-    - Find numbers within a specific range
-    - Filter data points within bounds
-    - Implement range-based filtering
+        Use cases:
+        - Find numbers within a specific range
+        - Filter data points within bounds
+        - Implement range-based filtering
     """
 
-    value: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Input number stream"
-    )
-    min_value: float | OutputHandle[float] = connect_field(
-        default=0, description="Minimum value"
-    )
-    max_value: float | OutputHandle[float] = connect_field(
-        default=0, description="Maximum value"
-    )
-    inclusive: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Inclusive bounds"
-    )
+    value: float | OutputHandle[float] = connect_field(default=0.0, description='Input number stream')
+    min_value: float | OutputHandle[float] = connect_field(default=0, description='Minimum value')
+    max_value: float | OutputHandle[float] = connect_field(default=0, description='Maximum value')
+    inclusive: bool | OutputHandle[bool] = connect_field(default=True, description='Inclusive bounds')
 
     @property
     def out(self) -> "FilterNumberRangeOutputs":
@@ -112,8 +89,9 @@ class FilterNumberRange(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class FilterNumberRangeOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self["output"])
+        return typing.cast(OutputHandle[float], self['output'])
+
+

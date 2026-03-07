@@ -18,28 +18,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
-
-class AddHeading(
-    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
-):
+class AddHeading(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
 
-    Adds a heading to the document
-    document, docx, heading, format
+        Adds a heading to the document
+        document, docx, heading, format
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The document to add the heading to",
-    )
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="The heading text"
-    )
-    level: int | OutputHandle[int] = connect_field(
-        default=1, description="Heading level (1-9)"
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The document to add the heading to')
+    text: str | OutputHandle[str] = connect_field(default='', description='The heading text')
+    level: int | OutputHandle[int] = connect_field(default=1, description='Heading level (1-9)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -56,32 +44,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
-
 class AddImage(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
 
-    Adds an image to the document
-    document, docx, image, format
+        Adds an image to the document
+        document, docx, image, format
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The document to add the image to",
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to add",
-    )
-    width: float | OutputHandle[float] = connect_field(
-        default=0, description="Image width in inches"
-    )
-    height: float | OutputHandle[float] = connect_field(
-        default=0, description="Image height in inches"
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The document to add the image to')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to add')
+    width: float | OutputHandle[float] = connect_field(default=0, description='Image width in inches')
+    height: float | OutputHandle[float] = connect_field(default=0, description='Image height in inches')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -98,22 +71,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
-
-class AddPageBreak(
-    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
-):
+class AddPageBreak(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
 
-    Adds a page break to the document
-    document, docx, format, layout
+        Adds a page break to the document
+        document, docx, format, layout
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The document to add the page break to",
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The document to add the page break to')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -130,42 +95,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
-
-class AddParagraph(
-    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
-):
+class AddParagraph(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
 
-    Adds a paragraph of text to the document
-    document, docx, text, format
+        Adds a paragraph of text to the document
+        document, docx, text, format
     """
 
-    ParagraphAlignment: typing.ClassVar[type] = (
-        nodetool.nodes.lib.docx.ParagraphAlignment
-    )
+    ParagraphAlignment: typing.ClassVar[type] = nodetool.nodes.lib.docx.ParagraphAlignment
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The document to add the paragraph to",
-    )
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="The paragraph text"
-    )
-    alignment: nodetool.nodes.lib.docx.ParagraphAlignment = Field(
-        default=nodetool.nodes.lib.docx.ParagraphAlignment.LEFT,
-        description="Text alignment",
-    )
-    bold: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Make text bold"
-    )
-    italic: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Make text italic"
-    )
-    font_size: int | OutputHandle[int] = connect_field(
-        default=12, description="Font size in points"
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The document to add the paragraph to')
+    text: str | OutputHandle[str] = connect_field(default='', description='The paragraph text')
+    alignment: nodetool.nodes.lib.docx.ParagraphAlignment = Field(default=nodetool.nodes.lib.docx.ParagraphAlignment.LEFT, description='Text alignment')
+    bold: bool | OutputHandle[bool] = connect_field(default=False, description='Make text bold')
+    italic: bool | OutputHandle[bool] = connect_field(default=False, description='Make text italic')
+    font_size: int | OutputHandle[int] = connect_field(default=12, description='Font size in points')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -182,31 +126,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
-
 class AddTable(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
 
-    Adds a table to the document
-    document, docx, table, format
+        Adds a table to the document
+        document, docx, table, format
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The document to add the table to",
-    )
-    data: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
-        default=types.DataframeRef(
-            type="dataframe",
-            uri="",
-            asset_id=None,
-            data=None,
-            metadata=None,
-            columns=None,
-        ),
-        description="The data to add to the table",
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The document to add the table to')
+    data: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(default=types.DataframeRef(type='dataframe', uri='', asset_id=None, data=None, metadata=None, columns=None), description='The data to add to the table')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -223,14 +151,11 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
-
-class CreateDocument(
-    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
-):
+class CreateDocument(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
 
-    Creates a new Word document
-    document, docx, file, create
+        Creates a new Word document
+        document, docx, file, create
     """
 
     @classmethod
@@ -248,19 +173,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
-
-class LoadWordDocument(
-    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
-):
+class LoadWordDocument(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
 
-    Loads a Word document from disk
-    document, docx, file, load, input
+        Loads a Word document from disk
+        document, docx, file, load, input
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to the document to load"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to the document to load')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -277,28 +197,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
-
 class SaveDocument(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Writes the document to a file
-    document, docx, file, save, output
+        Writes the document to a file
+        document, docx, file, save, output
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The document to write",
-    )
-    path: types.FilePath | OutputHandle[types.FilePath] = connect_field(
-        default=types.FilePath(type="file_path", path=""),
-        description="The folder to write the document to.",
-    )
-    filename: str | OutputHandle[str] = connect_field(
-        default="",
-        description="\n        The filename to write the document to.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The document to write')
+    path: types.FilePath | OutputHandle[types.FilePath] = connect_field(default=types.FilePath(type='file_path', path=''), description='The folder to write the document to.')
+    filename: str | OutputHandle[str] = connect_field(default='', description='\n        The filename to write the document to.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -315,34 +223,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
-
-class SetDocumentProperties(
-    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
-):
+class SetDocumentProperties(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
 
-    Sets document metadata properties
-    document, docx, metadata, properties
+        Sets document metadata properties
+        document, docx, metadata, properties
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The document to modify",
-    )
-    title: str | OutputHandle[str] = connect_field(
-        default="", description="Document title"
-    )
-    author: str | OutputHandle[str] = connect_field(
-        default="", description="Document author"
-    )
-    subject: str | OutputHandle[str] = connect_field(
-        default="", description="Document subject"
-    )
-    keywords: str | OutputHandle[str] = connect_field(
-        default="", description="Document keywords"
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The document to modify')
+    title: str | OutputHandle[str] = connect_field(default='', description='Document title')
+    author: str | OutputHandle[str] = connect_field(default='', description='Document author')
+    subject: str | OutputHandle[str] = connect_field(default='', description='Document subject')
+    keywords: str | OutputHandle[str] = connect_field(default='', description='Document keywords')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -351,3 +243,5 @@ class SetDocumentProperties(
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

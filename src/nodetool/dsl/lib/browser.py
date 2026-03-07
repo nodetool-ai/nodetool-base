@@ -18,26 +18,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
 from nodetool.workflows.base_node import BaseNode
 
-
 class Browser(GraphNode[nodetool.nodes.lib.browser.Browser.OutputType]):
     """
 
-    Fetches content from a web page using a headless browser.
-    browser, web, scraping, content, fetch
+        Fetches content from a web page using a headless browser.
+        browser, web, scraping, content, fetch
 
-    Use cases:
-    - Extract content from JavaScript-heavy websites
-    - Retrieve text content from web pages
-    - Get metadata from web pages
-    - Save extracted content to files
+        Use cases:
+        - Extract content from JavaScript-heavy websites
+        - Retrieve text content from web pages
+        - Get metadata from web pages
+        - Save extracted content to files
     """
 
-    url: str | OutputHandle[str] = connect_field(
-        default="", description="URL to navigate to"
-    )
-    timeout: int | OutputHandle[int] = connect_field(
-        default=20000, description="Timeout in milliseconds for page navigation"
-    )
+    url: str | OutputHandle[str] = connect_field(default='', description='URL to navigate to')
+    timeout: int | OutputHandle[int] = connect_field(default=20000, description='Timeout in milliseconds for page navigation')
 
     @property
     def out(self) -> "BrowserOutputs":
@@ -51,19 +46,18 @@ class Browser(GraphNode[nodetool.nodes.lib.browser.Browser.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class BrowserOutputs(OutputsProxy):
     @property
     def success(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self["success"])
+        return typing.cast(OutputHandle[bool], self['success'])
 
     @property
     def content(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["content"])
+        return typing.cast(OutputHandle[str], self['content'])
 
     @property
     def metadata(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self["metadata"])
+        return typing.cast(OutputHandle[typing.Any], self['metadata'])
 
 
 import typing
@@ -72,50 +66,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
 from nodetool.workflows.base_node import BaseNode
 
-
 class BrowserNavigation(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Navigates and interacts with web pages in a browser session.
-    browser, navigation, interaction, click, extract
+        Navigates and interacts with web pages in a browser session.
+        browser, navigation, interaction, click, extract
 
-    Use cases:
-    - Perform complex web interactions
-    - Navigate through multi-step web processes
-    - Extract content after interaction
+        Use cases:
+        - Perform complex web interactions
+        - Navigate through multi-step web processes
+        - Extract content after interaction
     """
 
     Action: typing.ClassVar[type] = nodetool.nodes.lib.browser.BrowserNavigation.Action
-    ExtractType: typing.ClassVar[type] = (
-        nodetool.nodes.lib.browser.BrowserNavigation.ExtractType
-    )
+    ExtractType: typing.ClassVar[type] = nodetool.nodes.lib.browser.BrowserNavigation.ExtractType
 
-    url: str | OutputHandle[str] = connect_field(
-        default="", description="URL to navigate to (required for 'goto' action)"
-    )
-    action: nodetool.nodes.lib.browser.BrowserNavigation.Action = Field(
-        default=nodetool.nodes.lib.browser.BrowserNavigation.Action.GOTO,
-        description="Navigation or extraction action to perform",
-    )
-    selector: str | OutputHandle[str] = connect_field(
-        default="",
-        description="CSS selector for the element to interact with or extract from",
-    )
-    timeout: int | OutputHandle[int] = connect_field(
-        default=30000, description="Timeout in milliseconds for the action"
-    )
-    wait_for: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Optional selector to wait for after performing the action",
-    )
-    extract_type: nodetool.nodes.lib.browser.BrowserNavigation.ExtractType = Field(
-        default=nodetool.nodes.lib.browser.BrowserNavigation.ExtractType.TEXT,
-        description="Type of content to extract (for 'extract' action)",
-    )
-    attribute: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Attribute name to extract (when extract_type is 'attribute')",
-    )
+    url: str | OutputHandle[str] = connect_field(default='', description="URL to navigate to (required for 'goto' action)")
+    action: nodetool.nodes.lib.browser.BrowserNavigation.Action = Field(default=nodetool.nodes.lib.browser.BrowserNavigation.Action.GOTO, description='Navigation or extraction action to perform')
+    selector: str | OutputHandle[str] = connect_field(default='', description='CSS selector for the element to interact with or extract from')
+    timeout: int | OutputHandle[int] = connect_field(default=30000, description='Timeout in milliseconds for the action')
+    wait_for: str | OutputHandle[str] = connect_field(default='', description='Optional selector to wait for after performing the action')
+    extract_type: nodetool.nodes.lib.browser.BrowserNavigation.ExtractType = Field(default=nodetool.nodes.lib.browser.BrowserNavigation.ExtractType.TEXT, description="Type of content to extract (for 'extract' action)")
+    attribute: str | OutputHandle[str] = connect_field(default='', description="Attribute name to extract (when extract_type is 'attribute')")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -132,40 +104,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
 from nodetool.workflows.base_node import BaseNode
 
-
 class BrowserUseNode(GraphNode[nodetool.nodes.lib.browser.BrowserUseNode.OutputType]):
     """
 
-    Browser agent tool that uses browser_use under the hood.
+        Browser agent tool that uses browser_use under the hood.
 
-    This module provides a tool for running browser-based agents using the browser_use library.
-    The agent can perform complex web automation tasks like form filling, navigation, data extraction,
-    and multi-step workflows using natural language instructions.
+        This module provides a tool for running browser-based agents using the browser_use library.
+        The agent can perform complex web automation tasks like form filling, navigation, data extraction,
+        and multi-step workflows using natural language instructions.
 
-    Use cases:
-    - Perform complex web automation tasks based on natural language.
-    - Automate form filling and data entry.
-    - Scrape data after complex navigation or interaction sequences.
-    - Automate multi-step web workflows.
+        Use cases:
+        - Perform complex web automation tasks based on natural language.
+        - Automate form filling and data entry.
+        - Scrape data after complex navigation or interaction sequences.
+        - Automate multi-step web workflows.
     """
 
     BrowserUseModel: typing.ClassVar[type] = nodetool.nodes.lib.browser.BrowserUseModel
 
-    model: nodetool.nodes.lib.browser.BrowserUseModel = Field(
-        default=nodetool.nodes.lib.browser.BrowserUseModel.GPT_4O,
-        description="The model to use for the browser agent.",
-    )
-    task: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Natural language description of the browser task to perform. Can include complex multi-step instructions like 'Compare prices between websites', 'Fill out forms', or 'Extract specific data'.",
-    )
-    timeout: int | OutputHandle[int] = connect_field(
-        default=300,
-        description="Maximum time in seconds to allow for task completion. Complex tasks may require longer timeouts.",
-    )
-    use_remote_browser: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Use a remote browser instead of a local one"
-    )
+    model: nodetool.nodes.lib.browser.BrowserUseModel = Field(default=nodetool.nodes.lib.browser.BrowserUseModel.GPT_4O, description='The model to use for the browser agent.')
+    task: str | OutputHandle[str] = connect_field(default='', description="Natural language description of the browser task to perform. Can include complex multi-step instructions like 'Compare prices between websites', 'Fill out forms', or 'Extract specific data'.")
+    timeout: int | OutputHandle[int] = connect_field(default=300, description='Maximum time in seconds to allow for task completion. Complex tasks may require longer timeouts.')
+    use_remote_browser: bool | OutputHandle[bool] = connect_field(default=True, description='Use a remote browser instead of a local one')
 
     @property
     def out(self) -> "BrowserUseNodeOutputs":
@@ -179,23 +139,22 @@ class BrowserUseNode(GraphNode[nodetool.nodes.lib.browser.BrowserUseNode.OutputT
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class BrowserUseNodeOutputs(OutputsProxy):
     @property
     def success(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self["success"])
+        return typing.cast(OutputHandle[bool], self['success'])
 
     @property
     def task(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["task"])
+        return typing.cast(OutputHandle[str], self['task'])
 
     @property
     def result(self) -> OutputHandle[Any]:
-        return typing.cast(OutputHandle[Any], self["result"])
+        return typing.cast(OutputHandle[Any], self['result'])
 
     @property
     def error(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["error"])
+        return typing.cast(OutputHandle[str], self['error'])
 
 
 import typing
@@ -204,22 +163,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
 from nodetool.workflows.base_node import BaseNode
 
-
 class DownloadFile(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
 
-    Downloads a file from a URL and saves it to disk.
-    download, file, web, save
+        Downloads a file from a URL and saves it to disk.
+        download, file, web, save
 
-    Use cases:
-    - Download documents, images, or other files from the web
-    - Save data for further processing
-    - Retrieve file assets for analysis
+        Use cases:
+        - Download documents, images, or other files from the web
+        - Save data for further processing
+        - Retrieve file assets for analysis
     """
 
-    url: str | OutputHandle[str] = connect_field(
-        default="", description="URL of the file to download"
-    )
+    url: str | OutputHandle[str] = connect_field(default='', description='URL of the file to download')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -236,32 +192,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
 from nodetool.workflows.base_node import BaseNode
 
-
 class Screenshot(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Takes a screenshot of a web page or specific element.
-    browser, screenshot, capture, image
+        Takes a screenshot of a web page or specific element.
+        browser, screenshot, capture, image
 
-    Use cases:
-    - Capture visual representation of web pages
-    - Document specific UI elements
-    - Create visual records of web content
+        Use cases:
+        - Capture visual representation of web pages
+        - Document specific UI elements
+        - Create visual records of web content
     """
 
-    url: str | OutputHandle[str] = connect_field(
-        default="", description="URL to navigate to before taking screenshot"
-    )
-    selector: str | OutputHandle[str] = connect_field(
-        default="", description="Optional CSS selector for capturing a specific element"
-    )
-    output_file: str | OutputHandle[str] = connect_field(
-        default="screenshot.png",
-        description="Path to save the screenshot (relative to workspace)",
-    )
-    timeout: int | OutputHandle[int] = connect_field(
-        default=30000, description="Timeout in milliseconds for page navigation"
-    )
+    url: str | OutputHandle[str] = connect_field(default='', description='URL to navigate to before taking screenshot')
+    selector: str | OutputHandle[str] = connect_field(default='', description='Optional CSS selector for capturing a specific element')
+    output_file: str | OutputHandle[str] = connect_field(default='screenshot.png', description='Path to save the screenshot (relative to workspace)')
+    timeout: int | OutputHandle[int] = connect_field(default=30000, description='Timeout in milliseconds for page navigation')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -278,59 +224,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
 from nodetool.workflows.base_node import BaseNode
 
-
 class SpiderCrawl(GraphNode[nodetool.nodes.lib.browser.SpiderCrawl.OutputType]):
     """
 
-    Crawls websites following links and emitting URLs with optional HTML content.
-    spider, crawler, web scraping, links, sitemap
+        Crawls websites following links and emitting URLs with optional HTML content.
+        spider, crawler, web scraping, links, sitemap
 
-    Use cases:
-    - Build sitemaps and discover website structure
-    - Collect URLs for bulk processing
-    - Find all pages on a website
-    - Extract content from multiple pages
-    - Feed agentic workflows with discovered pages
-    - Analyze website content and structure
+        Use cases:
+        - Build sitemaps and discover website structure
+        - Collect URLs for bulk processing
+        - Find all pages on a website
+        - Extract content from multiple pages
+        - Feed agentic workflows with discovered pages
+        - Analyze website content and structure
     """
 
-    start_url: str | OutputHandle[str] = connect_field(
-        default="", description="The starting URL to begin crawling from"
-    )
-    max_depth: int | OutputHandle[int] = connect_field(
-        default=2,
-        description="Maximum depth to crawl (0 = start page only, 1 = start + linked pages, etc.)",
-    )
-    max_pages: int | OutputHandle[int] = connect_field(
-        default=50, description="Maximum number of pages to crawl (safety limit)"
-    )
-    same_domain_only: bool | OutputHandle[bool] = connect_field(
-        default=True,
-        description="Only follow links within the same domain as the start URL",
-    )
-    include_html: bool | OutputHandle[bool] = connect_field(
-        default=False,
-        description="Include the HTML content of each page in the output (increases bandwidth)",
-    )
-    respect_robots_txt: bool | OutputHandle[bool] = connect_field(
-        default=True,
-        description="Respect robots.txt rules (follows web crawler best practices)",
-    )
-    delay_ms: int | OutputHandle[int] = connect_field(
-        default=1000,
-        description="Delay in milliseconds between requests (politeness policy)",
-    )
-    timeout: int | OutputHandle[int] = connect_field(
-        default=30000, description="Timeout in milliseconds for each page load"
-    )
-    url_pattern: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Optional regex pattern to filter URLs (only crawl matching URLs)",
-    )
-    exclude_pattern: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Optional regex pattern to exclude URLs (skip matching URLs)",
-    )
+    start_url: str | OutputHandle[str] = connect_field(default='', description='The starting URL to begin crawling from')
+    max_depth: int | OutputHandle[int] = connect_field(default=2, description='Maximum depth to crawl (0 = start page only, 1 = start + linked pages, etc.)')
+    max_pages: int | OutputHandle[int] = connect_field(default=50, description='Maximum number of pages to crawl (safety limit)')
+    same_domain_only: bool | OutputHandle[bool] = connect_field(default=True, description='Only follow links within the same domain as the start URL')
+    include_html: bool | OutputHandle[bool] = connect_field(default=False, description='Include the HTML content of each page in the output (increases bandwidth)')
+    respect_robots_txt: bool | OutputHandle[bool] = connect_field(default=True, description='Respect robots.txt rules (follows web crawler best practices)')
+    delay_ms: int | OutputHandle[int] = connect_field(default=1000, description='Delay in milliseconds between requests (politeness policy)')
+    timeout: int | OutputHandle[int] = connect_field(default=30000, description='Timeout in milliseconds for each page load')
+    url_pattern: str | OutputHandle[str] = connect_field(default='', description='Optional regex pattern to filter URLs (only crawl matching URLs)')
+    exclude_pattern: str | OutputHandle[str] = connect_field(default='', description='Optional regex pattern to exclude URLs (skip matching URLs)')
 
     @property
     def out(self) -> "SpiderCrawlOutputs":
@@ -344,27 +262,26 @@ class SpiderCrawl(GraphNode[nodetool.nodes.lib.browser.SpiderCrawl.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class SpiderCrawlOutputs(OutputsProxy):
     @property
     def url(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["url"])
+        return typing.cast(OutputHandle[str], self['url'])
 
     @property
     def depth(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["depth"])
+        return typing.cast(OutputHandle[int], self['depth'])
 
     @property
     def html(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["html"])
+        return typing.cast(OutputHandle[str], self['html'])
 
     @property
     def title(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["title"])
+        return typing.cast(OutputHandle[str], self['title'])
 
     @property
     def status_code(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["status_code"])
+        return typing.cast(OutputHandle[int], self['status_code'])
 
 
 import typing
@@ -373,25 +290,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
 from nodetool.workflows.base_node import BaseNode
 
-
 class WebFetch(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Fetches HTML content from a URL and converts it to text.
-    web, fetch, html, markdown, http
+        Fetches HTML content from a URL and converts it to text.
+        web, fetch, html, markdown, http
 
-    Use cases:
-    - Extract text content from web pages
-    - Process web content for analysis
-    - Save web content to files
+        Use cases:
+        - Extract text content from web pages
+        - Process web content for analysis
+        - Save web content to files
     """
 
-    url: str | OutputHandle[str] = connect_field(
-        default="", description="URL to fetch content from"
-    )
-    selector: str | OutputHandle[str] = connect_field(
-        default="body", description="CSS selector to extract specific elements"
-    )
+    url: str | OutputHandle[str] = connect_field(default='', description='URL to fetch content from')
+    selector: str | OutputHandle[str] = connect_field(default='body', description='CSS selector to extract specific elements')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -400,3 +312,5 @@ class WebFetch(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
