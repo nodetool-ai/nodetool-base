@@ -6,7 +6,7 @@ Provides nodes for Google Search, News, Images, Finance, Jobs, Lens, Maps, and S
 """
 
 from pydantic import Field
-from typing import Any, Dict, ClassVar
+from typing import Any, Dict, ClassVar, TypedDict
 
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
@@ -35,11 +35,40 @@ from nodetool.agents.tools.serp_tools import (
 )
 
 
+def _format_organic_results(results: list[OrganicResult]) -> str:
+    """Format organic search results as readable text."""
+    lines = []
+    for r in results:
+        lines.append(f"[{r.position}] {r.title}")
+        lines.append(f"    {r.link}")
+        if r.date:
+            lines.append(f"    Date: {r.date}")
+        lines.append(f"    {r.snippet}")
+        lines.append("")
+    return "\n".join(lines)
+
+
+def _format_news_results(results: list[NewsResult]) -> str:
+    """Format news search results as readable text."""
+    lines = []
+    for r in results:
+        lines.append(f"[{r.position}] {r.title}")
+        lines.append(f"    {r.link}")
+        if r.date:
+            lines.append(f"    Date: {r.date}")
+        lines.append("")
+    return "\n".join(lines)
+
+
 class GoogleSearch(BaseNode):
     """
     Search Google to retrieve organic search results from the web.
     google, search, serp, web, query
     """
+
+    class OutputType(TypedDict):
+        results: list[OrganicResult]
+        text: str
 
     keyword: str = Field(
         default="", description="Search query or keyword to search for"
@@ -50,7 +79,7 @@ class GoogleSearch(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    async def process(self, context: ProcessingContext) -> list[OrganicResult]:
+    async def process(self, context: ProcessingContext) -> OutputType:
         if not self.keyword:
             raise ValueError("Keyword is required")
 
@@ -68,8 +97,12 @@ class GoogleSearch(BaseNode):
             )
 
             result_data = GoogleSearchResponse(**result)
+            results = result_data.organic_results or []
 
-            return result_data.organic_results or []
+            return {
+                "results": results,
+                "text": _format_organic_results(results),
+            }
 
 
 class GoogleNews(BaseNode):
@@ -77,6 +110,10 @@ class GoogleNews(BaseNode):
     Search Google News to retrieve current news articles and headlines.
     google, news, serp, articles, journalism
     """
+
+    class OutputType(TypedDict):
+        results: list[NewsResult]
+        text: str
 
     keyword: str = Field(
         default="", description="Search query or keyword for news articles"
@@ -87,7 +124,7 @@ class GoogleNews(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    async def process(self, context: ProcessingContext) -> list[NewsResult]:
+    async def process(self, context: ProcessingContext) -> OutputType:
         if not self.keyword:
             raise ValueError("Keyword is required")
 
@@ -105,8 +142,12 @@ class GoogleNews(BaseNode):
             )
 
             result_data = GoogleNewsResponse(**result_data)
+            results = result_data.news_results or []
 
-            return result_data.news_results or []
+            return {
+                "results": results,
+                "text": _format_news_results(results),
+            }
 
 
 class GoogleImages(BaseNode):
