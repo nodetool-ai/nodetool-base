@@ -4,14 +4,14 @@ Provides nodes for Amazon product search and product details via SerpAPI.
 """
 
 from pydantic import Field
-from typing import ClassVar, TypedDict
+from typing import TypedDict
 
-from nodetool.workflows.base_node import BaseNode
+from nodetool.nodes.search._base import SerpNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.agents.tools.serp_tools import _get_configured_serp_provider
 
 
-class AmazonSearch(BaseNode):
+class AmazonSearch(SerpNode):
     """
     Search Amazon for products, prices, and reviews.
     amazon, search, products, ecommerce, shopping, prices
@@ -27,8 +27,6 @@ class AmazonSearch(BaseNode):
         description="Amazon domain (e.g., 'amazon.com', 'amazon.co.uk', 'amazon.de')",
     )
     num_results: int = Field(default=10, description="Maximum number of results to return")
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.query:
@@ -67,7 +65,7 @@ class AmazonSearch(BaseNode):
             return {"results": results, "text": "\n".join(lines)}
 
 
-class AmazonProduct(BaseNode):
+class AmazonProduct(SerpNode):
     """
     Get detailed information about a specific Amazon product by ASIN.
     amazon, product, details, asin, ecommerce, reviews
@@ -78,8 +76,6 @@ class AmazonProduct(BaseNode):
         default="amazon.com",
         description="Amazon domain (e.g., 'amazon.com', 'amazon.co.uk', 'amazon.de')",
     )
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> dict:
         if not self.product_id:

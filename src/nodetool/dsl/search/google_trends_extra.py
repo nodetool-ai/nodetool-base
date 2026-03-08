@@ -15,32 +15,37 @@ from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.search.duckduckgo
+import nodetool.nodes.search.google_trends_extra
 from nodetool.workflows.base_node import BaseNode
 
-class DuckDuckGoSearch(GraphNode[nodetool.nodes.search.duckduckgo.DuckDuckGoSearch.OutputType]):
+class GoogleTrendingNow(GraphNode[nodetool.nodes.search.google_trends_extra.GoogleTrendingNow.OutputType]):
     """
 
-        Search DuckDuckGo for privacy-focused web search results.
-        duckduckgo, search, web, privacy, query
+        Retrieve currently trending searches from Google Trends, including
+        real-time and daily trending topics with traffic volume and categories.
+        google, trends, trending, viral, popular, realtime, daily, buzz
     """
 
-    query: str | OutputHandle[str] = connect_field(default='', description='Search query')
-    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of results to return')
+    TrendingFrequency: typing.ClassVar[type] = nodetool.nodes.search.google_trends_extra.TrendingFrequency
+
+    geo: str | OutputHandle[str] = connect_field(default='US', description="Country code for trending results (e.g., 'US', 'GB', 'DE')")
+    category: str | OutputHandle[str] = connect_field(default='all', description="Trending category to filter by (e.g., 'all', or a category ID)")
+    frequency: nodetool.nodes.search.google_trends_extra.TrendingFrequency = Field(default=nodetool.nodes.search.google_trends_extra.TrendingFrequency.REALTIME, description="Frequency of trending data: 'realtime' or 'daily'")
+    hours: int | OutputHandle[int] = connect_field(default=24, description='Time range in hours (4, 24, 48, or 168)')
 
     @property
-    def out(self) -> "DuckDuckGoSearchOutputs":
-        return DuckDuckGoSearchOutputs(self)
+    def out(self) -> "GoogleTrendingNowOutputs":
+        return GoogleTrendingNowOutputs(self)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.search.duckduckgo.DuckDuckGoSearch
+        return nodetool.nodes.search.google_trends_extra.GoogleTrendingNow
 
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-class DuckDuckGoSearchOutputs(OutputsProxy):
+class GoogleTrendingNowOutputs(OutputsProxy):
     @property
     def results(self) -> OutputHandle[list[dict]]:
         return typing.cast(OutputHandle[list[dict]], self['results'])

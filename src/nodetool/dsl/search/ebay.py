@@ -15,32 +15,61 @@ from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.search.duckduckgo
+import nodetool.nodes.search.ebay
 from nodetool.workflows.base_node import BaseNode
 
-class DuckDuckGoSearch(GraphNode[nodetool.nodes.search.duckduckgo.DuckDuckGoSearch.OutputType]):
+class EbayProduct(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-        Search DuckDuckGo for privacy-focused web search results.
-        duckduckgo, search, web, privacy, query
+        Get detailed information about a specific eBay product by product ID.
+        ebay, product, details, ecommerce, reviews, pricing, auction
     """
 
-    query: str | OutputHandle[str] = connect_field(default='', description='Search query')
-    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of results to return')
-
-    @property
-    def out(self) -> "DuckDuckGoSearchOutputs":
-        return DuckDuckGoSearchOutputs(self)
+    product_id: str | OutputHandle[str] = connect_field(default='', description='eBay product ID to look up')
+    ebay_domain: str | OutputHandle[str] = connect_field(default='ebay.com', description="eBay domain (e.g., 'ebay.com', 'ebay.co.uk', 'ebay.de')")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.search.duckduckgo.DuckDuckGoSearch
+        return nodetool.nodes.search.ebay.EbayProduct
 
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-class DuckDuckGoSearchOutputs(OutputsProxy):
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search.ebay
+from nodetool.workflows.base_node import BaseNode
+
+class EbaySearch(GraphNode[nodetool.nodes.search.ebay.EbaySearch.OutputType]):
+    """
+
+        Search eBay for products, prices, and deals.
+        ebay, search, products, ecommerce, shopping, prices, auction
+    """
+
+    query: str | OutputHandle[str] = connect_field(default='', description='Product name or description to search for')
+    ebay_domain: str | OutputHandle[str] = connect_field(default='ebay.com', description="eBay domain (e.g., 'ebay.com', 'ebay.co.uk', 'ebay.de')")
+    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of results to return')
+    condition: str | OutputHandle[str] = connect_field(default='', description="Item condition filter: 'new', 'used', or empty for all")
+    min_price: float | OutputHandle[float] | None = connect_field(default=None, description='Minimum price filter')
+    max_price: float | OutputHandle[float] | None = connect_field(default=None, description='Maximum price filter')
+
+    @property
+    def out(self) -> "EbaySearchOutputs":
+        return EbaySearchOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.search.ebay.EbaySearch
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+class EbaySearchOutputs(OutputsProxy):
     @property
     def results(self) -> OutputHandle[list[dict]]:
         return typing.cast(OutputHandle[list[dict]], self['results'])

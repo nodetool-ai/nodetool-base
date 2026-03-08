@@ -39,32 +39,59 @@ class SerpNode(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.search.youtube
+import nodetool.nodes.search.walmart
 from nodetool.workflows.base_node import BaseNode
 
-class YouTubeSearch(GraphNode[nodetool.nodes.search.youtube.YouTubeSearch.OutputType]):
+class WalmartProduct(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-        Search YouTube for videos, channels, and content.
-        youtube, search, video, content, streaming, media
+        Get detailed information about a specific Walmart product by product ID.
+        walmart, product, details, ecommerce, reviews, pricing
     """
 
-    query: str | OutputHandle[str] = connect_field(default='', description='Search query for YouTube videos')
-    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of results to return')
-
-    @property
-    def out(self) -> "YouTubeSearchOutputs":
-        return YouTubeSearchOutputs(self)
+    product_id: str | OutputHandle[str] = connect_field(default='', description='Walmart product ID (found in walmart.com/ip/{product_id} URLs)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.search.youtube.YouTubeSearch
+        return nodetool.nodes.search.walmart.WalmartProduct
 
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-class YouTubeSearchOutputs(OutputsProxy):
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search.walmart
+from nodetool.workflows.base_node import BaseNode
+
+class WalmartSearch(GraphNode[nodetool.nodes.search.walmart.WalmartSearch.OutputType]):
+    """
+
+        Search Walmart for products, prices, and reviews.
+        walmart, search, products, ecommerce, shopping, prices
+    """
+
+    query: str | OutputHandle[str] = connect_field(default='', description='Product name or description to search for')
+    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of results to return')
+    sort_by: str | OutputHandle[str] = connect_field(default='best_match', description="Sort order for results: 'best_match', 'best_seller', 'price_low', 'price_high', 'rating_high', 'new'")
+    min_price: float | OutputHandle[float] | None = connect_field(default=None, description='Minimum price filter')
+    max_price: float | OutputHandle[float] | None = connect_field(default=None, description='Maximum price filter')
+
+    @property
+    def out(self) -> "WalmartSearchOutputs":
+        return WalmartSearchOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.search.walmart.WalmartSearch
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+class WalmartSearchOutputs(OutputsProxy):
     @property
     def results(self) -> OutputHandle[list[dict]]:
         return typing.cast(OutputHandle[list[dict]], self['results'])

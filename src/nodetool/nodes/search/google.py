@@ -7,33 +7,12 @@ from pydantic import Field
 from typing import Any, ClassVar, TypedDict
 
 from nodetool.metadata.types import ImageRef
-from nodetool.workflows.base_node import BaseNode
+from nodetool.nodes.search._base import SerpNode, format_results
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.agents.tools.serp_tools import _get_configured_serp_provider
 
 
-def _format_results(results: list[dict], fields: list[tuple[str, str | None]]) -> str:
-    """Generic formatter for search results.
-
-    fields: list of (key, label) tuples. If label is None, value is printed raw.
-    """
-    lines = []
-    for i, r in enumerate(results):
-        pos = r.get("position", i + 1)
-        title = r.get("title", "Untitled")
-        lines.append(f"[{pos}] {title}")
-        for key, label in fields:
-            val = r.get(key)
-            if val:
-                if label:
-                    lines.append(f"    {label}: {val}")
-                else:
-                    lines.append(f"    {val}")
-        lines.append("")
-    return "\n".join(lines)
-
-
-class GoogleSearch(BaseNode):
+class GoogleSearch(SerpNode):
     """
     Search Google to retrieve organic search results from the web.
     google, search, serp, web, query
@@ -49,8 +28,6 @@ class GoogleSearch(BaseNode):
     num_results: int = Field(
         default=10, description="Maximum number of results to return"
     )
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.keyword:
@@ -68,11 +45,11 @@ class GoogleSearch(BaseNode):
                 raise ValueError(result_data["error"])
 
             results = result_data.get("organic_results", [])
-            text = _format_results(results, [("link", None), ("date", "Date"), ("snippet", None)])
+            text = format_results(results, [("link", None), ("date", "Date"), ("snippet", None)])
             return {"results": results, "text": text}
 
 
-class GoogleNews(BaseNode):
+class GoogleNews(SerpNode):
     """
     Search Google News to retrieve current news articles and headlines.
     google, news, serp, articles, journalism
@@ -88,8 +65,6 @@ class GoogleNews(BaseNode):
     num_results: int = Field(
         default=10, description="Maximum number of news results to return"
     )
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.keyword:
@@ -107,11 +82,11 @@ class GoogleNews(BaseNode):
                 raise ValueError(result_data["error"])
 
             results = result_data.get("news_results", [])
-            text = _format_results(results, [("link", None), ("date", "Date")])
+            text = format_results(results, [("link", None), ("date", "Date")])
             return {"results": results, "text": text}
 
 
-class GoogleImages(BaseNode):
+class GoogleImages(SerpNode):
     """
     Search Google Images to find visual content or perform reverse image search.
     google, images, serp, visual, reverse, search
@@ -120,8 +95,6 @@ class GoogleImages(BaseNode):
     keyword: str = Field(default="", description="Search query or keyword for images")
     image_url: str = Field(default="", description="URL of image for reverse image search")
     num_results: int = Field(default=20, description="Maximum number of image results to return")
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> list[ImageRef]:
         if not self.keyword and not self.image_url:
@@ -146,7 +119,7 @@ class GoogleImages(BaseNode):
             return [ImageRef(uri=img.get("original", "")) for img in images if img.get("original")]
 
 
-class GoogleFinance(BaseNode):
+class GoogleFinance(SerpNode):
     """
     Retrieve financial market data and stock information from Google Finance.
     google, finance, stocks, market, serp, trading
@@ -157,8 +130,6 @@ class GoogleFinance(BaseNode):
         default="",
         description="Time window for financial data (e.g., '1d', '5d', '1m', '3m', '6m', '1y', '5y')",
     )
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
         if not self.query:
@@ -179,7 +150,7 @@ class GoogleFinance(BaseNode):
             return result_data
 
 
-class GoogleJobs(BaseNode):
+class GoogleJobs(SerpNode):
     """
     Search Google Jobs for employment opportunities and job listings.
     google, jobs, employment, careers, serp, hiring
@@ -192,8 +163,6 @@ class GoogleJobs(BaseNode):
     query: str = Field(default="", description="Job title, skills, or company name to search for")
     location: str = Field(default="", description="Geographic location for job search")
     num_results: int = Field(default=10, description="Maximum number of job results to return")
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.query:
@@ -215,14 +184,14 @@ class GoogleJobs(BaseNode):
                 raise ValueError(result_data["error"])
 
             results = result_data.get("jobs_results", [])
-            text = _format_results(results, [
+            text = format_results(results, [
                 ("company_name", "Company"), ("location", "Location"),
                 ("via", "Via"), ("extensions", "Details"),
             ])
             return {"results": results, "text": text}
 
 
-class GoogleLens(BaseNode):
+class GoogleLens(SerpNode):
     """
     Analyze images using Google Lens to find visual matches and related content.
     google, lens, visual, image, search, serp, identify
@@ -234,8 +203,6 @@ class GoogleLens(BaseNode):
 
     image_url: str = Field(default="", description="URL of the image to analyze with Google Lens")
     num_results: int = Field(default=10, description="Maximum number of visual search results to return")
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.image_url:
@@ -260,7 +227,7 @@ class GoogleLens(BaseNode):
             return {"results": matches, "images": images}
 
 
-class GoogleMaps(BaseNode):
+class GoogleMaps(SerpNode):
     """
     Search Google Maps for places, businesses, and get location details.
     google, maps, places, locations, serp, geography
@@ -272,8 +239,6 @@ class GoogleMaps(BaseNode):
 
     query: str = Field(default="", description="Place name, address, or location query")
     num_results: int = Field(default=10, description="Maximum number of map results to return")
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.query:
@@ -310,7 +275,7 @@ class GoogleMaps(BaseNode):
             return {"results": results, "text": "\n".join(lines)}
 
 
-class GoogleShopping(BaseNode):
+class GoogleShopping(SerpNode):
     """
     Search Google Shopping for products with filters and pricing information.
     google, shopping, products, ecommerce, serp, prices
@@ -327,8 +292,6 @@ class GoogleShopping(BaseNode):
     condition: str = Field(default="", description="Product condition filter (e.g., 'new', 'used', 'refurbished')")
     sort_by: str = Field(default="", description="Sort order for results (e.g., 'price_low_to_high', 'price_high_to_low', 'review_score')")
     num_results: int = Field(default=10, description="Maximum number of shopping results to return")
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.query:

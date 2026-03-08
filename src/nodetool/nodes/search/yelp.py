@@ -4,14 +4,14 @@ Provides nodes for searching businesses and reviews via SerpAPI.
 """
 
 from pydantic import Field
-from typing import ClassVar, TypedDict
+from typing import TypedDict
 
-from nodetool.workflows.base_node import BaseNode
+from nodetool.nodes.search._base import SerpNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.agents.tools.serp_tools import _get_configured_serp_provider
 
 
-class YelpSearch(BaseNode):
+class YelpSearch(SerpNode):
     """
     Search Yelp for businesses, restaurants, and local services.
     yelp, search, businesses, restaurants, reviews, local
@@ -24,8 +24,6 @@ class YelpSearch(BaseNode):
     query: str = Field(default="", description="Business type or name to search for")
     location: str = Field(default="", description="Location to search in (e.g., 'San Francisco, CA')")
     num_results: int = Field(default=10, description="Maximum number of results to return")
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.query:

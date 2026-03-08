@@ -4,14 +4,14 @@ Provides nodes for searching academic papers and citations via SerpAPI.
 """
 
 from pydantic import Field
-from typing import ClassVar, TypedDict
+from typing import TypedDict
 
-from nodetool.workflows.base_node import BaseNode
+from nodetool.nodes.search._base import SerpNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.agents.tools.serp_tools import _get_configured_serp_provider
 
 
-class GoogleScholar(BaseNode):
+class GoogleScholar(SerpNode):
     """
     Search Google Scholar for academic papers, articles, and citations.
     google, scholar, academic, papers, research, citations, science
@@ -23,8 +23,6 @@ class GoogleScholar(BaseNode):
 
     query: str = Field(default="", description="Academic search query")
     num_results: int = Field(default=10, description="Maximum number of results to return")
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.query:

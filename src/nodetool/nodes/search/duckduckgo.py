@@ -4,14 +4,14 @@ Provides nodes for privacy-focused web search via SerpAPI.
 """
 
 from pydantic import Field
-from typing import ClassVar, TypedDict
+from typing import TypedDict
 
-from nodetool.workflows.base_node import BaseNode
+from nodetool.nodes.search._base import SerpNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.agents.tools.serp_tools import _get_configured_serp_provider
 
 
-class DuckDuckGoSearch(BaseNode):
+class DuckDuckGoSearch(SerpNode):
     """
     Search DuckDuckGo for privacy-focused web search results.
     duckduckgo, search, web, privacy, query
@@ -23,8 +23,6 @@ class DuckDuckGoSearch(BaseNode):
 
     query: str = Field(default="", description="Search query")
     num_results: int = Field(default=10, description="Maximum number of results to return")
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.query:

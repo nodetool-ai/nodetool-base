@@ -15,22 +15,60 @@ from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.search.amazon
+import nodetool.nodes.search.retail
 from nodetool.workflows.base_node import BaseNode
 
-class AmazonProduct(SingleOutputGraphNode[dict], GraphNode[dict]):
+class AppleAppStore(GraphNode[nodetool.nodes.search.retail.AppleAppStore.OutputType]):
     """
 
-        Get detailed information about a specific Amazon product by ASIN.
-        amazon, product, details, asin, ecommerce, reviews
+        Search the Apple App Store for apps, games, and utilities.
+        apple, app store, search, apps, ios, iphone, ipad, mobile
     """
 
-    product_id: str | OutputHandle[str] = connect_field(default='', description='Amazon ASIN (product ID) to look up')
-    amazon_domain: str | OutputHandle[str] = connect_field(default='amazon.com', description="Amazon domain (e.g., 'amazon.com', 'amazon.co.uk', 'amazon.de')")
+    query: str | OutputHandle[str] = connect_field(default='', description='App name or keyword to search for')
+    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of results to return')
+    country: str | OutputHandle[str] = connect_field(default='us', description="Two-letter country code (e.g., 'us', 'gb', 'de')")
+
+    @property
+    def out(self) -> "AppleAppStoreOutputs":
+        return AppleAppStoreOutputs(self)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.search.amazon.AmazonProduct
+        return nodetool.nodes.search.retail.AppleAppStore
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+class AppleAppStoreOutputs(OutputsProxy):
+    @property
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
+
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self['text'])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search.retail
+from nodetool.workflows.base_node import BaseNode
+
+class HomeDepotProduct(SingleOutputGraphNode[dict], GraphNode[dict]):
+    """
+
+        Get detailed information about a specific Home Depot product by product ID.
+        home depot, product, details, home improvement, hardware
+    """
+
+    product_id: str | OutputHandle[str] = connect_field(default='', description='Home Depot product ID to look up')
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.search.retail.HomeDepotProduct
 
     @classmethod
     def get_node_type(cls):
@@ -40,33 +78,32 @@ class AmazonProduct(SingleOutputGraphNode[dict], GraphNode[dict]):
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.search.amazon
+import nodetool.nodes.search.retail
 from nodetool.workflows.base_node import BaseNode
 
-class AmazonSearch(GraphNode[nodetool.nodes.search.amazon.AmazonSearch.OutputType]):
+class HomeDepotSearch(GraphNode[nodetool.nodes.search.retail.HomeDepotSearch.OutputType]):
     """
 
-        Search Amazon for products, prices, and reviews.
-        amazon, search, products, ecommerce, shopping, prices
+        Search Home Depot for products, tools, and home improvement items.
+        home depot, search, products, hardware, tools, home improvement
     """
 
     query: str | OutputHandle[str] = connect_field(default='', description='Product name or description to search for')
-    amazon_domain: str | OutputHandle[str] = connect_field(default='amazon.com', description="Amazon domain (e.g., 'amazon.com', 'amazon.co.uk', 'amazon.de')")
     num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of results to return')
 
     @property
-    def out(self) -> "AmazonSearchOutputs":
-        return AmazonSearchOutputs(self)
+    def out(self) -> "HomeDepotSearchOutputs":
+        return HomeDepotSearchOutputs(self)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.search.amazon.AmazonSearch
+        return nodetool.nodes.search.retail.HomeDepotSearch
 
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-class AmazonSearchOutputs(OutputsProxy):
+class HomeDepotSearchOutputs(OutputsProxy):
     @property
     def results(self) -> OutputHandle[list[dict]]:
         return typing.cast(OutputHandle[list[dict]], self['results'])

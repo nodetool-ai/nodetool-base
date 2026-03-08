@@ -15,32 +15,6 @@ from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.search.trends
-from nodetool.workflows.base_node import BaseNode
-
-class GoogleTrends(SingleOutputGraphNode[dict], GraphNode[dict]):
-    """
-
-        Retrieve Google Trends data showing search interest over time.
-        google, trends, popularity, interest, analytics, zeitgeist
-    """
-
-    query: str | OutputHandle[str] = connect_field(default='', description='Search term to get trends for')
-    date: str | OutputHandle[str] = connect_field(default='', description="Time range (e.g., 'today 12-m' for past year, 'today 3-m', '2024-01-01 2024-12-31')")
-    geo: str | OutputHandle[str] = connect_field(default='', description="Geographic region code (e.g., 'US', 'GB', 'DE')")
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.search.trends.GoogleTrends
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.search._base
 from nodetool.workflows.base_node import BaseNode
 

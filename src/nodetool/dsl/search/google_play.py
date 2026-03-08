@@ -15,32 +15,33 @@ from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.search.duckduckgo
+import nodetool.nodes.search.google_play
 from nodetool.workflows.base_node import BaseNode
 
-class DuckDuckGoSearch(GraphNode[nodetool.nodes.search.duckduckgo.DuckDuckGoSearch.OutputType]):
+class GooglePlaySearch(GraphNode[nodetool.nodes.search.google_play.GooglePlaySearch.OutputType]):
     """
 
-        Search DuckDuckGo for privacy-focused web search results.
-        duckduckgo, search, web, privacy, query
+        Search the Google Play Store for apps and games.
+        google play, search, apps, games, android, mobile, store
     """
 
-    query: str | OutputHandle[str] = connect_field(default='', description='Search query')
+    query: str | OutputHandle[str] = connect_field(default='', description='Search query for apps or games')
+    store: str | OutputHandle[str] = connect_field(default='apps', description="Store section to search: 'apps' or 'games'")
     num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of results to return')
 
     @property
-    def out(self) -> "DuckDuckGoSearchOutputs":
-        return DuckDuckGoSearchOutputs(self)
+    def out(self) -> "GooglePlaySearchOutputs":
+        return GooglePlaySearchOutputs(self)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.search.duckduckgo.DuckDuckGoSearch
+        return nodetool.nodes.search.google_play.GooglePlaySearch
 
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-class DuckDuckGoSearchOutputs(OutputsProxy):
+class GooglePlaySearchOutputs(OutputsProxy):
     @property
     def results(self) -> OutputHandle[list[dict]]:
         return typing.cast(OutputHandle[list[dict]], self['results'])

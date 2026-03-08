@@ -21809,6 +21809,325 @@
       ]
     },
     {
+      "title": "Bing Images",
+      "description": "Search Bing Images to find visual content from across the web.\n    bing, images, serp, visual, search",
+      "namespace": "search.bing",
+      "node_type": "search.bing.BingImages",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Search query or keyword for images"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 20,
+          "title": "Num Results",
+          "description": "Maximum number of image results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "image"
+              }
+            ]
+          },
+          "name": "images"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Bing News",
+      "description": "Search Bing News to retrieve current news articles and headlines.\n    bing, news, serp, articles, journalism",
+      "namespace": "search.bing",
+      "node_type": "search.bing.BingNews",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Search query or keyword for news articles"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of news results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Bing Search",
+      "description": "Search Bing to retrieve organic web search results.\n    bing, search, serp, web, query",
+      "namespace": "search.bing",
+      "node_type": "search.bing.BingSearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Search query or keyword to search for"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Duck Duck Go News",
+      "description": "Search DuckDuckGo News for recent news articles.\n    duckduckgo, news, search, articles, current events, media",
+      "namespace": "search.extended",
+      "node_type": "search.extended.DuckDuckGoNews",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "News search query"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Google Scholar Author",
+      "description": "Get detailed information about a Google Scholar author by author ID, including articles and citation metrics.\n    google, scholar, author, academic, researcher, citations, h-index, publications",
+      "namespace": "search.extended",
+      "node_type": "search.extended.GoogleScholarAuthor",
+      "properties": [
+        {
+          "name": "author_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Author Id",
+          "description": "Google Scholar author ID (found in the profile URL)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "author_id"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Yelp Reviews",
+      "description": "Get reviews for a specific Yelp business by place ID.\n    yelp, reviews, business, ratings, feedback, local",
+      "namespace": "search.extended",
+      "node_type": "search.extended.YelpReviews",
+      "properties": [
+        {
+          "name": "place_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Place Id",
+          "description": "Yelp place ID (e.g. 'ED7A7vDdg8yLNKJTSVHHmg')"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of reviews to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "place_id",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "You Tube Video",
+      "description": "Get detailed information about a specific YouTube video by video ID.\n    youtube, video, details, metadata, views, likes, channel",
+      "namespace": "search.extended",
+      "node_type": "search.extended.YouTubeVideo",
+      "properties": [
+        {
+          "name": "video_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Video Id",
+          "description": "YouTube video ID (the 'v' parameter from a YouTube URL, e.g. 'dQw4w9WgXcQ')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "video_id"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Google Trends",
       "description": "Retrieve Google Trends data showing search interest over time.\n    google, trends, popularity, interest, analytics, zeitgeist",
       "namespace": "search.trends",
@@ -22483,6 +22802,846 @@
       "expose_as_tool": true
     },
     {
+      "title": "Apple App Store",
+      "description": "Search the Apple App Store for apps, games, and utilities.\n    apple, app store, search, apps, ios, iphone, ipad, mobile",
+      "namespace": "search.retail",
+      "node_type": "search.retail.AppleAppStore",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "App name or keyword to search for"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        },
+        {
+          "name": "country",
+          "type": {
+            "type": "str"
+          },
+          "default": "us",
+          "title": "Country",
+          "description": "Two-letter country code (e.g., 'us', 'gb', 'de')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results",
+        "country"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Home Depot Product",
+      "description": "Get detailed information about a specific Home Depot product by product ID.\n    home depot, product, details, home improvement, hardware",
+      "namespace": "search.retail",
+      "node_type": "search.retail.HomeDepotProduct",
+      "properties": [
+        {
+          "name": "product_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Product Id",
+          "description": "Home Depot product ID to look up"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "product_id"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Home Depot Search",
+      "description": "Search Home Depot for products, tools, and home improvement items.\n    home depot, search, products, hardware, tools, home improvement",
+      "namespace": "search.retail",
+      "node_type": "search.retail.HomeDepotSearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Product name or description to search for"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Google Autocomplete",
+      "description": "Get Google Autocomplete suggestions for a search query.\n    google, autocomplete, suggestions, search, typeahead, completion",
+      "namespace": "search.google_extra",
+      "node_type": "search.google_extra.GoogleAutocomplete",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Partial search query to get completions for"
+        },
+        {
+          "name": "language",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Language",
+          "description": "Two-letter language code (e.g., 'en', 'de', 'fr')"
+        },
+        {
+          "name": "country",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Country",
+          "description": "Two-letter country code (e.g., 'us', 'de', 'fr')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "language",
+        "country"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Google Events",
+      "description": "Search Google Events for local events, concerts, festivals, and activities.\n    google, events, concerts, festivals, activities, local",
+      "namespace": "search.google_extra",
+      "node_type": "search.google_extra.GoogleEvents",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Event search query (e.g., 'concerts in Austin')"
+        },
+        {
+          "name": "location",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Location",
+          "description": "Location for event search"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "location",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Google Flights",
+      "description": "Search Google Flights for airline tickets, prices, and flight options.\n    google, flights, airline, tickets, travel, booking",
+      "namespace": "search.google_extra",
+      "node_type": "search.google_extra.GoogleFlights",
+      "properties": [
+        {
+          "name": "departure_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Departure Id",
+          "description": "Departure airport code (e.g., 'JFK', 'LAX') or location kgmid"
+        },
+        {
+          "name": "arrival_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Arrival Id",
+          "description": "Arrival airport code (e.g., 'LHR', 'CDG') or location kgmid"
+        },
+        {
+          "name": "outbound_date",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Outbound Date",
+          "description": "Departure date in YYYY-MM-DD format"
+        },
+        {
+          "name": "return_date",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Return Date",
+          "description": "Return date in YYYY-MM-DD format (leave empty for one-way)"
+        },
+        {
+          "name": "trip_type",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Trip Type",
+          "description": "Trip type: 1 = Round trip, 2 = One way, 3 = Multi-city"
+        },
+        {
+          "name": "adults",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Adults",
+          "description": "Number of adult passengers"
+        },
+        {
+          "name": "travel_class",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Travel Class",
+          "description": "Cabin class: 1 = Economy, 2 = Premium economy, 3 = Business, 4 = First"
+        },
+        {
+          "name": "currency",
+          "type": {
+            "type": "str"
+          },
+          "default": "USD",
+          "title": "Currency",
+          "description": "Currency code for prices (e.g., 'USD', 'EUR', 'GBP')"
+        },
+        {
+          "name": "stops",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Stops",
+          "description": "Maximum number of stops: 0 = any, 1 = non-stop, 2 = up to 1 stop, 3 = up to 2 stops"
+        },
+        {
+          "name": "sort_by",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Sort By",
+          "description": "Sort order: 1 = Top, 2 = Price, 3 = Departure, 4 = Arrival, 5 = Duration, 6 = Emissions"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "departure_id",
+        "arrival_id",
+        "outbound_date",
+        "return_date",
+        "trip_type",
+        "adults",
+        "travel_class",
+        "currency",
+        "stops",
+        "sort_by"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Google Hotels",
+      "description": "Search Google Hotels for accommodations, pricing, and availability.\n    google, hotels, accommodation, travel, booking, lodging",
+      "namespace": "search.google_extra",
+      "node_type": "search.google_extra.GoogleHotels",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Hotel search query (e.g., 'hotels in Paris')"
+        },
+        {
+          "name": "check_in_date",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Check In Date",
+          "description": "Check-in date in YYYY-MM-DD format"
+        },
+        {
+          "name": "check_out_date",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Check Out Date",
+          "description": "Check-out date in YYYY-MM-DD format"
+        },
+        {
+          "name": "adults",
+          "type": {
+            "type": "int"
+          },
+          "default": 2,
+          "title": "Adults",
+          "description": "Number of adults"
+        },
+        {
+          "name": "children",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Children",
+          "description": "Number of children"
+        },
+        {
+          "name": "currency",
+          "type": {
+            "type": "str"
+          },
+          "default": "USD",
+          "title": "Currency",
+          "description": "Currency code for prices (e.g., 'USD', 'EUR', 'GBP')"
+        },
+        {
+          "name": "sort_by",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Sort By",
+          "description": "Sort order: 0 = default, 3 = lowest price, 8 = highest rating, 13 = most reviewed"
+        },
+        {
+          "name": "min_price",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Min Price",
+          "description": "Minimum price per night filter"
+        },
+        {
+          "name": "max_price",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Max Price",
+          "description": "Maximum price per night filter"
+        },
+        {
+          "name": "hotel_class",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Hotel Class",
+          "description": "Minimum star rating: 2-5 (0 = any)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "check_in_date",
+        "check_out_date",
+        "adults",
+        "children",
+        "currency",
+        "sort_by",
+        "min_price",
+        "max_price",
+        "hotel_class"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Google Patents",
+      "description": "Search Google Patents for patent documents, filings, and prior art.\n    google, patents, intellectual property, inventions, prior art, filings",
+      "namespace": "search.google_extra",
+      "node_type": "search.google_extra.GooglePatents",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Patent search query (keywords, patent numbers, or concepts)"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Number of results per page (10-100)"
+        },
+        {
+          "name": "sort",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Sort",
+          "description": "Sort order: 'new' for newest first, 'old' for oldest first, empty for relevance"
+        },
+        {
+          "name": "inventor",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Inventor",
+          "description": "Filter by inventor name(s), comma-separated"
+        },
+        {
+          "name": "assignee",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Assignee",
+          "description": "Filter by assignee/company name(s), comma-separated"
+        },
+        {
+          "name": "country",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Country",
+          "description": "Filter by country code(s), comma-separated (e.g., 'US,EP,WO')"
+        },
+        {
+          "name": "status",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Status",
+          "description": "Filter by status: 'GRANT' or 'APPLICATION'"
+        },
+        {
+          "name": "language",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Language",
+          "description": "Filter by language (e.g., 'ENGLISH', 'GERMAN', 'CHINESE')"
+        },
+        {
+          "name": "before_date",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Before Date",
+          "description": "Maximum date filter in format type:YYYYMMDD (e.g., 'publication:20230101')"
+        },
+        {
+          "name": "after_date",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "After Date",
+          "description": "Minimum date filter in format type:YYYYMMDD (e.g., 'filing:20200101')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results",
+        "sort",
+        "inventor",
+        "assignee",
+        "country",
+        "status",
+        "language",
+        "before_date",
+        "after_date"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Google Videos",
+      "description": "Search Google Videos for video content across the web.\n    google, videos, search, media, clips, streaming",
+      "namespace": "search.google_extra",
+      "node_type": "search.google_extra.GoogleVideos",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Video search query"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of video results (controls pagination via start offset)"
+        },
+        {
+          "name": "location",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Location",
+          "description": "Geographic location for search"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results",
+        "location"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Ebay Product",
+      "description": "Get detailed information about a specific eBay product by product ID.\n    ebay, product, details, ecommerce, reviews, pricing, auction",
+      "namespace": "search.ebay",
+      "node_type": "search.ebay.EbayProduct",
+      "properties": [
+        {
+          "name": "product_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Product Id",
+          "description": "eBay product ID to look up"
+        },
+        {
+          "name": "ebay_domain",
+          "type": {
+            "type": "str"
+          },
+          "default": "ebay.com",
+          "title": "Ebay Domain",
+          "description": "eBay domain (e.g., 'ebay.com', 'ebay.co.uk', 'ebay.de')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "product_id",
+        "ebay_domain"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Ebay Search",
+      "description": "Search eBay for products, prices, and deals.\n    ebay, search, products, ecommerce, shopping, prices, auction",
+      "namespace": "search.ebay",
+      "node_type": "search.ebay.EbaySearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Product name or description to search for"
+        },
+        {
+          "name": "ebay_domain",
+          "type": {
+            "type": "str"
+          },
+          "default": "ebay.com",
+          "title": "Ebay Domain",
+          "description": "eBay domain (e.g., 'ebay.com', 'ebay.co.uk', 'ebay.de')"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        },
+        {
+          "name": "condition",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Condition",
+          "description": "Item condition filter: 'new', 'used', or empty for all"
+        },
+        {
+          "name": "min_price",
+          "type": {
+            "type": "float",
+            "optional": true
+          },
+          "default": null,
+          "title": "Min Price",
+          "description": "Minimum price filter"
+        },
+        {
+          "name": "max_price",
+          "type": {
+            "type": "float",
+            "optional": true
+          },
+          "default": null,
+          "title": "Max Price",
+          "description": "Maximum price filter"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "ebay_domain",
+        "num_results",
+        "condition",
+        "min_price",
+        "max_price"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Duck Duck Go Search",
       "description": "Search DuckDuckGo for privacy-focused web search results.\n    duckduckgo, search, web, privacy, query",
       "namespace": "search.duckduckgo",
@@ -22529,6 +23688,117 @@
       "basic_fields": [
         "query",
         "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Walmart Product",
+      "description": "Get detailed information about a specific Walmart product by product ID.\n    walmart, product, details, ecommerce, reviews, pricing",
+      "namespace": "search.walmart",
+      "node_type": "search.walmart.WalmartProduct",
+      "properties": [
+        {
+          "name": "product_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Product Id",
+          "description": "Walmart product ID (found in walmart.com/ip/{product_id} URLs)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "product_id"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Walmart Search",
+      "description": "Search Walmart for products, prices, and reviews.\n    walmart, search, products, ecommerce, shopping, prices",
+      "namespace": "search.walmart",
+      "node_type": "search.walmart.WalmartSearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Product name or description to search for"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        },
+        {
+          "name": "sort_by",
+          "type": {
+            "type": "str"
+          },
+          "default": "best_match",
+          "title": "Sort By",
+          "description": "Sort order for results: 'best_match', 'best_seller', 'price_low', 'price_high', 'rating_high', 'new'"
+        },
+        {
+          "name": "min_price",
+          "type": {
+            "type": "float",
+            "optional": true
+          },
+          "default": null,
+          "title": "Min Price",
+          "description": "Minimum price filter"
+        },
+        {
+          "name": "max_price",
+          "type": {
+            "type": "float",
+            "optional": true
+          },
+          "default": null,
+          "title": "Max Price",
+          "description": "Maximum price filter"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results",
+        "sort_by",
+        "min_price",
+        "max_price"
       ],
       "expose_as_tool": true
     },
@@ -22629,6 +23899,517 @@
       "basic_fields": [
         "query",
         "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Google Play Search",
+      "description": "Search the Google Play Store for apps and games.\n    google play, search, apps, games, android, mobile, store",
+      "namespace": "search.google_play",
+      "node_type": "search.google_play.GooglePlaySearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Search query for apps or games"
+        },
+        {
+          "name": "store",
+          "type": {
+            "type": "str"
+          },
+          "default": "apps",
+          "title": "Store",
+          "description": "Store section to search: 'apps' or 'games'"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "store",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Serp",
+      "description": "Base class for SerpAPI-powered search nodes.\n\n    Provides common provider initialization and the search_raw helper.\n    Subclasses implement process() and call self._search_raw() instead of\n    repeating the 8-line provider boilerplate.",
+      "namespace": "search._base",
+      "node_type": "search._base.Serp",
+      "expose_as_tool": true
+    },
+    {
+      "title": "Google Trending Now",
+      "description": "Retrieve currently trending searches from Google Trends, including\n    real-time and daily trending topics with traffic volume and categories.\n    google, trends, trending, viral, popular, realtime, daily, buzz",
+      "namespace": "search.google_trends_extra",
+      "node_type": "search.google_trends_extra.GoogleTrendingNow",
+      "properties": [
+        {
+          "name": "geo",
+          "type": {
+            "type": "str"
+          },
+          "default": "US",
+          "title": "Geo",
+          "description": "Country code for trending results (e.g., 'US', 'GB', 'DE')"
+        },
+        {
+          "name": "category",
+          "type": {
+            "type": "str"
+          },
+          "default": "all",
+          "title": "Category",
+          "description": "Trending category to filter by (e.g., 'all', or a category ID)"
+        },
+        {
+          "name": "frequency",
+          "type": {
+            "type": "enum",
+            "values": [
+              "realtime",
+              "daily"
+            ],
+            "type_name": "nodetool.nodes.search.google_trends_extra.TrendingFrequency"
+          },
+          "default": "realtime",
+          "title": "Frequency",
+          "description": "Frequency of trending data: 'realtime' or 'daily'"
+        },
+        {
+          "name": "hours",
+          "type": {
+            "type": "int"
+          },
+          "default": 24,
+          "title": "Hours",
+          "description": "Time range in hours (4, 24, 48, or 168)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "geo",
+        "category",
+        "frequency",
+        "hours"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Baidu Search",
+      "description": "Search Baidu to retrieve organic search results from China's largest search engine.\n    baidu, search, serp, web, chinese, china, query",
+      "namespace": "search.international",
+      "node_type": "search.international.BaiduSearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Search query or keyword to search for"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return (max 50)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Naver Search",
+      "description": "Search Naver to retrieve organic search results from South Korea's largest search engine.\n    naver, search, serp, web, korean, korea, query",
+      "namespace": "search.international",
+      "node_type": "search.international.NaverSearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Search query or keyword to search for"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return (max 100)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Yahoo Search",
+      "description": "Search Yahoo to retrieve organic web search results.\n    yahoo, search, serp, web, query",
+      "namespace": "search.international",
+      "node_type": "search.international.YahooSearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Search query or keyword to search for"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Bing Shopping",
+      "description": "Search Bing Shopping for product listings with prices and seller info.\n    bing, shopping, products, prices, ecommerce, deals, buy",
+      "namespace": "search.more_engines",
+      "node_type": "search.more_engines.BingShopping",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Product search query"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of shopping results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Bing Videos",
+      "description": "Search Bing Videos for video content across the web.\n    bing, videos, search, media, streaming, content",
+      "namespace": "search.more_engines",
+      "node_type": "search.more_engines.BingVideos",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Video search query"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of video results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Google Maps Reviews",
+      "description": "Retrieve reviews for a Google Maps place by its data_id.\n    Use Google Maps search to find a place's data_id first.\n    google, maps, reviews, places, ratings, local, business, restaurant",
+      "namespace": "search.more_engines",
+      "node_type": "search.more_engines.GoogleMapsReviews",
+      "properties": [
+        {
+          "name": "data_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Data Id",
+          "description": "Google Maps place data_id (obtain from a Google Maps search result)"
+        },
+        {
+          "name": "sort_by",
+          "type": {
+            "type": "enum",
+            "values": [
+              "qualityScore",
+              "newestFirst",
+              "ratingHigh",
+              "ratingLow"
+            ],
+            "type_name": "nodetool.nodes.search.more_engines.ReviewSortOrder"
+          },
+          "default": "qualityScore",
+          "title": "Sort By",
+          "description": "Sort order for reviews"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Number of reviews to return (1-20)",
+          "min": 1.0,
+          "max": 20.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "data_id",
+        "sort_by",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "You Tube Transcript",
+      "description": "Retrieve the full transcript of a YouTube video by its video ID.\n    Concatenates all transcript segments into a single text output.\n    youtube, transcript, subtitles, captions, text, video, speech",
+      "namespace": "search.more_engines",
+      "node_type": "search.more_engines.YouTubeTranscript",
+      "properties": [
+        {
+          "name": "video_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Video Id",
+          "description": "YouTube video ID (the part after v= in the URL)"
+        },
+        {
+          "name": "lang",
+          "type": {
+            "type": "str"
+          },
+          "default": "en",
+          "title": "Lang",
+          "description": "Language code for the transcript (e.g., 'en', 'es', 'de')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "segments"
+        }
+      ],
+      "basic_fields": [
+        "video_id",
+        "lang"
       ],
       "expose_as_tool": true
     },
@@ -47802,13 +49583,13 @@
     {
       "id": "search-google-shopping",
       "name": "Search - Google Shopping",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Google Shopping as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "google",
         "shopping",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
@@ -47841,14 +49622,14 @@
     {
       "id": "search-google-finance",
       "name": "Search - Google Finance",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Google Finance as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "google",
         "finance",
         "stocks",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
@@ -47913,25 +49694,25 @@
     {
       "id": "search-amazon-products",
       "name": "Search - Amazon Products",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Amazon Search as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "amazon",
         "products",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
       "id": "search-google-images",
       "name": "Search - Google Images",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Google Images as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "google",
         "images",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
@@ -48057,14 +49838,14 @@
     {
       "id": "search-google-scholar",
       "name": "Search - Google Scholar",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Scholar Search as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "google",
         "scholar",
         "academic",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
@@ -48079,13 +49860,13 @@
     {
       "id": "search-google-trends",
       "name": "Search - Google Trends",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Google Trends as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "google",
         "trends",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
@@ -48204,25 +49985,25 @@
     {
       "id": "search-google-jobs",
       "name": "Search - Google Jobs",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Google Jobs as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "google",
         "jobs",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
       "id": "search-duckduckgo",
       "name": "Search - DuckDuckGo",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses DuckDuckGo Search as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "duckduckgo",
         "web",
         "privacy",
-        "analysis"
+        "agent"
       ]
     },
     {
@@ -48247,38 +50028,38 @@
     {
       "id": "search-google-lens",
       "name": "Search - Google Lens",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Google Lens as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "google",
         "lens",
         "visual",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
       "id": "search-google-news",
       "name": "Search - Google News",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Google News as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "google",
         "news",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
       "id": "search-youtube",
       "name": "Search - YouTube",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses YouTube Search as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "youtube",
         "video",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
@@ -48331,27 +50112,27 @@
     {
       "id": "search-amazon-product-detail",
       "name": "Search - Amazon Product Detail",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Amazon Product Detail as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "amazon",
         "product",
         "detail",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
       "id": "search-google-maps",
       "name": "Search - Google Maps",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Google Maps as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "google",
         "maps",
         "local",
         "serp",
-        "analysis"
+        "agent"
       ]
     },
     {
@@ -48418,6 +50199,19 @@
       ]
     },
     {
+      "id": "claude-agent-node-tools",
+      "name": "Claude Agent with Node Tools",
+      "description": "Claude Agent using control edges to call search nodes as tools. The agent decides when and how to search.",
+      "tags": [
+        "claude",
+        "agent",
+        "tools",
+        "control",
+        "search",
+        "research"
+      ]
+    },
+    {
       "id": "",
       "name": "AI Product Launch Video Generator",
       "description": "Create a realistic 16:9 marketing video for a new product launch using the TextToVideo node.",
@@ -48431,13 +50225,13 @@
     {
       "id": "search-yelp",
       "name": "Search - Yelp",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Yelp Search as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "yelp",
         "local",
         "business",
-        "analysis"
+        "agent"
       ]
     },
     {
@@ -48454,13 +50248,13 @@
     {
       "id": "search-google-web",
       "name": "Search - Google Web",
-      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "description": "Claude Agent uses Google Search as a tool via control edges. The agent decides what to search and analyzes results.",
       "tags": [
         "search",
         "google",
         "web",
         "serp",
-        "analysis"
+        "agent"
       ]
     }
   ]

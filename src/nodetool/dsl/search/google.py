@@ -297,3 +297,27 @@ class GoogleShoppingOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self['text'])
 
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search._base
+from nodetool.workflows.base_node import BaseNode
+
+class SerpNode(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
+    """
+    Base class for SerpAPI-powered search nodes.
+
+        Provides common provider initialization and the search_raw helper.
+        Subclasses implement process() and call self._search_raw() instead of
+        repeating the 8-line provider boilerplate.
+    """
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.search._base.SerpNode
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+

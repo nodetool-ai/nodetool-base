@@ -4,14 +4,13 @@ Provides nodes for retrieving trend data via SerpAPI.
 """
 
 from pydantic import Field
-from typing import ClassVar
 
-from nodetool.workflows.base_node import BaseNode
+from nodetool.nodes.search._base import SerpNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.agents.tools.serp_tools import _get_configured_serp_provider
 
 
-class GoogleTrends(BaseNode):
+class GoogleTrends(SerpNode):
     """
     Retrieve Google Trends data showing search interest over time.
     google, trends, popularity, interest, analytics, zeitgeist
@@ -28,8 +27,6 @@ class GoogleTrends(BaseNode):
         default="",
         description="Geographic region code (e.g., 'US', 'GB', 'DE')",
     )
-
-    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> dict:
         if not self.query:
