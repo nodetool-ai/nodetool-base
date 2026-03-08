@@ -97,15 +97,31 @@ class ClaudeAgent(BaseNode):
         if not self.prompt.strip():
             raise RuntimeError("Prompt is required")
 
-        # Get workspace path for the agent
-        workspace_path = context.resolve_workspace_path("")
+        # Get workspace path for the agent, fall back to temp dir
+        try:
+            workspace_path = context.resolve_workspace_path("")
+        except PermissionError:
+            import tempfile
+            workspace_path = tempfile.mkdtemp(prefix="claude_agent_")
 
-        # Get Anthropic API key from nodetool settings
+        # Get Anthropic API key from nodetool settings (optional —
+        # if absent, the Claude CLI falls back to the user's subscription)
         api_key = await context.get_secret("ANTHROPIC_API_KEY")
-        if not api_key:
-            raise ValueError(
-                "Anthropic API key not configured in NodeTool settings."
+
+        env: dict[str, str] = {
+            "CLAUDECODE": "",  # Allow launching from within Claude Code sessions
+        }
+        if api_key:
+            env["ANTHROPIC_API_KEY"] = api_key
+            log.info("ClaudeAgent using ANTHROPIC_API_KEY from settings")
+        else:
+            log.info(
+                "ClaudeAgent: no ANTHROPIC_API_KEY configured, "
+                "falling back to Claude CLI subscription"
             )
+
+        # Collect stderr for debugging
+        stderr_lines: list[str] = []
 
         # Configure agent options using official SDK parameters
         options = ClaudeAgentOptions(
@@ -115,7 +131,8 @@ class ClaudeAgent(BaseNode):
             cwd=str(workspace_path) if workspace_path else None,
             allowed_tools=self.allowed_tools,
             permission_mode=self.permission_mode.value,  # type: ignore[arg-type]
-            env={"ANTHROPIC_API_KEY": api_key},  # Pass API key to the SDK
+            env=env,
+            stderr=lambda line: stderr_lines.append(line),
         )
 
         try:
@@ -149,7 +166,10 @@ class ClaudeAgent(BaseNode):
             await outputs.emit("text", full_text)
 
         except Exception as e:
+            stderr_output = "\n".join(stderr_lines[-20:]) if stderr_lines else ""
             error_msg = f"Claude Agent error: {str(e)}"
+            if stderr_output:
+                error_msg += f"\nStderr:\n{stderr_output}"
             log.error(error_msg)
             context.post_message(
                 LogUpdate(
