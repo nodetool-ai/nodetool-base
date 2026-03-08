@@ -170,8 +170,17 @@ class FormatText(BaseNode):
             # Create Jinja2 environment
             env = Environment(loader=BaseLoader())
 
-            # Convert template variables to lowercase
             template_str = self.template
+
+            # Convert single-brace {VAR} patterns to Jinja2 {{ var }} syntax
+            # so both {VAR} and {{ var }} work as placeholders
+            template_str = re.sub(
+                r"(?<!\{)\{([A-Za-z_]\w*)\}(?!\})",
+                r"{{ \1 }}",
+                template_str,
+            )
+
+            # Convert template variables to lowercase
             for var in re.findall(r"{{\s*([^|}]+)", template_str):
                 template_str = template_str.replace(var, var.lower())
 
