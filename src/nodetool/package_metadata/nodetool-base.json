@@ -21750,6 +21750,55 @@
       ]
     },
     {
+      "title": "Google Trends",
+      "description": "Retrieve Google Trends data showing search interest over time.\n    google, trends, popularity, interest, analytics, zeitgeist",
+      "namespace": "search.trends",
+      "node_type": "search.trends.GoogleTrends",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Search term to get trends for"
+        },
+        {
+          "name": "date",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Date",
+          "description": "Time range (e.g., 'today 12-m' for past year, 'today 3-m', '2024-01-01 2024-12-31')"
+        },
+        {
+          "name": "geo",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Geo",
+          "description": "Geographic region code (e.g., 'US', 'GB', 'DE')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "date",
+        "geo"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Google Finance",
       "description": "Retrieve financial market data and stock information from Google Finance.\n    google, finance, stocks, market, serp, trading",
       "namespace": "search.google",
@@ -22187,6 +22236,315 @@
         "max_price",
         "condition",
         "sort_by",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Amazon Product",
+      "description": "Get detailed information about a specific Amazon product by ASIN.\n    amazon, product, details, asin, ecommerce, reviews",
+      "namespace": "search.amazon",
+      "node_type": "search.amazon.AmazonProduct",
+      "properties": [
+        {
+          "name": "product_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Product Id",
+          "description": "Amazon ASIN (product ID) to look up"
+        },
+        {
+          "name": "amazon_domain",
+          "type": {
+            "type": "str"
+          },
+          "default": "amazon.com",
+          "title": "Amazon Domain",
+          "description": "Amazon domain (e.g., 'amazon.com', 'amazon.co.uk', 'amazon.de')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "product_id",
+        "amazon_domain"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Amazon Search",
+      "description": "Search Amazon for products, prices, and reviews.\n    amazon, search, products, ecommerce, shopping, prices",
+      "namespace": "search.amazon",
+      "node_type": "search.amazon.AmazonSearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Product name or description to search for"
+        },
+        {
+          "name": "amazon_domain",
+          "type": {
+            "type": "str"
+          },
+          "default": "amazon.com",
+          "title": "Amazon Domain",
+          "description": "Amazon domain (e.g., 'amazon.com', 'amazon.co.uk', 'amazon.de')"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "amazon_result"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "amazon_domain",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Yelp Search",
+      "description": "Search Yelp for businesses, restaurants, and local services.\n    yelp, search, businesses, restaurants, reviews, local",
+      "namespace": "search.yelp",
+      "node_type": "search.yelp.YelpSearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Business type or name to search for"
+        },
+        {
+          "name": "location",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Location",
+          "description": "Location to search in (e.g., 'San Francisco, CA')"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "yelp_result"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "location",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Duck Duck Go Search",
+      "description": "Search DuckDuckGo for privacy-focused web search results.\n    duckduckgo, search, web, privacy, query",
+      "namespace": "search.duckduckgo",
+      "node_type": "search.duckduckgo.DuckDuckGoSearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Search query"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "duckduckgo_result"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "You Tube Search",
+      "description": "Search YouTube for videos, channels, and content.\n    youtube, search, video, content, streaming, media",
+      "namespace": "search.youtube",
+      "node_type": "search.youtube.YouTubeSearch",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Search query for YouTube videos"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "youtube_result"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
+        "num_results"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Google Scholar",
+      "description": "Search Google Scholar for academic papers, articles, and citations.\n    google, scholar, academic, papers, research, citations, science",
+      "namespace": "search.scholar",
+      "node_type": "search.scholar.GoogleScholar",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "Academic search query"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Maximum number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "scholar_result"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "query",
         "num_results"
       ],
       "expose_as_tool": true
@@ -33057,6 +33415,15 @@
           "default": "acceptEdits",
           "title": "Permission Mode",
           "description": "Permission mode for tool usage."
+        },
+        {
+          "name": "use_claude_credentials",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Use Claude Credentials",
+          "description": "Use Claude Code credentials file (~/.claude/.credentials.json) instead of the ANTHROPIC_API_KEY secret. Requires an active Claude Max/Pro subscription."
         }
       ],
       "outputs": [
@@ -33079,10 +33446,8 @@
         "system_prompt",
         "max_turns",
         "allowed_tools",
-        "permission_mode"
-      ],
-      "required_settings": [
-        "ANTHROPIC_API_KEY"
+        "permission_mode",
+        "use_claude_credentials"
       ],
       "is_streaming_output": true
     },

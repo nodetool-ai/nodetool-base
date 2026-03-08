@@ -43,6 +43,7 @@ class ClaudeAgent(GraphNode[nodetool.nodes.anthropic.agents.ClaudeAgent.OutputTy
     max_turns: int | OutputHandle[int] = connect_field(default=20, description='Maximum number of turns the agent can take.')
     allowed_tools: list[str] | OutputHandle[list[str]] = connect_field(default=['Read', 'Write', 'Bash'], description="List of tools the agent is allowed to use (e.g., 'Read', 'Write', 'Bash').")
     permission_mode: nodetool.nodes.anthropic.agents.PermissionMode = Field(default=nodetool.nodes.anthropic.agents.PermissionMode.ACCEPT_EDITS, description='Permission mode for tool usage.')
+    use_claude_credentials: bool | OutputHandle[bool] = connect_field(default=False, description='Use Claude Code credentials file (~/.claude/.credentials.json) instead of the ANTHROPIC_API_KEY secret. Requires an active Claude Max/Pro subscription.')
 
     @property
     def out(self) -> "ClaudeAgentOutputs":

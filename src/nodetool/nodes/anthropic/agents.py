@@ -1,4 +1,5 @@
 from enum import Enum
+from pathlib import Path
 from typing import ClassVar, TypedDict, List
 from pydantic import Field
 
@@ -41,7 +42,6 @@ class ClaudeAgent(BaseNode):
 
     _is_dynamic: ClassVar[bool] = False
     _supports_dynamic_outputs: ClassVar[bool] = False
-    _required_settings: ClassVar[list[str]] = ["ANTHROPIC_API_KEY"]
 
     prompt: str = Field(
         default="",
@@ -75,6 +75,11 @@ class ClaudeAgent(BaseNode):
         description="Permission mode for tool usage.",
     )
 
+    use_claude_credentials: bool = Field(
+        default=False,
+        description="Use Claude Code credentials file (~/.claude/.credentials.json) instead of the ANTHROPIC_API_KEY secret. Requires an active Claude Max/Pro subscription.",
+    )
+
     @classmethod
     def is_streaming_output(cls) -> bool:
         return True
@@ -104,21 +109,34 @@ class ClaudeAgent(BaseNode):
             import tempfile
             workspace_path = tempfile.mkdtemp(prefix="claude_agent_")
 
-        # Get Anthropic API key from nodetool settings (optional —
-        # if absent, the Claude CLI falls back to the user's subscription)
-        api_key = await context.get_secret("ANTHROPIC_API_KEY")
-
         env: dict[str, str] = {
             "CLAUDECODE": "",  # Allow launching from within Claude Code sessions
         }
-        if api_key:
-            env["ANTHROPIC_API_KEY"] = api_key
-            log.info("ClaudeAgent using ANTHROPIC_API_KEY from settings")
-        else:
+
+        if self.use_claude_credentials:
+            # Use Claude Code's credentials file for authentication
+            credentials_path = Path.home() / ".claude" / ".credentials.json"
+            if not credentials_path.exists():
+                raise ValueError(
+                    f"Claude credentials file not found at {credentials_path}. "
+                    "Please log in with Claude Code first."
+                )
             log.info(
-                "ClaudeAgent: no ANTHROPIC_API_KEY configured, "
-                "falling back to Claude CLI subscription"
+                "ClaudeAgent using Claude Code credentials "
+                f"from {credentials_path}"
             )
+        else:
+            # Use ANTHROPIC_API_KEY from nodetool settings (optional —
+            # if absent, the Claude CLI falls back to the user's subscription)
+            api_key = await context.get_secret("ANTHROPIC_API_KEY")
+            if api_key:
+                env["ANTHROPIC_API_KEY"] = api_key
+                log.info("ClaudeAgent using ANTHROPIC_API_KEY from settings")
+            else:
+                log.info(
+                    "ClaudeAgent: no ANTHROPIC_API_KEY configured, "
+                    "falling back to Claude CLI subscription"
+                )
 
         # Collect stderr for debugging
         stderr_lines: list[str] = []
