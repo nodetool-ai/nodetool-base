@@ -60,6 +60,63 @@ def _format_news_results(results: list[NewsResult]) -> str:
     return "\n".join(lines)
 
 
+def _format_job_results(results: list[JobResult]) -> str:
+    """Format job search results as readable text."""
+    lines = []
+    for r in results:
+        lines.append(f"{r.title}")
+        if r.company_name:
+            lines.append(f"    Company: {r.company_name}")
+        if r.location:
+            lines.append(f"    Location: {r.location}")
+        if r.via:
+            lines.append(f"    Via: {r.via}")
+        if r.extensions:
+            lines.append(f"    {', '.join(r.extensions)}")
+        lines.append("")
+    return "\n".join(lines)
+
+
+def _format_local_results(results: list[LocalResult]) -> str:
+    """Format local/maps search results as readable text."""
+    lines = []
+    for r in results:
+        lines.append(f"[{r.position}] {r.title}")
+        if r.address:
+            lines.append(f"    {r.address}")
+        if r.rating is not None:
+            rating_str = f"    Rating: {r.rating}"
+            if r.reviews is not None:
+                rating_str += f" ({r.reviews} reviews)"
+            lines.append(rating_str)
+        if r.price:
+            lines.append(f"    Price: {r.price}")
+        if r.open_state:
+            lines.append(f"    {r.open_state}")
+        lines.append("")
+    return "\n".join(lines)
+
+
+def _format_shopping_results(results: list[ShoppingResult]) -> str:
+    """Format shopping search results as readable text."""
+    lines = []
+    for r in results:
+        lines.append(f"[{r.position}] {r.title}")
+        if r.price:
+            price_str = f"    Price: {r.price}"
+            if r.old_price:
+                price_str += f" (was {r.old_price})"
+            lines.append(price_str)
+        if r.source:
+            lines.append(f"    Source: {r.source}")
+        if r.link:
+            lines.append(f"    {r.link}")
+        if r.rating is not None:
+            lines.append(f"    Rating: {r.rating}")
+        lines.append("")
+    return "\n".join(lines)
+
+
 class GoogleSearch(BaseNode):
     """
     Search Google to retrieve organic search results from the web.
@@ -241,6 +298,10 @@ class GoogleJobs(BaseNode):
     google, jobs, employment, careers, serp, hiring
     """
 
+    class OutputType(TypedDict):
+        results: list[JobResult]
+        text: str
+
     query: str = Field(
         default="", description="Job title, skills, or company name to search for"
     )
@@ -251,7 +312,7 @@ class GoogleJobs(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    async def process(self, context: ProcessingContext) -> list[JobResult]:
+    async def process(self, context: ProcessingContext) -> OutputType:
         if not self.query:
             raise ValueError("Query is required for Google Jobs search.")
 
@@ -274,8 +335,12 @@ class GoogleJobs(BaseNode):
                 raise ValueError(result_data["error"])
 
             response = GoogleJobsResponse(**result_data)
+            results = response.jobs_results or []
 
-            return response.jobs_results or []
+            return {
+                "results": results,
+                "text": _format_job_results(results),
+            }
 
 
 class GoogleLens(BaseNode):
@@ -336,6 +401,10 @@ class GoogleMaps(BaseNode):
     google, maps, places, locations, serp, geography
     """
 
+    class OutputType(TypedDict):
+        results: list[LocalResult]
+        text: str
+
     query: str = Field(default="", description="Place name, address, or location query")
     num_results: int = Field(
         default=10, description="Maximum number of map results to return"
@@ -343,7 +412,7 @@ class GoogleMaps(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    async def process(self, context: ProcessingContext) -> list[LocalResult]:
+    async def process(self, context: ProcessingContext) -> OutputType:
         if not self.query:
             raise ValueError("Query is required for map search.")
 
@@ -369,8 +438,12 @@ class GoogleMaps(BaseNode):
                 del result["type"]
 
             response = GoogleMapsResponse(**result_data)
+            results = response.local_results or []
 
-            return response.local_results or []
+            return {
+                "results": results,
+                "text": _format_local_results(results),
+            }
 
 
 class GoogleShopping(BaseNode):
@@ -402,7 +475,11 @@ class GoogleShopping(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    async def process(self, context: ProcessingContext) -> list[ShoppingResult]:
+    class OutputType(TypedDict):
+        results: list[ShoppingResult]
+        text: str
+
+    async def process(self, context: ProcessingContext) -> OutputType:
         if not self.query:
             raise ValueError("Query is required for Google Shopping search.")
 
@@ -429,5 +506,9 @@ class GoogleShopping(BaseNode):
                 raise ValueError(result_data["error"])
 
             response = GoogleShoppingResponse(**result_data)
+            results = response.shopping_results or []
 
-            return response.shopping_results or []
+            return {
+                "results": results,
+                "text": _format_shopping_results(results),
+            }
