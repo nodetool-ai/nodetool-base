@@ -272,9 +272,13 @@ class Template(BaseNode):
 
         result = self.string
         for key, value in template_values.items():
-            # Replace patterns like {{ key }} with the provided value
-            pattern = r"{{\s*" + re.escape(str(key)) + r"\s*}}"
-            result = re.sub(pattern, str(value), result)
+            str_value = str(value)
+            # Replace patterns like {{ key }} and {key} with the provided value
+            # Use a function replacement to avoid regex backreference issues in value
+            jinja_pattern = r"{{\s*" + re.escape(str(key)) + r"\s*}}"
+            result = re.sub(jinja_pattern, lambda _: str_value, result)
+            single_pattern = r"(?<!\{)\{" + re.escape(str(key)) + r"\}(?!\})"
+            result = re.sub(single_pattern, lambda _: str_value, result)
         return result
 
 
