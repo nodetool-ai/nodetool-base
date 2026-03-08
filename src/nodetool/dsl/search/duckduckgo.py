@@ -42,8 +42,8 @@ class DuckDuckGoSearch(GraphNode[nodetool.nodes.search.duckduckgo.DuckDuckGoSear
 
 class DuckDuckGoSearchOutputs(OutputsProxy):
     @property
-    def results(self) -> OutputHandle[list[types.DuckDuckGoResult]]:
-        return typing.cast(OutputHandle[list[types.DuckDuckGoResult]], self['results'])
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
 
     @property
     def text(self) -> OutputHandle[str]:

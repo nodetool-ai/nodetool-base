@@ -68,8 +68,8 @@ class AmazonSearch(GraphNode[nodetool.nodes.search.amazon.AmazonSearch.OutputTyp
 
 class AmazonSearchOutputs(OutputsProxy):
     @property
-    def results(self) -> OutputHandle[list[types.AmazonResult]]:
-        return typing.cast(OutputHandle[list[types.AmazonResult]], self['results'])
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
 
     @property
     def text(self) -> OutputHandle[str]:

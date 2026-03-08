@@ -42,8 +42,8 @@ class YouTubeSearch(GraphNode[nodetool.nodes.search.youtube.YouTubeSearch.Output
 
 class YouTubeSearchOutputs(OutputsProxy):
     @property
-    def results(self) -> OutputHandle[list[types.YouTubeResult]]:
-        return typing.cast(OutputHandle[list[types.YouTubeResult]], self['results'])
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
 
     @property
     def text(self) -> OutputHandle[str]:

@@ -3359,7 +3359,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 157072,
+          "downloads": 155948,
           "likes": 135
         },
         {
@@ -3410,7 +3410,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 24577,
+          "downloads": 23078,
           "likes": 48
         },
         {
@@ -3461,7 +3461,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 187282,
+          "downloads": 177901,
           "likes": 30
         },
         {
@@ -3481,7 +3481,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2763,
+          "downloads": 5337,
           "likes": 29
         },
         {
@@ -3507,7 +3507,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 98779,
+          "downloads": 107810,
           "likes": 7
         },
         {
@@ -3528,7 +3528,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 44041,
+          "downloads": 43707,
           "likes": 13
         },
         {
@@ -3547,7 +3547,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 616,
+          "downloads": 621,
           "likes": 19
         },
         {
@@ -3598,7 +3598,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2478,
+          "downloads": 2385,
           "likes": 23
         },
         {
@@ -3623,7 +3623,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 17322,
+          "downloads": 17028,
           "likes": 65
         },
         {
@@ -3647,7 +3647,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 28428,
+          "downloads": 21447,
           "likes": 64
         },
         {
@@ -3671,7 +3671,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 64241,
+          "downloads": 68852,
           "likes": 73
         },
         {
@@ -3696,7 +3696,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 87467,
+          "downloads": 85847,
           "likes": 158
         },
         {
@@ -3721,7 +3721,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 47019,
+          "downloads": 47157,
           "likes": 84
         }
       ],
@@ -3925,7 +3925,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 24577,
+          "downloads": 23078,
           "likes": 48
         }
       ],
@@ -4234,7 +4234,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 24577,
+          "downloads": 23078,
           "likes": 48
         }
       ],
@@ -4353,7 +4353,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 157072,
+          "downloads": 155948,
           "likes": 135
         },
         {
@@ -4404,7 +4404,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 187282,
+          "downloads": 177901,
           "likes": 30
         }
       ],
@@ -4597,7 +4597,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 24577,
+          "downloads": 23078,
           "likes": 48
         }
       ],
@@ -11622,6 +11622,65 @@
         "folder",
         "filename"
       ]
+    },
+    {
+      "title": "Save JSON",
+      "description": "Saves a dictionary or list as a JSON file in the assets folder.\n    json, save, file, export, serialize\n\n    Use cases:\n    - Save API responses for inspection\n    - Export search results as JSON\n    - Archive structured data from workflows",
+      "namespace": "nodetool.dictionary",
+      "node_type": "nodetool.dictionary.SaveJSON",
+      "properties": [
+        {
+          "name": "data",
+          "type": {
+            "type": "any"
+          },
+          "default": {},
+          "title": "Data",
+          "description": "Data to save as JSON (dict or list)"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Folder",
+          "description": "Name of the output folder."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "%Y-%m-%d-%H-%M-%S.json",
+          "title": "Name",
+          "description": "\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year, %m - Month, %d - Day\n        %H - Hour, %M - Minute, %S - Second\n        "
+        },
+        {
+          "name": "indent",
+          "type": {
+            "type": "int"
+          },
+          "default": 2,
+          "title": "Indent",
+          "description": "JSON indentation level"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "data",
+        "folder",
+        "name",
+        "indent"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "To JSON",
@@ -21939,7 +21998,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "job_result"
+                "type": "dict"
               }
             ]
           },
@@ -21984,6 +22043,30 @@
           "description": "Maximum number of visual search results to return"
         }
       ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "results"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "image"
+              }
+            ]
+          },
+          "name": "images"
+        }
+      ],
       "basic_fields": [
         "image_url",
         "num_results"
@@ -22021,7 +22104,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "local_result"
+                "type": "dict"
               }
             ]
           },
@@ -22071,7 +22154,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "news_result"
+                "type": "dict"
               }
             ]
           },
@@ -22121,7 +22204,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "organic_result"
+                "type": "dict"
               }
             ]
           },
@@ -22216,7 +22299,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "shopping_result"
+                "type": "dict"
               }
             ]
           },
@@ -22319,7 +22402,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "amazon_result"
+                "type": "dict"
               }
             ]
           },
@@ -22379,7 +22462,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "yelp_result"
+                "type": "dict"
               }
             ]
           },
@@ -22430,7 +22513,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "duckduckgo_result"
+                "type": "dict"
               }
             ]
           },
@@ -22480,7 +22563,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "youtube_result"
+                "type": "dict"
               }
             ]
           },
@@ -22530,7 +22613,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "scholar_result"
+                "type": "dict"
               }
             ]
           },
@@ -33333,7 +33416,7 @@
     },
     {
       "title": "Claude Agent",
-      "description": "Run Claude as an agent in a sandboxed environment with tool use capabilities.\n    claude, agent, ai, anthropic, sandbox, assistant\n\n    Uses the Claude Agent SDK to run Claude with access to tools in a secure sandbox.\n    The agent can execute commands, read/write files, and use various tools while\n    maintaining security through sandbox isolation.\n\n    Use cases:\n    - Automated coding and debugging tasks\n    - File manipulation and analysis\n    - Complex multi-step workflows\n    - Research and data gathering",
+      "description": "Run Claude as an agent with tool use capabilities and control edge support.\n    claude, agent, ai, anthropic, sandbox, assistant\n\n    Uses the Claude Agent SDK to run Claude with access to built-in tools\n    (Read, Write, Bash, etc.) and any nodes connected via control edges.\n    Control edges let the agent trigger other workflow nodes as tools,\n    passing parameters and receiving results \u2014 the same pattern as the\n    standard Agent node.\n\n    Use cases:\n    - Automated coding and debugging tasks\n    - File manipulation and analysis\n    - Complex multi-step workflows with node tools\n    - Research and data gathering",
       "namespace": "anthropic.agents",
       "node_type": "anthropic.agents.ClaudeAgent",
       "properties": [
@@ -33398,7 +33481,7 @@
             "Bash"
           ],
           "title": "Allowed Tools",
-          "description": "List of tools the agent is allowed to use (e.g., 'Read', 'Write', 'Bash')."
+          "description": "List of built-in SDK tools the agent may use (e.g., 'Read', 'Write', 'Bash'). Nodes connected via control edges are always available."
         },
         {
           "name": "permission_mode",
@@ -47717,6 +47800,18 @@
   ],
   "examples": [
     {
+      "id": "search-google-shopping",
+      "name": "Search - Google Shopping",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "google",
+        "shopping",
+        "serp",
+        "analysis"
+      ]
+    },
+    {
       "id": "data_generator",
       "name": "Data Generator",
       "description": "Generate structured data using AI agents",
@@ -47741,6 +47836,19 @@
         "image",
         "photo",
         "batch processing"
+      ]
+    },
+    {
+      "id": "search-google-finance",
+      "name": "Search - Google Finance",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "google",
+        "finance",
+        "stocks",
+        "serp",
+        "analysis"
       ]
     },
     {
@@ -47800,6 +47908,30 @@
       "tags": [
         "video",
         "start"
+      ]
+    },
+    {
+      "id": "search-amazon-products",
+      "name": "Search - Amazon Products",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "amazon",
+        "products",
+        "serp",
+        "analysis"
+      ]
+    },
+    {
+      "id": "search-google-images",
+      "name": "Search - Google Images",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "google",
+        "images",
+        "serp",
+        "analysis"
       ]
     },
     {
@@ -47923,12 +48055,37 @@
       ]
     },
     {
+      "id": "search-google-scholar",
+      "name": "Search - Google Scholar",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "google",
+        "scholar",
+        "academic",
+        "serp",
+        "analysis"
+      ]
+    },
+    {
       "id": "3527dcf2a7a811f09339000078c92dc5",
       "name": "Meeting Transcript Summarizer",
       "description": "Automatically transcribe a meeting recording and generate concise notes.",
       "tags": [
         "audio",
         "llm"
+      ]
+    },
+    {
+      "id": "search-google-trends",
+      "name": "Search - Google Trends",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "google",
+        "trends",
+        "serp",
+        "analysis"
       ]
     },
     {
@@ -48045,6 +48202,30 @@
       ]
     },
     {
+      "id": "search-google-jobs",
+      "name": "Search - Google Jobs",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "google",
+        "jobs",
+        "serp",
+        "analysis"
+      ]
+    },
+    {
+      "id": "search-duckduckgo",
+      "name": "Search - DuckDuckGo",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "duckduckgo",
+        "web",
+        "privacy",
+        "analysis"
+      ]
+    },
+    {
       "id": "06d8221c907e11f0a4240000006ab9b5",
       "name": "Realtime Agent",
       "description": "",
@@ -48061,6 +48242,43 @@
         "image",
         "start",
         "example"
+      ]
+    },
+    {
+      "id": "search-google-lens",
+      "name": "Search - Google Lens",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "google",
+        "lens",
+        "visual",
+        "serp",
+        "analysis"
+      ]
+    },
+    {
+      "id": "search-google-news",
+      "name": "Search - Google News",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "google",
+        "news",
+        "serp",
+        "analysis"
+      ]
+    },
+    {
+      "id": "search-youtube",
+      "name": "Search - YouTube",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "youtube",
+        "video",
+        "serp",
+        "analysis"
       ]
     },
     {
@@ -48111,6 +48329,32 @@
       ]
     },
     {
+      "id": "search-amazon-product-detail",
+      "name": "Search - Amazon Product Detail",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "amazon",
+        "product",
+        "detail",
+        "serp",
+        "analysis"
+      ]
+    },
+    {
+      "id": "search-google-maps",
+      "name": "Search - Google Maps",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "google",
+        "maps",
+        "local",
+        "serp",
+        "analysis"
+      ]
+    },
+    {
       "id": "",
       "name": "Album Cover Creator",
       "description": "Create an album cover for a given song.",
@@ -48138,6 +48382,20 @@
         "youtube",
         "content creation",
         "thumbnails"
+      ]
+    },
+    {
+      "id": "youtube-research-claude-agent",
+      "name": "YouTube Research with Claude Agent",
+      "description": "Search YouTube using SerpAPI and analyze results with Claude Agent for deep research insights.",
+      "tags": [
+        "youtube",
+        "research",
+        "serpapi",
+        "claude",
+        "agent",
+        "search",
+        "analysis"
       ]
     },
     {
@@ -48171,6 +48429,18 @@
       ]
     },
     {
+      "id": "search-yelp",
+      "name": "Search - Yelp",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "yelp",
+        "local",
+        "business",
+        "analysis"
+      ]
+    },
+    {
       "id": "",
       "name": "Product Description Generator",
       "description": "Automatically generate marketing copy and product descriptions from product data.",
@@ -48179,6 +48449,18 @@
         "data",
         "research",
         "example"
+      ]
+    },
+    {
+      "id": "search-google-web",
+      "name": "Search - Google Web",
+      "description": "Search and analyze results with Claude Agent. Raw results saved as JSON, AI analysis saved separately.",
+      "tags": [
+        "search",
+        "google",
+        "web",
+        "serp",
+        "analysis"
       ]
     }
   ]

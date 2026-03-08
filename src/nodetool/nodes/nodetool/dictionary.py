@@ -813,6 +813,67 @@ class ToJSON(BaseNode):
         return json.dumps(self.dictionary, default=self._serialize_obj)
 
 
+class SaveJSON(BaseNode):
+    """
+    Saves a dictionary or list as a JSON file in the assets folder.
+    json, save, file, export, serialize
+
+    Use cases:
+    - Save API responses for inspection
+    - Export search results as JSON
+    - Archive structured data from workflows
+    """
+
+    data: Any = Field(default={}, description="Data to save as JSON (dict or list)")
+    folder: str = Field(default="", description="Name of the output folder.")
+    name: str = Field(
+        default="%Y-%m-%d-%H-%M-%S.json",
+        description="""
+        Name of the output file.
+        You can use time and date variables to create unique names:
+        %Y - Year, %m - Month, %d - Day
+        %H - Hour, %M - Minute, %S - Second
+        """,
+    )
+    indent: int = Field(default=2, description="JSON indentation level")
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    def _serialize_obj(self, obj: Any) -> Any:
+        if isinstance(obj, (datetime.datetime, datetime.date, datetime.time)):
+            return obj.isoformat()
+        elif isinstance(obj, datetime.timedelta):
+            return str(obj)
+        elif hasattr(obj, "model_dump"):
+            return obj.model_dump()
+        elif hasattr(obj, "__dict__"):
+            return obj.__dict__
+        elif isinstance(obj, bytes):
+            return obj.decode("utf-8", errors="ignore")
+        else:
+            return str(obj)
+
+    def required_inputs(self):
+        return ["data"]
+
+    async def process(self, context: ProcessingContext) -> str:
+        filename = generate_timestamped_name(self.name)
+        json_str = json.dumps(self.data, default=self._serialize_obj, indent=self.indent)
+
+        if self.folder:
+            if Environment.is_production():
+                raise ValueError("File saving is not available in production")
+            expanded_folder = os.path.expanduser(self.folder)
+            if not os.path.exists(expanded_folder):
+                os.makedirs(expanded_folder, exist_ok=True)
+            path = os.path.join(expanded_folder, filename)
+            async with aiofiles.open(path, "w") as f:
+                await f.write(json_str)
+            return path
+
+        return json_str
+
+
 class ToYAML(BaseNode):
     """
     Converts a dictionary to a YAML string.

@@ -43,8 +43,8 @@ class YelpSearch(GraphNode[nodetool.nodes.search.yelp.YelpSearch.OutputType]):
 
 class YelpSearchOutputs(OutputsProxy):
     @property
-    def results(self) -> OutputHandle[list[types.YelpResult]]:
-        return typing.cast(OutputHandle[list[types.YelpResult]], self['results'])
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
 
     @property
     def text(self) -> OutputHandle[str]:

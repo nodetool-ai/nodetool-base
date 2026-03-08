@@ -42,8 +42,8 @@ class GoogleScholar(GraphNode[nodetool.nodes.search.scholar.GoogleScholar.Output
 
 class GoogleScholarOutputs(OutputsProxy):
     @property
-    def results(self) -> OutputHandle[list[types.ScholarResult]]:
-        return typing.cast(OutputHandle[list[types.ScholarResult]], self['results'])
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
 
     @property
     def text(self) -> OutputHandle[str]:

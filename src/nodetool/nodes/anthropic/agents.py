@@ -1,6 +1,8 @@
+import json
+import re
 from enum import Enum
 from pathlib import Path
-from typing import ClassVar, TypedDict, List
+from typing import Any, ClassVar, TypedDict
 from pydantic import Field
 
 from nodetool.workflows.base_node import BaseNode
@@ -10,9 +12,52 @@ from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import LanguageModel
 
-from claude_agent_sdk import query, ClaudeAgentOptions, AssistantMessage, TextBlock
+from claude_agent_sdk import (
+    query,
+    ClaudeAgentOptions,
+    AssistantMessage,
+    TextBlock,
+    tool,
+    create_sdk_mcp_server,
+)
 
 log = get_logger(__name__)
+
+
+def _sanitize_tool_name(name: str) -> str:
+    """Convert a node title to a valid MCP tool name (snake_case, max 64 chars)."""
+    if not isinstance(name, str) or not name.strip():
+        return "control_node"
+    sanitized = re.sub(r"[^a-zA-Z0-9]", "_", name)
+    sanitized = re.sub(r"([a-z])([A-Z])", r"\1_\2", sanitized)
+    sanitized = sanitized.lower()
+    sanitized = re.sub(r"_+", "_", sanitized).strip("_")
+    return (sanitized or "control_node")[:64]
+
+
+def _build_tool_schema(node_info: dict[str, Any]) -> dict[str, Any]:
+    """Build a JSON Schema dict from controlled node info for the @tool decorator."""
+    actions = node_info.get("control_actions", {})
+    run_action = actions.get("run", {})
+    raw_properties = run_action.get("properties", {})
+
+    schema: dict[str, Any] = {
+        "type": "object",
+        "properties": {},
+        "required": [],
+    }
+
+    if isinstance(raw_properties, dict):
+        for name, prop_schema in raw_properties.items():
+            if isinstance(prop_schema, dict):
+                schema["properties"][name] = dict(prop_schema)
+            else:
+                schema["properties"][name] = {
+                    "type": "string",
+                    "description": str(prop_schema),
+                }
+
+    return schema
 
 
 class PermissionMode(str, Enum):
@@ -26,17 +71,19 @@ class PermissionMode(str, Enum):
 
 class ClaudeAgent(BaseNode):
     """
-    Run Claude as an agent in a sandboxed environment with tool use capabilities.
+    Run Claude as an agent with tool use capabilities and control edge support.
     claude, agent, ai, anthropic, sandbox, assistant
 
-    Uses the Claude Agent SDK to run Claude with access to tools in a secure sandbox.
-    The agent can execute commands, read/write files, and use various tools while
-    maintaining security through sandbox isolation.
+    Uses the Claude Agent SDK to run Claude with access to built-in tools
+    (Read, Write, Bash, etc.) and any nodes connected via control edges.
+    Control edges let the agent trigger other workflow nodes as tools,
+    passing parameters and receiving results — the same pattern as the
+    standard Agent node.
 
     Use cases:
     - Automated coding and debugging tasks
     - File manipulation and analysis
-    - Complex multi-step workflows
+    - Complex multi-step workflows with node tools
     - Research and data gathering
     """
 
@@ -67,7 +114,7 @@ class ClaudeAgent(BaseNode):
 
     allowed_tools: list[str] = Field(
         default=["Read", "Write", "Bash"],
-        description="List of tools the agent is allowed to use (e.g., 'Read', 'Write', 'Bash').",
+        description="List of built-in SDK tools the agent may use (e.g., 'Read', 'Write', 'Bash'). Nodes connected via control edges are always available.",
     )
 
     permission_mode: PermissionMode = Field(
@@ -96,6 +143,136 @@ class ClaudeAgent(BaseNode):
     def return_type(cls):
         return cls.OutputType
 
+    # ------------------------------------------------------------------
+    # Control-edge tool building
+    # ------------------------------------------------------------------
+
+    def _build_control_tools(
+        self, context: ProcessingContext
+    ) -> tuple[Any | None, list[str]]:
+        """Discover controlled nodes and create an in-process MCP server
+        exposing each one as a custom tool.
+
+        Returns (mcp_server_or_None, list_of_tool_fqns).
+        """
+        controlled_info = context.get_controlled_nodes_info(self.id)
+        if not controlled_info:
+            return None, []
+
+        sdk_tools = []
+        tool_fqns: list[str] = []
+
+        for target_id, info in controlled_info.items():
+            tool_name = _sanitize_tool_name(info.get("node_title", target_id))
+            node_desc = info.get("node_description", "")
+            description = node_desc or f"Run {info.get('node_title', target_id)}"
+            input_schema = _build_tool_schema(info)
+
+            # Build the tool callback — closure captures target_id, info, context
+            _target_id = target_id
+            _info = info
+
+            @tool(tool_name, description, input_schema)
+            async def _node_tool(
+                args: dict[str, Any],
+                _tid: str = _target_id,
+                _ninfo: dict[str, Any] = _info,
+            ) -> dict[str, Any]:
+                return await self._execute_controlled_node(
+                    context, _tid, _ninfo, args
+                )
+
+            sdk_tools.append(_node_tool)
+            fqn = f"mcp__nodetool-nodes__{tool_name}"
+            tool_fqns.append(fqn)
+
+            prop_names = list(
+                (input_schema.get("properties") or {}).keys()
+            )
+            log.info(
+                "ClaudeAgent control tool registered: target=%s tool=%s params=%s",
+                _target_id,
+                tool_name,
+                prop_names,
+            )
+
+        server = create_sdk_mcp_server(
+            name="nodetool-nodes",
+            version="1.0.0",
+            tools=sdk_tools,
+        )
+        return server, tool_fqns
+
+    async def _execute_controlled_node(
+        self,
+        context: ProcessingContext,
+        target_id: str,
+        node_info: dict[str, Any],
+        args: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Execute a controlled node with the given property overrides
+        and return the result as an MCP tool response."""
+        if context.graph is None:
+            return {
+                "content": [{"type": "text", "text": "Error: no workflow graph available"}]
+            }
+
+        target_node = context.graph.find_node(target_id)
+        if target_node is None:
+            return {
+                "content": [
+                    {
+                        "type": "text",
+                        "text": f"Error: node {target_id} not found in graph",
+                    }
+                ]
+            }
+
+        node_title = node_info.get("node_title", target_id)
+
+        # Apply property overrides from tool arguments
+        for name, value in args.items():
+            if hasattr(target_node, name):
+                try:
+                    setattr(target_node, name, value)
+                except Exception as exc:
+                    log.warning(
+                        "Failed to set property %s on %s: %s", name, node_title, exc
+                    )
+
+        # Execute the node
+        try:
+            result = await target_node.process(context)
+
+            # Format result as text for the agent
+            if result is None:
+                result_text = f"{node_title} completed (no output)"
+            elif isinstance(result, dict):
+                result_text = json.dumps(result, indent=2, default=str)
+            elif isinstance(result, (list, tuple)):
+                result_text = json.dumps(result, indent=2, default=str)
+            elif isinstance(result, str):
+                result_text = result
+            else:
+                result_text = str(result)
+
+            log.info(
+                "ClaudeAgent control tool executed: target=%s result_len=%d",
+                target_id,
+                len(result_text),
+            )
+
+            return {"content": [{"type": "text", "text": result_text}]}
+
+        except Exception as exc:
+            error_text = f"Error executing {node_title}: {exc}"
+            log.error(error_text)
+            return {"content": [{"type": "text", "text": error_text}]}
+
+    # ------------------------------------------------------------------
+    # Main execution
+    # ------------------------------------------------------------------
+
     async def run(
         self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs
     ) -> None:  # type: ignore[override]
@@ -107,6 +284,7 @@ class ClaudeAgent(BaseNode):
             workspace_path = context.resolve_workspace_path("")
         except PermissionError:
             import tempfile
+
             workspace_path = tempfile.mkdtemp(prefix="claude_agent_")
 
         env: dict[str, str] = {
@@ -114,7 +292,6 @@ class ClaudeAgent(BaseNode):
         }
 
         if self.use_claude_credentials:
-            # Use Claude Code's credentials file for authentication
             credentials_path = Path.home() / ".claude" / ".credentials.json"
             if not credentials_path.exists():
                 raise ValueError(
@@ -122,12 +299,10 @@ class ClaudeAgent(BaseNode):
                     "Please log in with Claude Code first."
                 )
             log.info(
-                "ClaudeAgent using Claude Code credentials "
-                f"from {credentials_path}"
+                "ClaudeAgent using Claude Code credentials from %s",
+                credentials_path,
             )
         else:
-            # Use ANTHROPIC_API_KEY from nodetool settings (optional —
-            # if absent, the Claude CLI falls back to the user's subscription)
             api_key = await context.get_secret("ANTHROPIC_API_KEY")
             if api_key:
                 env["ANTHROPIC_API_KEY"] = api_key
@@ -138,39 +313,60 @@ class ClaudeAgent(BaseNode):
                     "falling back to Claude CLI subscription"
                 )
 
+        # Discover controlled nodes and build MCP tools
+        mcp_server, control_tool_fqns = self._build_control_tools(context)
+
         # Collect stderr for debugging
         stderr_lines: list[str] = []
 
-        # Configure agent options using official SDK parameters
+        # Build allowed_tools list including control tool FQNs
+        all_allowed = list(self.allowed_tools) + control_tool_fqns
+
+        # Configure agent options
         options = ClaudeAgentOptions(
             model=self.model.id,
             system_prompt=self.system_prompt if self.system_prompt else None,
             max_turns=self.max_turns,
             cwd=str(workspace_path) if workspace_path else None,
-            allowed_tools=self.allowed_tools,
+            allowed_tools=all_allowed,
             permission_mode=self.permission_mode.value,  # type: ignore[arg-type]
             env=env,
             stderr=lambda line: stderr_lines.append(line),
         )
 
+        # Add MCP server if we have control tools
+        if mcp_server is not None:
+            options.mcp_servers = {"nodetool-nodes": mcp_server}
+
         try:
-            # Collect the full response text
             full_text = ""
 
-            # Use the query() async iterator - the official SDK pattern
-            async for message in query(prompt=self.prompt, options=options):
+            # MCP custom tools require streaming input mode (async generator)
+            if mcp_server is not None:
+
+                async def _prompt_stream():
+                    yield {
+                        "type": "user",
+                        "message": {
+                            "role": "user",
+                            "content": self.prompt,
+                        },
+                    }
+
+                prompt_input: Any = _prompt_stream()
+            else:
+                prompt_input = self.prompt
+
+            async for message in query(prompt=prompt_input, options=options):
                 if isinstance(message, AssistantMessage):
-                    # Extract text content from the message
                     for content in message.content:
                         if isinstance(content, TextBlock):
                             text_chunk = content.text
                             full_text += text_chunk
 
-                            # Emit as chunk for streaming
                             chunk = Chunk(node_id=self.id, content=text_chunk)
                             await outputs.emit("chunk", chunk)
 
-                            # Also log the progress
                             context.post_message(
                                 LogUpdate(
                                     node_id=self.id,
@@ -180,7 +376,6 @@ class ClaudeAgent(BaseNode):
                                 )
                             )
 
-            # Emit the final full text
             await outputs.emit("text", full_text)
 
         except Exception as e:

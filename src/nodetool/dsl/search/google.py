@@ -18,7 +18,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.search.google
 from nodetool.workflows.base_node import BaseNode
 
-class GoogleFinance(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
+class GoogleFinance(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
         Retrieve financial market data and stock information from Google Finance.
@@ -94,8 +94,8 @@ class GoogleJobs(GraphNode[nodetool.nodes.search.google.GoogleJobs.OutputType]):
 
 class GoogleJobsOutputs(OutputsProxy):
     @property
-    def results(self) -> OutputHandle[list[types.JobResult]]:
-        return typing.cast(OutputHandle[list[types.JobResult]], self['results'])
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
 
     @property
     def text(self) -> OutputHandle[str]:
@@ -108,7 +108,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.search.google
 from nodetool.workflows.base_node import BaseNode
 
-class GoogleLens(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
+class GoogleLens(GraphNode[nodetool.nodes.search.google.GoogleLens.OutputType]):
     """
 
         Analyze images using Google Lens to find visual matches and related content.
@@ -118,6 +118,10 @@ class GoogleLens(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     image_url: str | OutputHandle[str] = connect_field(default='', description='URL of the image to analyze with Google Lens')
     num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of visual search results to return')
 
+    @property
+    def out(self) -> "GoogleLensOutputs":
+        return GoogleLensOutputs(self)
+
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.search.google.GoogleLens
@@ -125,6 +129,15 @@ class GoogleLens(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+class GoogleLensOutputs(OutputsProxy):
+    @property
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
+
+    @property
+    def images(self) -> OutputHandle[list[types.ImageRef]]:
+        return typing.cast(OutputHandle[list[types.ImageRef]], self['images'])
 
 
 import typing
@@ -157,8 +170,8 @@ class GoogleMaps(GraphNode[nodetool.nodes.search.google.GoogleMaps.OutputType]):
 
 class GoogleMapsOutputs(OutputsProxy):
     @property
-    def results(self) -> OutputHandle[list[types.LocalResult]]:
-        return typing.cast(OutputHandle[list[types.LocalResult]], self['results'])
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
 
     @property
     def text(self) -> OutputHandle[str]:
@@ -195,8 +208,8 @@ class GoogleNews(GraphNode[nodetool.nodes.search.google.GoogleNews.OutputType]):
 
 class GoogleNewsOutputs(OutputsProxy):
     @property
-    def results(self) -> OutputHandle[list[types.NewsResult]]:
-        return typing.cast(OutputHandle[list[types.NewsResult]], self['results'])
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
 
     @property
     def text(self) -> OutputHandle[str]:
@@ -233,8 +246,8 @@ class GoogleSearch(GraphNode[nodetool.nodes.search.google.GoogleSearch.OutputTyp
 
 class GoogleSearchOutputs(OutputsProxy):
     @property
-    def results(self) -> OutputHandle[list[types.OrganicResult]]:
-        return typing.cast(OutputHandle[list[types.OrganicResult]], self['results'])
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
 
     @property
     def text(self) -> OutputHandle[str]:
@@ -276,8 +289,8 @@ class GoogleShopping(GraphNode[nodetool.nodes.search.google.GoogleShopping.Outpu
 
 class GoogleShoppingOutputs(OutputsProxy):
     @property
-    def results(self) -> OutputHandle[list[types.ShoppingResult]]:
-        return typing.cast(OutputHandle[list[types.ShoppingResult]], self['results'])
+    def results(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self['results'])
 
     @property
     def text(self) -> OutputHandle[str]:

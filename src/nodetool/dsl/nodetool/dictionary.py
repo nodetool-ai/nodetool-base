@@ -542,6 +542,38 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
+class SaveJSON(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+        Saves a dictionary or list as a JSON file in the assets folder.
+        json, save, file, export, serialize
+
+        Use cases:
+        - Save API responses for inspection
+        - Export search results as JSON
+        - Archive structured data from workflows
+    """
+
+    data: Any | OutputHandle[Any] = connect_field(default={}, description='Data to save as JSON (dict or list)')
+    folder: str | OutputHandle[str] = connect_field(default='', description='Name of the output folder.')
+    name: str | OutputHandle[str] = connect_field(default='%Y-%m-%d-%H-%M-%S.json', description='\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year, %m - Month, %d - Day\n        %H - Hour, %M - Minute, %S - Second\n        ')
+    indent: int | OutputHandle[int] = connect_field(default=2, description='JSON indentation level')
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.dictionary.SaveJSON
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+from nodetool.workflows.base_node import BaseNode
+
 class ToJSON(SingleOutputGraphNode[str], GraphNode[str]):
     """
 

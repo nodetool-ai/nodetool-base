@@ -1,118 +1,34 @@
-#!/usr/bin/env python
-
 """
 SERP (Search Engine Results Page) nodes for Nodetool.
 Provides nodes for Google Search, News, Images, Finance, Jobs, Lens, Maps, and Shopping.
 """
 
 from pydantic import Field
-from typing import Any, Dict, ClassVar, TypedDict
+from typing import Any, ClassVar, TypedDict
 
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
-from nodetool.metadata.types import (
-    JobResult,
-    LocalResult,
-    NewsResult,
-    OrganicResult,
-    ShoppingResult,
-)
-from nodetool.agents.serp_providers.serp_types import (
-    GoogleJobsResponse,
-    GoogleLensResponse,
-    GoogleSearchResponse,
-    GoogleNewsResponse,
-    GoogleImagesResponse,
-    GoogleMapsResponse,
-    GoogleShoppingResponse,
-)
-
 from nodetool.workflows.processing_context import ProcessingContext
-
-# Import from nodetool-core
-from nodetool.agents.tools.serp_tools import (
-    _get_configured_serp_provider,
-)
+from nodetool.agents.tools.serp_tools import _get_configured_serp_provider
 
 
-def _format_organic_results(results: list[OrganicResult]) -> str:
-    """Format organic search results as readable text."""
+def _format_results(results: list[dict], fields: list[tuple[str, str | None]]) -> str:
+    """Generic formatter for search results.
+
+    fields: list of (key, label) tuples. If label is None, value is printed raw.
+    """
     lines = []
-    for r in results:
-        lines.append(f"[{r.position}] {r.title}")
-        lines.append(f"    {r.link}")
-        if r.date:
-            lines.append(f"    Date: {r.date}")
-        lines.append(f"    {r.snippet}")
-        lines.append("")
-    return "\n".join(lines)
-
-
-def _format_news_results(results: list[NewsResult]) -> str:
-    """Format news search results as readable text."""
-    lines = []
-    for r in results:
-        lines.append(f"[{r.position}] {r.title}")
-        lines.append(f"    {r.link}")
-        if r.date:
-            lines.append(f"    Date: {r.date}")
-        lines.append("")
-    return "\n".join(lines)
-
-
-def _format_job_results(results: list[JobResult]) -> str:
-    """Format job search results as readable text."""
-    lines = []
-    for r in results:
-        lines.append(f"{r.title}")
-        if r.company_name:
-            lines.append(f"    Company: {r.company_name}")
-        if r.location:
-            lines.append(f"    Location: {r.location}")
-        if r.via:
-            lines.append(f"    Via: {r.via}")
-        if r.extensions:
-            lines.append(f"    {', '.join(r.extensions)}")
-        lines.append("")
-    return "\n".join(lines)
-
-
-def _format_local_results(results: list[LocalResult]) -> str:
-    """Format local/maps search results as readable text."""
-    lines = []
-    for r in results:
-        lines.append(f"[{r.position}] {r.title}")
-        if r.address:
-            lines.append(f"    {r.address}")
-        if r.rating is not None:
-            rating_str = f"    Rating: {r.rating}"
-            if r.reviews is not None:
-                rating_str += f" ({r.reviews} reviews)"
-            lines.append(rating_str)
-        if r.price:
-            lines.append(f"    Price: {r.price}")
-        if r.open_state:
-            lines.append(f"    {r.open_state}")
-        lines.append("")
-    return "\n".join(lines)
-
-
-def _format_shopping_results(results: list[ShoppingResult]) -> str:
-    """Format shopping search results as readable text."""
-    lines = []
-    for r in results:
-        lines.append(f"[{r.position}] {r.title}")
-        if r.price:
-            price_str = f"    Price: {r.price}"
-            if r.old_price:
-                price_str += f" (was {r.old_price})"
-            lines.append(price_str)
-        if r.source:
-            lines.append(f"    Source: {r.source}")
-        if r.link:
-            lines.append(f"    {r.link}")
-        if r.rating is not None:
-            lines.append(f"    Rating: {r.rating}")
+    for i, r in enumerate(results):
+        pos = r.get("position", i + 1)
+        title = r.get("title", "Untitled")
+        lines.append(f"[{pos}] {title}")
+        for key, label in fields:
+            val = r.get(key)
+            if val:
+                if label:
+                    lines.append(f"    {label}: {val}")
+                else:
+                    lines.append(f"    {val}")
         lines.append("")
     return "\n".join(lines)
 
@@ -124,7 +40,7 @@ class GoogleSearch(BaseNode):
     """
 
     class OutputType(TypedDict):
-        results: list[OrganicResult]
+        results: list[dict]
         text: str
 
     keyword: str = Field(
@@ -142,24 +58,18 @@ class GoogleSearch(BaseNode):
 
         provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
-            raise ValueError(
-                error_response.get("error", "Failed to configure SERP provider")
-            )
+            raise ValueError(error_response.get("error", "Failed to configure SERP provider"))
         if not provider_instance:
             raise ValueError("Failed to initialize SERP provider.")
 
         async with provider_instance as provider:
-            result = await provider.search(
-                keyword=self.keyword, num_results=self.num_results
-            )
+            result_data = await provider.search(keyword=self.keyword, num_results=self.num_results)
+            if isinstance(result_data, dict) and "error" in result_data:
+                raise ValueError(result_data["error"])
 
-            result_data = GoogleSearchResponse(**result)
-            results = result_data.organic_results or []
-
-            return {
-                "results": results,
-                "text": _format_organic_results(results),
-            }
+            results = result_data.get("organic_results", [])
+            text = _format_results(results, [("link", None), ("date", "Date"), ("snippet", None)])
+            return {"results": results, "text": text}
 
 
 class GoogleNews(BaseNode):
@@ -169,7 +79,7 @@ class GoogleNews(BaseNode):
     """
 
     class OutputType(TypedDict):
-        results: list[NewsResult]
+        results: list[dict]
         text: str
 
     keyword: str = Field(
@@ -187,24 +97,18 @@ class GoogleNews(BaseNode):
 
         provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
-            raise ValueError(
-                error_response.get("error", "Failed to configure SERP provider")
-            )
+            raise ValueError(error_response.get("error", "Failed to configure SERP provider"))
         if not provider_instance:
             raise ValueError("Failed to initialize SERP provider.")
 
         async with provider_instance as provider:
-            result_data = await provider.search_news(
-                keyword=self.keyword, num_results=self.num_results
-            )
+            result_data = await provider.search_news(keyword=self.keyword, num_results=self.num_results)
+            if isinstance(result_data, dict) and "error" in result_data:
+                raise ValueError(result_data["error"])
 
-            result_data = GoogleNewsResponse(**result_data)
-            results = result_data.news_results or []
-
-            return {
-                "results": results,
-                "text": _format_news_results(results),
-            }
+            results = result_data.get("news_results", [])
+            text = _format_results(results, [("link", None), ("date", "Date")])
+            return {"results": results, "text": text}
 
 
 class GoogleImages(BaseNode):
@@ -214,12 +118,8 @@ class GoogleImages(BaseNode):
     """
 
     keyword: str = Field(default="", description="Search query or keyword for images")
-    image_url: str = Field(
-        default="", description="URL of image for reverse image search"
-    )
-    num_results: int = Field(
-        default=20, description="Maximum number of image results to return"
-    )
+    image_url: str = Field(default="", description="URL of image for reverse image search")
+    num_results: int = Field(default=20, description="Maximum number of image results to return")
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -229,9 +129,7 @@ class GoogleImages(BaseNode):
 
         provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
-            raise ValueError(
-                error_response.get("error", "Failed to configure SERP provider")
-            )
+            raise ValueError(error_response.get("error", "Failed to configure SERP provider"))
         if not provider_instance:
             raise ValueError("Failed to initialize SERP provider.")
 
@@ -241,18 +139,11 @@ class GoogleImages(BaseNode):
                 image_url=self.image_url if self.image_url else None,
                 num_results=self.num_results,
             )
-
             if isinstance(result_data, dict) and "error" in result_data:
                 raise ValueError(result_data["error"])
 
-            response = GoogleImagesResponse(**result_data)
-
-            return [
-                ImageRef(
-                    uri=image.original,
-                )
-                for image in response.images_results
-            ]
+            images = result_data.get("images_results", [])
+            return [ImageRef(uri=img.get("original", "")) for img in images if img.get("original")]
 
 
 class GoogleFinance(BaseNode):
@@ -261,9 +152,7 @@ class GoogleFinance(BaseNode):
     google, finance, stocks, market, serp, trading
     """
 
-    query: str = Field(
-        default="", description="Stock symbol or company name to search for"
-    )
+    query: str = Field(default="", description="Stock symbol or company name to search for")
     window: str = Field(
         default="",
         description="Time window for financial data (e.g., '1d', '5d', '1m', '3m', '6m', '1y', '5y')",
@@ -271,25 +160,23 @@ class GoogleFinance(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    async def process(self, context: ProcessingContext) -> Dict[str, Any]:
+    async def process(self, context: ProcessingContext) -> dict[str, Any]:
         if not self.query:
-            return {"error": "Query is required for Google Finance search."}
+            raise ValueError("Query is required for Google Finance search.")
 
         provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
-            return error_response
+            raise ValueError(error_response.get("error", "Failed to configure SERP provider"))
         if not provider_instance:
-            return {"error": "Failed to initialize SERP provider."}
+            raise ValueError("Failed to initialize SERP provider.")
 
         async with provider_instance as provider:
             result_data = await provider.search_finance(
                 query=self.query, window=self.window if self.window else None
             )
-
-        if isinstance(result_data, dict) and "error" in result_data:
+            if isinstance(result_data, dict) and "error" in result_data:
+                raise ValueError(result_data["error"])
             return result_data
-
-        return {"success": True, "results": result_data}
 
 
 class GoogleJobs(BaseNode):
@@ -299,16 +186,12 @@ class GoogleJobs(BaseNode):
     """
 
     class OutputType(TypedDict):
-        results: list[JobResult]
+        results: list[dict]
         text: str
 
-    query: str = Field(
-        default="", description="Job title, skills, or company name to search for"
-    )
+    query: str = Field(default="", description="Job title, skills, or company name to search for")
     location: str = Field(default="", description="Geographic location for job search")
-    num_results: int = Field(
-        default=10, description="Maximum number of job results to return"
-    )
+    num_results: int = Field(default=10, description="Maximum number of job results to return")
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -318,9 +201,7 @@ class GoogleJobs(BaseNode):
 
         provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
-            raise ValueError(
-                error_response.get("error", "Failed to configure SERP provider")
-            )
+            raise ValueError(error_response.get("error", "Failed to configure SERP provider"))
         if not provider_instance:
             raise ValueError("Failed to initialize SERP provider.")
 
@@ -330,17 +211,15 @@ class GoogleJobs(BaseNode):
                 location=self.location if self.location else None,
                 num_results=self.num_results,
             )
-
             if isinstance(result_data, dict) and "error" in result_data:
                 raise ValueError(result_data["error"])
 
-            response = GoogleJobsResponse(**result_data)
-            results = response.jobs_results or []
-
-            return {
-                "results": results,
-                "text": _format_job_results(results),
-            }
+            results = result_data.get("jobs_results", [])
+            text = _format_results(results, [
+                ("company_name", "Company"), ("location", "Location"),
+                ("via", "Via"), ("extensions", "Details"),
+            ])
+            return {"results": results, "text": text}
 
 
 class GoogleLens(BaseNode):
@@ -349,50 +228,36 @@ class GoogleLens(BaseNode):
     google, lens, visual, image, search, serp, identify
     """
 
-    image_url: str = Field(
-        default="", description="URL of the image to analyze with Google Lens"
-    )
-    num_results: int = Field(
-        default=10, description="Maximum number of visual search results to return"
-    )
+    class OutputType(TypedDict):
+        results: list[dict]
+        images: list[ImageRef]
+
+    image_url: str = Field(default="", description="URL of the image to analyze with Google Lens")
+    num_results: int = Field(default=10, description="Maximum number of visual search results to return")
 
     _expose_as_tool: ClassVar[bool] = True
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         if not self.image_url:
             raise ValueError("Image URL is required for Google Lens search.")
 
         provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
-            raise ValueError(
-                error_response.get("error", "Failed to configure SERP provider")
-            )
+            raise ValueError(error_response.get("error", "Failed to configure SERP provider"))
         if not provider_instance:
             raise ValueError("Failed to initialize SERP provider.")
 
         async with provider_instance as provider:
-            result_data = await provider.search_lens(
-                image_url=self.image_url, num_results=self.num_results
-            )
-
+            result_data = await provider.search_lens(image_url=self.image_url, num_results=self.num_results)
             if isinstance(result_data, dict) and "error" in result_data:
                 raise ValueError(result_data["error"])
 
-            response = GoogleLensResponse(**result_data)
-
-            return {
-                "results": response.visual_matches,
-                "images": [
-                    ImageRef(
-                        uri=(
-                            image.image
-                            if image.image
-                            else (image.thumbnail if image.thumbnail else "")
-                        ),
-                    )
-                    for image in response.visual_matches
-                ],
-            }
+            matches = result_data.get("visual_matches", [])
+            images = [
+                ImageRef(uri=m.get("image", m.get("thumbnail", "")))
+                for m in matches if m.get("image") or m.get("thumbnail")
+            ]
+            return {"results": matches, "images": images}
 
 
 class GoogleMaps(BaseNode):
@@ -402,13 +267,11 @@ class GoogleMaps(BaseNode):
     """
 
     class OutputType(TypedDict):
-        results: list[LocalResult]
+        results: list[dict]
         text: str
 
     query: str = Field(default="", description="Place name, address, or location query")
-    num_results: int = Field(
-        default=10, description="Maximum number of map results to return"
-    )
+    num_results: int = Field(default=10, description="Maximum number of map results to return")
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -418,32 +281,33 @@ class GoogleMaps(BaseNode):
 
         provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
-            raise ValueError(
-                error_response.get("error", "Failed to configure SERP provider")
-            )
+            raise ValueError(error_response.get("error", "Failed to configure SERP provider"))
         if not provider_instance:
             raise ValueError("Failed to initialize SERP provider.")
 
         async with provider_instance as provider:
-            result_data = await provider.search_maps(
-                query=self.query,
-                num_results=self.num_results,
-            )
-
+            result_data = await provider.search_maps(query=self.query, num_results=self.num_results)
             if isinstance(result_data, dict) and "error" in result_data:
                 raise ValueError(result_data["error"])
 
-            for result in result_data["local_results"]:
-                result["place_type"] = result.get("type", "")
-                del result["type"]
-
-            response = GoogleMapsResponse(**result_data)
-            results = response.local_results or []
-
-            return {
-                "results": results,
-                "text": _format_local_results(results),
-            }
+            results = result_data.get("local_results", [])
+            lines = []
+            for i, r in enumerate(results):
+                pos = r.get("position", i + 1)
+                lines.append(f"[{pos}] {r.get('title', 'Untitled')}")
+                if r.get("address"):
+                    lines.append(f"    {r['address']}")
+                if r.get("rating") is not None:
+                    rating_str = f"    Rating: {r['rating']}"
+                    if r.get("reviews") is not None:
+                        rating_str += f" ({r['reviews']} reviews)"
+                    lines.append(rating_str)
+                if r.get("price"):
+                    lines.append(f"    Price: {r['price']}")
+                if r.get("open_state"):
+                    lines.append(f"    {r['open_state']}")
+                lines.append("")
+            return {"results": results, "text": "\n".join(lines)}
 
 
 class GoogleShopping(BaseNode):
@@ -452,32 +316,19 @@ class GoogleShopping(BaseNode):
     google, shopping, products, ecommerce, serp, prices
     """
 
-    query: str = Field(
-        default="", description="Product name or description to search for"
-    )
-    country: str = Field(
-        default="us",
-        description="Country code for shopping search (e.g., 'us', 'uk', 'ca')",
-    )
+    class OutputType(TypedDict):
+        results: list[dict]
+        text: str
+
+    query: str = Field(default="", description="Product name or description to search for")
+    country: str = Field(default="us", description="Country code for shopping search (e.g., 'us', 'uk', 'ca')")
     min_price: int = Field(default=0, description="Minimum price filter for products")
     max_price: int = Field(default=0, description="Maximum price filter for products")
-    condition: str = Field(
-        default="",
-        description="Product condition filter (e.g., 'new', 'used', 'refurbished')",
-    )
-    sort_by: str = Field(
-        default="",
-        description="Sort order for results (e.g., 'price_low_to_high', 'price_high_to_low', 'review_score')",
-    )
-    num_results: int = Field(
-        default=10, description="Maximum number of shopping results to return"
-    )
+    condition: str = Field(default="", description="Product condition filter (e.g., 'new', 'used', 'refurbished')")
+    sort_by: str = Field(default="", description="Sort order for results (e.g., 'price_low_to_high', 'price_high_to_low', 'review_score')")
+    num_results: int = Field(default=10, description="Maximum number of shopping results to return")
 
     _expose_as_tool: ClassVar[bool] = True
-
-    class OutputType(TypedDict):
-        results: list[ShoppingResult]
-        text: str
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.query:
@@ -485,9 +336,7 @@ class GoogleShopping(BaseNode):
 
         provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
-            raise ValueError(
-                error_response.get("error", "Failed to configure SERP provider")
-            )
+            raise ValueError(error_response.get("error", "Failed to configure SERP provider"))
         if not provider_instance:
             raise ValueError("Failed to initialize SERP provider.")
 
@@ -501,14 +350,24 @@ class GoogleShopping(BaseNode):
                 sort_by=self.sort_by if self.sort_by else None,
                 num_results=self.num_results,
             )
-
             if isinstance(result_data, dict) and "error" in result_data:
                 raise ValueError(result_data["error"])
 
-            response = GoogleShoppingResponse(**result_data)
-            results = response.shopping_results or []
-
-            return {
-                "results": results,
-                "text": _format_shopping_results(results),
-            }
+            results = result_data.get("shopping_results", [])
+            lines = []
+            for i, r in enumerate(results):
+                pos = r.get("position", i + 1)
+                lines.append(f"[{pos}] {r.get('title', 'Untitled')}")
+                if r.get("price"):
+                    price_str = f"    Price: {r['price']}"
+                    if r.get("old_price"):
+                        price_str += f" (was {r['old_price']})"
+                    lines.append(price_str)
+                if r.get("source"):
+                    lines.append(f"    Source: {r['source']}")
+                if r.get("link"):
+                    lines.append(f"    {r['link']}")
+                if r.get("rating") is not None:
+                    lines.append(f"    Rating: {r['rating']}")
+                lines.append("")
+            return {"results": results, "text": "\n".join(lines)}
