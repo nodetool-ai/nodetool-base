@@ -21,17 +21,19 @@ from nodetool.workflows.base_node import BaseNode
 class ClaudeAgent(GraphNode[nodetool.nodes.anthropic.agents.ClaudeAgent.OutputType]):
     """
 
-        Run Claude as an agent in a sandboxed environment with tool use capabilities.
+        Run Claude as an agent with tool use capabilities and control edge support.
         claude, agent, ai, anthropic, sandbox, assistant
 
-        Uses the Claude Agent SDK to run Claude with access to tools in a secure sandbox.
-        The agent can execute commands, read/write files, and use various tools while
-        maintaining security through sandbox isolation.
+        Uses the Claude Agent SDK to run Claude with access to built-in tools
+        (Read, Write, Bash, etc.) and any nodes connected via control edges.
+        Control edges let the agent trigger other workflow nodes as tools,
+        passing parameters and receiving results — the same pattern as the
+        standard Agent node.
 
         Use cases:
         - Automated coding and debugging tasks
         - File manipulation and analysis
-        - Complex multi-step workflows
+        - Complex multi-step workflows with node tools
         - Research and data gathering
     """
 
@@ -41,7 +43,7 @@ class ClaudeAgent(GraphNode[nodetool.nodes.anthropic.agents.ClaudeAgent.OutputTy
     model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(default=types.LanguageModel(type='language_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, supported_tasks=[]), description='The Claude compatible model to use for the agent.')
     system_prompt: str | OutputHandle[str] = connect_field(default='', description="Optional system prompt to guide the agent's behavior.")
     max_turns: int | OutputHandle[int] = connect_field(default=20, description='Maximum number of turns the agent can take.')
-    allowed_tools: list[str] | OutputHandle[list[str]] = connect_field(default=['Read', 'Write', 'Bash'], description="List of tools the agent is allowed to use (e.g., 'Read', 'Write', 'Bash').")
+    allowed_tools: list[str] | OutputHandle[list[str]] = connect_field(default=['Read', 'Write', 'Bash'], description="List of built-in SDK tools the agent may use (e.g., 'Read', 'Write', 'Bash'). Nodes connected via control edges are always available.")
     permission_mode: nodetool.nodes.anthropic.agents.PermissionMode = Field(default=nodetool.nodes.anthropic.agents.PermissionMode.ACCEPT_EDITS, description='Permission mode for tool usage.')
     use_claude_credentials: bool | OutputHandle[bool] = connect_field(default=False, description='Use Claude Code credentials file (~/.claude/.credentials.json) instead of the ANTHROPIC_API_KEY secret. Requires an active Claude Max/Pro subscription.')
 
