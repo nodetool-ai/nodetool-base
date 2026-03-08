@@ -18,23 +18,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.conversion
 from nodetool.workflows.base_node import BaseNode
 
-
 class ArrayToList(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-    Convert a array to a nested list structure.
-    array, list, conversion, type
+        Convert a array to a nested list structure.
+        array, list, conversion, type
 
-    Use cases:
-    - Prepare array data for JSON serialization
-    - Convert array outputs to Python data structures
-    - Interface array data with non-array operations
+        Use cases:
+        - Prepare array data for JSON serialization
+        - Convert array outputs to Python data structures
+        - Interface array data with non-array operations
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Array to convert to list",
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Array to convert to list')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -51,23 +47,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.conversion
 from nodetool.workflows.base_node import BaseNode
 
-
 class ArrayToScalar(SingleOutputGraphNode[float | int], GraphNode[float | int]):
     """
 
-    Convert a single-element array to a scalar value.
-    array, scalar, conversion, type
+        Convert a single-element array to a scalar value.
+        array, scalar, conversion, type
 
-    Use cases:
-    - Extract final results from array computations
-    - Prepare values for non-array operations
-    - Simplify output for human-readable results
+        Use cases:
+        - Extract final results from array computations
+        - Prepare values for non-array operations
+        - Simplify output for human-readable results
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Array to convert to scalar",
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Array to convert to scalar')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -84,25 +76,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.conversion
 from nodetool.workflows.base_node import BaseNode
 
-
 class ConvertToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Convert PIL Image to normalized tensor representation.
-    image, tensor, conversion, normalization
+        Convert PIL Image to normalized tensor representation.
+        image, tensor, conversion, normalization
 
-    Use cases:
-    - Prepare images for machine learning models
-    - Convert between image formats for processing
-    - Normalize image data for consistent calculations
+        Use cases:
+        - Prepare images for machine learning models
+        - Convert between image formats for processing
+        - Normalize image data for consistent calculations
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The input image to convert to a tensor. The image should have either 1 (grayscale), 3 (RGB), or 4 (RGBA) channels.",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The input image to convert to a tensor. The image should have either 1 (grayscale), 3 (RGB), or 4 (RGBA) channels.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -119,26 +105,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.conversion
 from nodetool.workflows.base_node import BaseNode
 
-
 class ConvertToAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-    Converts a array object back to an audio file.
-    audio, conversion, array
+        Converts a array object back to an audio file.
+        audio, conversion, array
 
-    Use cases:
-    - Save processed audio data as a playable file
-    - Convert generated or modified audio arrays to audio format
-    - Output results of audio processing pipelinesr
+        Use cases:
+        - Save processed audio data as a playable file
+        - Convert generated or modified audio arrays to audio format
+        - Output results of audio processing pipelinesr
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The array to convert to an audio file.",
-    )
-    sample_rate: int | OutputHandle[int] = connect_field(
-        default=44100, description="The sample rate of the audio file."
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The array to convert to an audio file.')
+    sample_rate: int | OutputHandle[int] = connect_field(default=44100, description='The sample rate of the audio file.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -155,23 +135,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.conversion
 from nodetool.workflows.base_node import BaseNode
 
-
 class ConvertToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Convert array data to PIL Image format.
-    array, image, conversion, denormalization
+        Convert array data to PIL Image format.
+        array, image, conversion, denormalization
 
-    Use cases:
-    - Visualize array data as images
-    - Save processed array results as images
-    - Convert model outputs back to viewable format
+        Use cases:
+        - Visualize array data as images
+        - Save processed array results as images
+        - Convert model outputs back to viewable format
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The input array to convert to an image. Should have either 1, 3, or 4 channels.",
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The input array to convert to an image. Should have either 1, 3, or 4 channels.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -188,22 +164,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.conversion
 from nodetool.workflows.base_node import BaseNode
 
-
 class ListToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Convert a list of values to a array.
-    list, array, conversion, type
+        Convert a list of values to a array.
+        list, array, conversion, type
 
-    Use cases:
-    - Prepare list data for array operations
-    - Create arrays from Python data structures
-    - Convert sequence data to array format
+        Use cases:
+        - Prepare list data for array operations
+        - Create arrays from Python data structures
+        - Convert sequence data to array format
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(
-        default=[], description="List of values to convert to array"
-    )
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description='List of values to convert to array')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -220,22 +193,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.conversion
 from nodetool.workflows.base_node import BaseNode
 
-
 class ScalarToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Convert a scalar value to a single-element array.
-    scalar, array, conversion, type
+        Convert a scalar value to a single-element array.
+        scalar, array, conversion, type
 
-    Use cases:
-    - Prepare scalar inputs for array operations
-    - Create constant arrays for computations
-    - Initialize array values in workflows
+        Use cases:
+        - Prepare scalar inputs for array operations
+        - Create constant arrays for computations
+        - Initialize array values in workflows
     """
 
-    value: float | int | OutputHandle[float | int] = connect_field(
-        default=0, description="Scalar value to convert to array"
-    )
+    value: float | int | OutputHandle[float | int] = connect_field(default=0, description='Scalar value to convert to array')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -244,3 +214,5 @@ class ScalarToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArra
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

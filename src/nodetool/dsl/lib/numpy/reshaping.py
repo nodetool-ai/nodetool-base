@@ -18,26 +18,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.reshaping
 from nodetool.workflows.base_node import BaseNode
 
-
 class Reshape1D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Reshape an array to a 1D shape without changing its data.
-    array, reshape, vector, flatten
+        Reshape an array to a 1D shape without changing its data.
+        array, reshape, vector, flatten
 
-    Use cases:
-    - Flatten multi-dimensional data for certain algorithms
-    - Convert images to vector form for machine learning
-    - Prepare data for 1D operations
+        Use cases:
+        - Flatten multi-dimensional data for certain algorithms
+        - Convert images to vector form for machine learning
+        - Prepare data for 1D operations
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The input array to reshape",
-    )
-    num_elements: int | OutputHandle[int] = connect_field(
-        default=0, description="The number of elements"
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The input array to reshape')
+    num_elements: int | OutputHandle[int] = connect_field(default=0, description='The number of elements')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -54,29 +48,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.reshaping
 from nodetool.workflows.base_node import BaseNode
 
-
 class Reshape2D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Reshape an array to a new shape without changing its data.
-    array, reshape, dimensions, structure
+        Reshape an array to a new shape without changing its data.
+        array, reshape, dimensions, structure
 
-    Use cases:
-    - Convert between different dimensional representations
-    - Prepare data for specific model architectures
-    - Flatten or unflatten arrays
+        Use cases:
+        - Convert between different dimensional representations
+        - Prepare data for specific model architectures
+        - Flatten or unflatten arrays
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The input array to reshape",
-    )
-    num_rows: int | OutputHandle[int] = connect_field(
-        default=0, description="The number of rows"
-    )
-    num_cols: int | OutputHandle[int] = connect_field(
-        default=0, description="The number of columns"
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The input array to reshape')
+    num_rows: int | OutputHandle[int] = connect_field(default=0, description='The number of rows')
+    num_cols: int | OutputHandle[int] = connect_field(default=0, description='The number of columns')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -93,32 +79,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.reshaping
 from nodetool.workflows.base_node import BaseNode
 
-
 class Reshape3D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Reshape an array to a 3D shape without changing its data.
-    array, reshape, dimensions, volume
+        Reshape an array to a 3D shape without changing its data.
+        array, reshape, dimensions, volume
 
-    Use cases:
-    - Convert data for 3D visualization
-    - Prepare image data with channels
-    - Structure data for 3D convolutions
+        Use cases:
+        - Convert data for 3D visualization
+        - Prepare image data with channels
+        - Structure data for 3D convolutions
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The input array to reshape",
-    )
-    num_rows: int | OutputHandle[int] = connect_field(
-        default=0, description="The number of rows"
-    )
-    num_cols: int | OutputHandle[int] = connect_field(
-        default=0, description="The number of columns"
-    )
-    num_depths: int | OutputHandle[int] = connect_field(
-        default=0, description="The number of depths"
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The input array to reshape')
+    num_rows: int | OutputHandle[int] = connect_field(default=0, description='The number of rows')
+    num_cols: int | OutputHandle[int] = connect_field(default=0, description='The number of columns')
+    num_depths: int | OutputHandle[int] = connect_field(default=0, description='The number of depths')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -135,35 +111,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.reshaping
 from nodetool.workflows.base_node import BaseNode
 
-
 class Reshape4D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Reshape an array to a 4D shape without changing its data.
-    array, reshape, dimensions, batch
+        Reshape an array to a 4D shape without changing its data.
+        array, reshape, dimensions, batch
 
-    Use cases:
-    - Prepare batch data for neural networks
-    - Structure spatiotemporal data
-    - Format data for 3D image processing with channels
+        Use cases:
+        - Prepare batch data for neural networks
+        - Structure spatiotemporal data
+        - Format data for 3D image processing with channels
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The input array to reshape",
-    )
-    num_rows: int | OutputHandle[int] = connect_field(
-        default=0, description="The number of rows"
-    )
-    num_cols: int | OutputHandle[int] = connect_field(
-        default=0, description="The number of columns"
-    )
-    num_depths: int | OutputHandle[int] = connect_field(
-        default=0, description="The number of depths"
-    )
-    num_channels: int | OutputHandle[int] = connect_field(
-        default=0, description="The number of channels"
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The input array to reshape')
+    num_rows: int | OutputHandle[int] = connect_field(default=0, description='The number of rows')
+    num_cols: int | OutputHandle[int] = connect_field(default=0, description='The number of columns')
+    num_depths: int | OutputHandle[int] = connect_field(default=0, description='The number of depths')
+    num_channels: int | OutputHandle[int] = connect_field(default=0, description='The number of channels')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -172,3 +136,5 @@ class Reshape4D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
