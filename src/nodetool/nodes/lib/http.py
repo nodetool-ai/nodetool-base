@@ -672,22 +672,15 @@ class FilterValidURLs(HTTPBaseNode):
             return url, False
 
     async def process(self, context: ProcessingContext) -> list[str]:
-        results = []
+        sem = asyncio.Semaphore(self.max_concurrent_requests)
+
+        async def bounded_check_url(session: aiohttp.ClientSession, url: str):
+            async with sem:
+                return await self.check_url(session, url)
 
         async with aiohttp.ClientSession() as session:
-            tasks = []
-            for url in self.urls:
-                task = self.check_url(session, url)
-                tasks.append(task)
-
-                if len(tasks) >= self.max_concurrent_requests:
-                    completed = await asyncio.gather(*tasks)
-                    results.extend(completed)
-                    tasks = []
-
-            if tasks:
-                completed = await asyncio.gather(*tasks)
-                results.extend(completed)
+            tasks = [bounded_check_url(session, url) for url in self.urls]
+            results = await asyncio.gather(*tasks)
 
         valid_urls = [url for url, is_valid in results if is_valid]
 
@@ -771,33 +764,14 @@ class DownloadFiles(BaseNode):
         successful = []
         failed = []
 
-        async with aiohttp.ClientSession() as session:
-            tasks = []
-            num_completed = 0
-            for url in self.urls:
-                task = self.download_file(session, url)
-                tasks.append(task)
+        sem = asyncio.Semaphore(self.max_concurrent_downloads)
+        num_completed = 0
 
-                if len(tasks) >= self.max_concurrent_downloads:
-                    completed = await asyncio.gather(*tasks)
-                    num_completed += len(completed)
-                    context.post_message(
-                        NodeProgress(
-                            node_id=self.id,
-                            progress=num_completed,
-                            total=len(self.urls),
-                        )
-                    )
-                    for filepath in completed:
-                        if filepath:
-                            successful.append(filepath)
-                        else:
-                            failed.append(url)
-                    tasks = []
-
-            if tasks:
-                completed = await asyncio.gather(*tasks)
-                num_completed += len(completed)
+        async def bounded_download_file(session: aiohttp.ClientSession, url: str):
+            nonlocal num_completed
+            async with sem:
+                filepath = await self.download_file(session, url)
+                num_completed += 1
                 context.post_message(
                     NodeProgress(
                         node_id=self.id,
@@ -805,11 +779,17 @@ class DownloadFiles(BaseNode):
                         total=len(self.urls),
                     )
                 )
-                for filepath in completed:
-                    if filepath:
-                        successful.append(filepath)
-                    else:
-                        failed.append(url)
+                return url, filepath
+
+        async with aiohttp.ClientSession() as session:
+            tasks = [bounded_download_file(session, url) for url in self.urls]
+            results = await asyncio.gather(*tasks)
+
+            for url, filepath in results:
+                if filepath:
+                    successful.append(filepath)
+                else:
+                    failed.append(url)
 
         return {
             "success": successful,
