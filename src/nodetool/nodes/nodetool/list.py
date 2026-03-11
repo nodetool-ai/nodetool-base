@@ -470,18 +470,16 @@ class Flatten(BaseNode):
     values: list[Any] = Field(default=[])
     max_depth: int = Field(default=-1, ge=-1)
 
-    def _flatten(self, lst: list[Any], current_depth: int = 0) -> list[Any]:
-        result = []
+    def _flatten(self, lst: list[Any], current_depth: int = 0):
         for item in lst:
             if isinstance(item, list) and (
                 self.max_depth == -1 or current_depth < self.max_depth
             ):
-                result.extend(self._flatten(item, current_depth + 1))
+                yield from self._flatten(item, current_depth + 1)
             else:
-                result.append(item)
-        return result
+                yield item
 
     async def process(self, context: ProcessingContext) -> list[Any]:
         if not isinstance(self.values, list):
             raise ValueError("Input must be a list")
-        return self._flatten(self.values)
+        return list(self._flatten(self.values))
