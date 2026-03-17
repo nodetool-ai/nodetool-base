@@ -8,3 +8,12 @@ which offers access to state-of-the-art AI models for:
 
 All nodes require a KIE_API_KEY secret to be configured.
 """
+
+# Import submodules so `import nodetool.nodes.kie` eagerly registers all Kie node
+# classes. Graph loading only knows the top-level namespace (`kie.*`), so this
+# package init must populate the global node registry for reloads in fresh
+# processes.
+import nodetool.nodes.kie.audio  # noqa: F401
+import nodetool.nodes.kie.dynamic_schema  # noqa: F401
+import nodetool.nodes.kie.image  # noqa: F401
+import nodetool.nodes.kie.video  # noqa: F401
