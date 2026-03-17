@@ -2,6 +2,10 @@
 **Learning:** `aiofiles.os.path` does NOT exist as an async module hierarchy in `aiofiles`. `aiofiles.os.path` resolves to the synchronous standard library `os.path`. To use async path operations with `aiofiles`, you must import `aiofiles.ospath` and call `await aiofiles.ospath.exists()` and similar methods. Prefixing `aiofiles.os.path.exists()` with `await` evaluates to `await bool`, resulting in a runtime `TypeError` crash.
 **Action:** When replacing blocking `os.path` operations, specifically use `aiofiles.ospath`. Do not string-replace `os.path.` with `aiofiles.os.path.`.
 
-## $(date +%Y-%m-%d) - Optimize CSV File Load/Save Operations
+## 2024-05-23 - Optimize CSV File Load/Save Operations
 **Learning:** Using `aiofiles.read()` and `.splitlines()` reads the entire file content into an in-memory string list before processing, causing a massive memory spike and significantly worse performance for large files.
 **Action:** When reading or writing potentially large structured formats like CSVs, offload the streaming I/O logic using standard synchronous tools (e.g., `csv.DictReader` and `csv.DictWriter` inside a `with open(...)` block) to `asyncio.to_thread` instead of buffering massive strings asynchronously.
+
+## 2024-05-24 - Optimizing type checks in loops
+**Learning:** Validating elements before aggregating them in a list via a generator comprehension (`all(isinstance(x, (int, float)) for x in self.values)`) scales very poorly (`O(N)`) because the loop executes in Python user-space. Python's built-in `sum()`, `min()`, `max()`, and `math.prod()` are C-optimized and natively throw errors if elements are fundamentally incompatible.
+**Action:** Use "Easier to Ask for Forgiveness than Permission" (EAFP) with a `try...except TypeError` wrapper around the native aggregation function, followed by a final `O(1)` type check on the result. This consistently reduces execution time.
