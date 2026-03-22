@@ -367,9 +367,13 @@ class Sum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot sum empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        try:
+            res = sum(self.values)
+            if not isinstance(res, (int, float)):
+                raise ValueError("All values must be numbers")
+            return res
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return sum(self.values)
 
 
 class Average(BaseNode):
@@ -387,9 +391,13 @@ class Average(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot average empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        try:
+            res = sum(self.values)
+            if not isinstance(res, (int, float)):
+                raise ValueError("All values must be numbers")
+            return res / len(self.values)
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return sum(self.values) / len(self.values)
 
 
 class Minimum(BaseNode):
@@ -407,9 +415,13 @@ class Minimum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot find minimum of empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        try:
+            res = min(self.values)
+            if not isinstance(res, (int, float)):
+                raise ValueError("All values must be numbers")
+            return res
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return min(self.values)
 
 
 class Maximum(BaseNode):
@@ -427,9 +439,13 @@ class Maximum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot find maximum of empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        try:
+            res = max(self.values)
+            if not isinstance(res, (int, float)):
+                raise ValueError("All values must be numbers")
+            return res
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return max(self.values)
 
 
 class Product(BaseNode):
