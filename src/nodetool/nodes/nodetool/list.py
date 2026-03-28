@@ -1,8 +1,8 @@
 from .utils import generate_timestamped_name
 from enum import Enum
-from functools import reduce
 from io import BytesIO
 import random
+import math
 from pydantic import Field
 from nodetool.metadata.types import TextRef
 from nodetool.workflows.processing_context import ProcessingContext
@@ -367,9 +367,11 @@ class Sum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot sum empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        # ⚡ Bolt: Use EAFP to avoid O(N) explicit type checks in Python loop
+        try:
+            return sum(self.values)
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return sum(self.values)
 
 
 class Average(BaseNode):
@@ -387,9 +389,11 @@ class Average(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot average empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        # ⚡ Bolt: Use EAFP to avoid O(N) explicit type checks in Python loop
+        try:
+            return sum(self.values) / len(self.values)
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return sum(self.values) / len(self.values)
 
 
 class Minimum(BaseNode):
@@ -407,9 +411,11 @@ class Minimum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot find minimum of empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        # ⚡ Bolt: Fast path for min, ensuring type safety
+        res = min(self.values)
+        if not isinstance(res, (int, float)):
             raise ValueError("All values must be numbers")
-        return min(self.values)
+        return res
 
 
 class Maximum(BaseNode):
@@ -427,9 +433,11 @@ class Maximum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot find maximum of empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        # ⚡ Bolt: Fast path for max, ensuring type safety
+        res = max(self.values)
+        if not isinstance(res, (int, float)):
             raise ValueError("All values must be numbers")
-        return max(self.values)
+        return res
 
 
 class Product(BaseNode):
@@ -447,9 +455,11 @@ class Product(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot calculate product of empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        # ⚡ Bolt: Use EAFP and math.prod to avoid O(N) explicit type checks and Python lambda overhead
+        try:
+            return math.prod(self.values)
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return reduce(lambda x, y: x * y, self.values)
 
 
 class Flatten(BaseNode):
