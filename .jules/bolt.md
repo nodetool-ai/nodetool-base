@@ -5,3 +5,6 @@
 ## $(date +%Y-%m-%d) - Optimize CSV File Load/Save Operations
 **Learning:** Using `aiofiles.read()` and `.splitlines()` reads the entire file content into an in-memory string list before processing, causing a massive memory spike and significantly worse performance for large files.
 **Action:** When reading or writing potentially large structured formats like CSVs, offload the streaming I/O logic using standard synchronous tools (e.g., `csv.DictReader` and `csv.DictWriter` inside a `with open(...)` block) to `asyncio.to_thread` instead of buffering massive strings asynchronously.
+## 2025-02-28 - Use asyncio.Semaphore instead of chunking for IO-bound work
+**Learning:** For HTTP nodes like `FilterValidURLs` and `DownloadFiles`, using chunked batch processing (`if len(tasks) >= batch_size: await asyncio.gather(*tasks)`) creates artificial bottlenecks where fast requests have to wait for the slowest request in their chunk before moving on.
+**Action:** Always prefer `asyncio.Semaphore(max_concurrent)` wrapped inside a closure (`async with sem:`) and gathering all tasks at once for IO-bound concurrency where order doesn't matter, yielding significantly better throughput.
