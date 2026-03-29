@@ -1,57 +1,79 @@
+import asyncio
+import pytest
 import sys
-import os
-
-# mock dependencies
-sys.modules['nodetool.config'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.config.logging_config'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.config.environment'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.workflows'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.workflows.base_node'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.workflows.processing_context'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.metadata'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.metadata.types'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.providers'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.providers.types'] = __import__('unittest.mock').mock.Mock()
-
-# create mock BaseNode
 from pydantic import BaseModel
-class BaseNode(BaseModel):
+
+class BaseNodeMock(BaseModel):
     pass
 
-sys.modules['nodetool.workflows.base_node'].BaseNode = BaseNode
+class ProcessingContextMock:
+    pass
 
-class Environment:
-    @staticmethod
-    def is_production():
-        return False
-sys.modules['nodetool.config.environment'].Environment = Environment
+sys.modules['nodetool.workflows.base_node'] = type('base_node', (), {'BaseNode': BaseNodeMock})
+sys.modules['nodetool.workflows.processing_context'] = type('processing_context', (), {'ProcessingContext': ProcessingContextMock})
+sys.modules['nodetool.metadata.types'] = type('types', (), {'TextRef': str})
 
-sys.path.insert(0, os.path.abspath('src'))
-from nodetool.nodes.nodetool.dictionary import SaveCSVFile, LoadCSVFile
-
-import pytest
-import asyncio
-import tempfile
+from nodetool.nodes.nodetool.list import Sum, Average, Minimum, Maximum, Product
 
 @pytest.mark.asyncio
-async def test_csv_perf_optimized():
-    data = [{"a": 1, "b": 2}, {"a": 3, "b": 4}]
+async def test_sum():
+    node = Sum(values=[1, 2.5, 3])
+    assert await node.process(None) == 6.5
 
-    save_node = SaveCSVFile(data=data, folder="", filename="test_%Y.csv")
+    with pytest.raises(ValueError):
+        await Sum(values=[]).process(None)
 
-    with tempfile.TemporaryDirectory() as d:
-        save_node.folder = d
-        await save_node.process(None)
+    with pytest.raises(ValueError):
+        await Sum(values=[1, "a"]).process(None)
 
-        load_node = LoadCSVFile(path=os.path.join(d, "test_" + __import__('datetime').datetime.now().strftime("%Y") + ".csv"))
-        res = await load_node.process(None)
+@pytest.mark.asyncio
+async def test_average():
+    node = Average(values=[1, 2, 3])
+    assert await node.process(None) == 2.0
 
-        assert len(res) == 2
-        assert res[0]["a"] == "1"
-        assert res[0]["b"] == "2"
-        assert res[1]["a"] == "3"
-        assert res[1]["b"] == "4"
+    with pytest.raises(ValueError):
+        await Average(values=[]).process(None)
 
-if __name__ == "__main__":
-    asyncio.run(test_csv_perf_optimized())
-    print("Test passed successfully.")
+    with pytest.raises(ValueError):
+        await Average(values=[1, "a"]).process(None)
+
+@pytest.mark.asyncio
+async def test_minimum():
+    node = Minimum(values=[5, 2.5, 8])
+    assert await node.process(None) == 2.5
+
+    with pytest.raises(ValueError):
+        await Minimum(values=[]).process(None)
+
+    with pytest.raises(ValueError):
+        await Minimum(values=[1, "a"]).process(None)
+
+@pytest.mark.asyncio
+async def test_maximum():
+    node = Maximum(values=[5, 2.5, 8])
+    assert await node.process(None) == 8.0
+
+    with pytest.raises(ValueError):
+        await Maximum(values=[]).process(None)
+
+    with pytest.raises(ValueError):
+        await Maximum(values=[1, "a"]).process(None)
+
+@pytest.mark.asyncio
+async def test_product():
+    node = Product(values=[2, 3.5, 4])
+    assert await node.process(None) == 28.0
+
+    with pytest.raises(ValueError):
+        await Product(values=[]).process(None)
+
+    with pytest.raises(ValueError):
+        await Product(values=[1, "a"]).process(None)
+
+if __name__ == '__main__':
+    asyncio.run(test_sum())
+    asyncio.run(test_average())
+    asyncio.run(test_minimum())
+    asyncio.run(test_maximum())
+    asyncio.run(test_product())
+    print("All tests passed!")
