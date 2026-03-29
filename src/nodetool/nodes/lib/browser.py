@@ -18,6 +18,15 @@ logger = get_logger(__name__)
 # Browser Use
 os.environ["ANONYMIZED_TELEMETRY"] = "false"
 
+# Constants
+MILLISECONDS_PER_SECOND = 1000.0
+MIN_BROWSER_TIMEOUT_SECONDS = 5.0
+BROWSER_TIMEOUT_HEADROOM_SECONDS = 20.0
+BROWSER_FALLBACK_TIMEOUT_SECONDS = 60.0
+SPIDER_TIMEOUT_HEADROOM_SECONDS = 60.0
+SPIDER_MAX_TIMEOUT_SECONDS = 600.0
+
+
 def sanitize_node_id(node_id: str) -> str:
     """
     Sanitize a node id for use as a directory name using regex.
@@ -76,9 +85,13 @@ class Browser(BaseNode):
             float | None: Timeout in seconds.
         """
         try:
-            return max(5.0, float(self.timeout) / 1000.0 + 20.0)
+            return max(
+                MIN_BROWSER_TIMEOUT_SECONDS,
+                float(self.timeout) / MILLISECONDS_PER_SECOND
+                + BROWSER_TIMEOUT_HEADROOM_SECONDS,
+            )
         except Exception:
-            return 60.0
+            return BROWSER_FALLBACK_TIMEOUT_SECONDS
 
 
     async def process(self, context: ProcessingContext) -> OutputType:
@@ -180,9 +193,13 @@ class Screenshot(BaseNode):
             float | None: Timeout in seconds.
         """
         try:
-            return max(5.0, float(self.timeout) / 1000.0 + 20.0)
+            return max(
+                MIN_BROWSER_TIMEOUT_SECONDS,
+                float(self.timeout) / MILLISECONDS_PER_SECOND
+                + BROWSER_TIMEOUT_HEADROOM_SECONDS,
+            )
         except Exception:
-            return 60.0
+            return BROWSER_FALLBACK_TIMEOUT_SECONDS
 
 
 
@@ -454,9 +471,13 @@ class BrowserNavigation(BaseNode):
             float | None: Timeout in seconds.
         """
         try:
-            return max(5.0, float(self.timeout) / 1000.0 + 20.0)
+            return max(
+                MIN_BROWSER_TIMEOUT_SECONDS,
+                float(self.timeout) / MILLISECONDS_PER_SECOND
+                + BROWSER_TIMEOUT_HEADROOM_SECONDS,
+            )
         except Exception:
-            return 60.0
+            return BROWSER_FALLBACK_TIMEOUT_SECONDS
 
 
 
@@ -702,8 +723,14 @@ class SpiderCrawl(BaseNode):
 
         Based on max pages and delays to prevent long-running crawls.
         """
-        estimated = (self.max_pages * (self.timeout / 1000.0 + self.delay_ms / 1000.0)) + 60.0
-        return min(estimated, 600.0)  # Cap at 10 minutes
+        estimated = (
+            self.max_pages
+            * (
+                self.timeout / MILLISECONDS_PER_SECOND
+                + self.delay_ms / MILLISECONDS_PER_SECOND
+            )
+        ) + SPIDER_TIMEOUT_HEADROOM_SECONDS
+        return min(estimated, SPIDER_MAX_TIMEOUT_SECONDS)  # Cap at 10 minutes
 
     async def _setup_crawl(self, start_domain: str) -> tuple[Optional[Any], Optional[re.Pattern], Optional[re.Pattern]]:
         """Initialize robot parser and compile regex patterns."""
