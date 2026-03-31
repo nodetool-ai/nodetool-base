@@ -1,5 +1,8 @@
 from datetime import datetime
 import os
+import io
+import asyncio
+import aiofiles
 from enum import Enum
 from typing import TYPE_CHECKING
 
@@ -264,4 +267,10 @@ class SaveDocument(BaseNode):
         assert self.path.path, "Path is not set"
         filename = datetime.now().strftime(self.filename)
         expanded_path = os.path.expanduser(os.path.join(self.path.path, filename))
-        self.document.data.save(expanded_path)
+
+        buffer = io.BytesIO()
+        await asyncio.to_thread(self.document.data.save, buffer)
+        content = buffer.getvalue()
+
+        async with aiofiles.open(expanded_path, "wb") as f:
+            await f.write(content)
