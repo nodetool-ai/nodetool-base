@@ -1,57 +1,25 @@
 import sys
-import os
-
-# mock dependencies
-sys.modules['nodetool.config'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.config.logging_config'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.config.environment'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.workflows'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.workflows.base_node'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.workflows.processing_context'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.metadata'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.metadata.types'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.providers'] = __import__('unittest.mock').mock.Mock()
-sys.modules['nodetool.providers.types'] = __import__('unittest.mock').mock.Mock()
-
-# create mock BaseNode
+from unittest.mock import MagicMock
 from pydantic import BaseModel
-class BaseNode(BaseModel):
+
+# First mock the exact modules that could cause issues
+sys.modules['nodetool.config'] = MagicMock()
+sys.modules['nodetool.config.logging_config'] = MagicMock()
+sys.modules['nodetool.metadata'] = MagicMock()
+sys.modules['nodetool.metadata.types'] = MagicMock()
+sys.modules['nodetool.workflows'] = MagicMock()
+sys.modules['nodetool.workflows.types'] = MagicMock()
+sys.modules['nodetool.workflows.processing_context'] = MagicMock()
+sys.modules['nodetool.workflows.base_node'] = MagicMock()
+
+class BaseNodeMock(BaseModel):
     pass
+sys.modules['nodetool.workflows.base_node'].BaseNode = BaseNodeMock
+sys.modules['nodetool.workflows.processing_context'].ProcessingContext = MagicMock
 
-sys.modules['nodetool.workflows.base_node'].BaseNode = BaseNode
-
-class Environment:
-    @staticmethod
-    def is_production():
-        return False
-sys.modules['nodetool.config.environment'].Environment = Environment
-
-sys.path.insert(0, os.path.abspath('src'))
-from nodetool.nodes.nodetool.dictionary import SaveCSVFile, LoadCSVFile
+# Need to map the src directory structure to nodetool namespace
+import src.nodetool.nodes.nodetool.list as list_module
+sys.modules['nodetool.nodes.nodetool.list'] = list_module
 
 import pytest
-import asyncio
-import tempfile
-
-@pytest.mark.asyncio
-async def test_csv_perf_optimized():
-    data = [{"a": 1, "b": 2}, {"a": 3, "b": 4}]
-
-    save_node = SaveCSVFile(data=data, folder="", filename="test_%Y.csv")
-
-    with tempfile.TemporaryDirectory() as d:
-        save_node.folder = d
-        await save_node.process(None)
-
-        load_node = LoadCSVFile(path=os.path.join(d, "test_" + __import__('datetime').datetime.now().strftime("%Y") + ".csv"))
-        res = await load_node.process(None)
-
-        assert len(res) == 2
-        assert res[0]["a"] == "1"
-        assert res[0]["b"] == "2"
-        assert res[1]["a"] == "3"
-        assert res[1]["b"] == "4"
-
-if __name__ == "__main__":
-    asyncio.run(test_csv_perf_optimized())
-    print("Test passed successfully.")
+sys.exit(pytest.main(['-q', 'tests/nodetool/test_list.py']))

@@ -7,7 +7,7 @@ from pydantic import Field
 from nodetool.metadata.types import TextRef
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
-from typing import Any, AsyncGenerator, TypedDict
+from typing import Any, AsyncGenerator, TypedDict, Iterator
 
 class Length(BaseNode):
     """
@@ -470,18 +470,19 @@ class Flatten(BaseNode):
     values: list[Any] = Field(default=[])
     max_depth: int = Field(default=-1, ge=-1)
 
-    def _flatten(self, lst: list[Any], current_depth: int = 0) -> list[Any]:
-        result = []
+    def _flatten(self, lst: list[Any], current_depth: int = 0) -> Iterator[Any]:
+        # ⚡ Bolt Optimization: Using `yield` and `yield from` instead of repeatedly building
+        # and extending intermediate `result` lists at every recursive step avoids large
+        # memory allocations and deep stack performance overheads for heavily nested inputs.
         for item in lst:
             if isinstance(item, list) and (
                 self.max_depth == -1 or current_depth < self.max_depth
             ):
-                result.extend(self._flatten(item, current_depth + 1))
+                yield from self._flatten(item, current_depth + 1)
             else:
-                result.append(item)
-        return result
+                yield item
 
     async def process(self, context: ProcessingContext) -> list[Any]:
         if not isinstance(self.values, list):
             raise ValueError("Input must be a list")
-        return self._flatten(self.values)
+        return list(self._flatten(self.values))
