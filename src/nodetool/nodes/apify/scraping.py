@@ -20,15 +20,33 @@ MAX_RESULTS_PER_PAGE = 100
 
 async def _get_apify_client(context: ProcessingContext):
     """Get configured Apify client from context."""
-    from apify_client import ApifyClient
+    from apify_client import ApifyClientAsync
     
     # Get API token from environment
     api_token = context.get_env("APIFY_API_TOKEN")
     if not api_token:
         return None, {"error": "APIFY_API_TOKEN not configured in environment"}
     
-    client = ApifyClient(token=api_token)
+    client = ApifyClientAsync(token=api_token)
     return client, None
+
+
+async def _run_actor_and_get_dataset(client, actor_id: str, run_input: dict, wait_secs: int) -> List[Dict[str, Any]]:
+    """Helper to run an Apify actor and asynchronously fetch its dataset results."""
+    actor = client.actor(actor_id)
+    run = await actor.call(run_input=run_input, wait_secs=wait_secs)
+
+    if not run:
+        return []
+
+    dataset_id = run.get("defaultDatasetId")
+    if dataset_id:
+        dataset = client.dataset(dataset_id)
+        # Use async comprehension to fetch items without blocking the event loop
+        items = [item async for item in dataset.iterate_items()]
+        return items
+
+    return []
 
 
 class ApifyWebScraper(BaseNode):
@@ -78,20 +96,12 @@ class ApifyWebScraper(BaseNode):
         }
 
         # Run the Web Scraper actor
-        actor = client.actor("apify/web-scraper")
-        run = actor.call(run_input=run_input, wait_secs=self.wait_for_finish)
-
-        if not run:
-            return []
-
-        # Get dataset results
-        dataset_id = run.get("defaultDatasetId")
-        if dataset_id:
-            dataset = client.dataset(dataset_id)
-            items = list(dataset.iterate_items())
-            return items
-
-        return []
+        return await _run_actor_and_get_dataset(
+            client,
+            "apify/web-scraper",
+            run_input,
+            self.wait_for_finish
+        )
 
 
 class ApifyGoogleSearchScraper(BaseNode):
@@ -146,20 +156,12 @@ class ApifyGoogleSearchScraper(BaseNode):
         }
 
         # Run the Google Search Scraper actor
-        actor = client.actor("apify/google-search-scraper")
-        run = actor.call(run_input=run_input, wait_secs=self.wait_for_finish)
-
-        if not run:
-            return []
-
-        # Get dataset results
-        dataset_id = run.get("defaultDatasetId")
-        if dataset_id:
-            dataset = client.dataset(dataset_id)
-            items = list(dataset.iterate_items())
-            return items
-
-        return []
+        return await _run_actor_and_get_dataset(
+            client,
+            "apify/google-search-scraper",
+            run_input,
+            self.wait_for_finish
+        )
 
 
 class ApifyInstagramScraper(BaseNode):
@@ -220,20 +222,12 @@ class ApifyInstagramScraper(BaseNode):
             run_input["hashtags"] = self.hashtags
 
         # Run the Instagram Scraper actor
-        actor = client.actor("apify/instagram-scraper")
-        run = actor.call(run_input=run_input, wait_secs=self.wait_for_finish)
-
-        if not run:
-            return []
-
-        # Get dataset results
-        dataset_id = run.get("defaultDatasetId")
-        if dataset_id:
-            dataset = client.dataset(dataset_id)
-            items = list(dataset.iterate_items())
-            return items
-
-        return []
+        return await _run_actor_and_get_dataset(
+            client,
+            "apify/instagram-scraper",
+            run_input,
+            self.wait_for_finish
+        )
 
 
 class ApifyAmazonScraper(BaseNode):
@@ -294,20 +288,12 @@ class ApifyAmazonScraper(BaseNode):
             run_input["productUrls"] = self.product_urls
 
         # Run the Amazon Scraper actor
-        actor = client.actor("apify/amazon-product-scraper")
-        run = actor.call(run_input=run_input, wait_secs=self.wait_for_finish)
-
-        if not run:
-            return []
-
-        # Get dataset results
-        dataset_id = run.get("defaultDatasetId")
-        if dataset_id:
-            dataset = client.dataset(dataset_id)
-            items = list(dataset.iterate_items())
-            return items
-
-        return []
+        return await _run_actor_and_get_dataset(
+            client,
+            "apify/amazon-product-scraper",
+            run_input,
+            self.wait_for_finish
+        )
 
 
 class ApifyYouTubeScraper(BaseNode):
@@ -376,20 +362,12 @@ class ApifyYouTubeScraper(BaseNode):
         run_input["startUrls"] = start_urls
 
         # Run the YouTube Scraper actor
-        actor = client.actor("apify/youtube-scraper")
-        run = actor.call(run_input=run_input, wait_secs=self.wait_for_finish)
-
-        if not run:
-            return []
-
-        # Get dataset results
-        dataset_id = run.get("defaultDatasetId")
-        if dataset_id:
-            dataset = client.dataset(dataset_id)
-            items = list(dataset.iterate_items())
-            return items
-
-        return []
+        return await _run_actor_and_get_dataset(
+            client,
+            "apify/youtube-scraper",
+            run_input,
+            self.wait_for_finish
+        )
 
 
 class ApifyTwitterScraper(BaseNode):
@@ -450,20 +428,12 @@ class ApifyTwitterScraper(BaseNode):
         }
 
         # Run the Twitter Scraper actor
-        actor = client.actor("apify/twitter-scraper")
-        run = actor.call(run_input=run_input, wait_secs=self.wait_for_finish)
-
-        if not run:
-            return []
-
-        # Get dataset results
-        dataset_id = run.get("defaultDatasetId")
-        if dataset_id:
-            dataset = client.dataset(dataset_id)
-            items = list(dataset.iterate_items())
-            return items
-
-        return []
+        return await _run_actor_and_get_dataset(
+            client,
+            "apify/twitter-scraper",
+            run_input,
+            self.wait_for_finish
+        )
 
 
 class ApifyLinkedInScraper(BaseNode):
@@ -516,17 +486,9 @@ class ApifyLinkedInScraper(BaseNode):
         }
 
         # Run the LinkedIn Scraper actor
-        actor = client.actor("apify/linkedin-profile-scraper")
-        run = actor.call(run_input=run_input, wait_secs=self.wait_for_finish)
-
-        if not run:
-            return []
-
-        # Get dataset results
-        dataset_id = run.get("defaultDatasetId")
-        if dataset_id:
-            dataset = client.dataset(dataset_id)
-            items = list(dataset.iterate_items())
-            return items
-
-        return []
+        return await _run_actor_and_get_dataset(
+            client,
+            "apify/linkedin-profile-scraper",
+            run_input,
+            self.wait_for_finish
+        )
