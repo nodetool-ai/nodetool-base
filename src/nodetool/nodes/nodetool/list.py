@@ -7,7 +7,8 @@ from pydantic import Field
 from nodetool.metadata.types import TextRef
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
-from typing import Any, AsyncGenerator, TypedDict
+from typing import Any, AsyncGenerator, TypedDict, Iterator
+
 
 class Length(BaseNode):
     """
@@ -78,10 +79,18 @@ class Slice(BaseNode):
     - Implement pagination
     - Get every nth element
     """
+
     values: list[Any] = Field(default=[], description="The input list to slice.")
-    start: int = Field(default=0, description="Starting index (inclusive). Negative values count from end.")
-    stop: int = Field(default=0, description="Ending index (exclusive). 0 means slice to end of list.")
-    step: int = Field(default=1, description="Step between elements. Negative for reverse order.")
+    start: int = Field(
+        default=0,
+        description="Starting index (inclusive). Negative values count from end.",
+    )
+    stop: int = Field(
+        default=0, description="Ending index (exclusive). 0 means slice to end of list."
+    )
+    step: int = Field(
+        default=1, description="Step between elements. Negative for reverse order."
+    )
 
     async def process(self, context: ProcessingContext) -> list[Any]:
         # Treat stop=0 as "no limit" (slice to end), matching common user expectation
@@ -273,8 +282,6 @@ class Sort(BaseNode):
 
     async def process(self, context: ProcessingContext) -> list[Any]:
         return sorted(self.values, reverse=(self.order == self.SortOrder.DESCENDING))
-
-
 
 
 class Intersection(BaseNode):
@@ -470,18 +477,18 @@ class Flatten(BaseNode):
     values: list[Any] = Field(default=[])
     max_depth: int = Field(default=-1, ge=-1)
 
-    def _flatten(self, lst: list[Any], current_depth: int = 0) -> list[Any]:
-        result = []
+    def _flatten(self, lst: list[Any], current_depth: int = 0) -> Iterator[Any]:
+        # ⚡ Bolt: Yield items recursively to avoid expensive deep call stack list construction
+        # and intermediate array allocations (.extend) for heavily nested lists.
         for item in lst:
             if isinstance(item, list) and (
                 self.max_depth == -1 or current_depth < self.max_depth
             ):
-                result.extend(self._flatten(item, current_depth + 1))
+                yield from self._flatten(item, current_depth + 1)
             else:
-                result.append(item)
-        return result
+                yield item
 
     async def process(self, context: ProcessingContext) -> list[Any]:
         if not isinstance(self.values, list):
             raise ValueError("Input must be a list")
-        return self._flatten(self.values)
+        return list(self._flatten(self.values))
