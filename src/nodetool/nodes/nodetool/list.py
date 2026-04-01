@@ -367,9 +367,17 @@ class Sum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot sum empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+
+        # Performance optimization: Use EAFP with C-optimized built-ins
+        # instead of O(N) upfront all(isinstance(...)) checks
+        try:
+            res = sum(self.values)
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return sum(self.values)
+
+        if not isinstance(res, (int, float)):
+            raise ValueError("All values must be numbers")
+        return res
 
 
 class Average(BaseNode):
@@ -387,9 +395,17 @@ class Average(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot average empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+
+        # Performance optimization: Use EAFP with C-optimized built-ins
+        # instead of O(N) upfront all(isinstance(...)) checks
+        try:
+            res = sum(self.values) / len(self.values)
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return sum(self.values) / len(self.values)
+
+        if not isinstance(res, (int, float)):
+            raise ValueError("All values must be numbers")
+        return res
 
 
 class Minimum(BaseNode):
@@ -407,9 +423,17 @@ class Minimum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot find minimum of empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+
+        # Performance optimization: Use EAFP with C-optimized built-ins
+        # instead of O(N) upfront all(isinstance(...)) checks
+        try:
+            res = min(self.values)
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return min(self.values)
+
+        if not isinstance(res, (int, float)):
+            raise ValueError("All values must be numbers")
+        return res
 
 
 class Maximum(BaseNode):
@@ -427,9 +451,17 @@ class Maximum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot find maximum of empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+
+        # Performance optimization: Use EAFP with C-optimized built-ins
+        # instead of O(N) upfront all(isinstance(...)) checks
+        try:
+            res = max(self.values)
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return max(self.values)
+
+        if not isinstance(res, (int, float)):
+            raise ValueError("All values must be numbers")
+        return res
 
 
 class Product(BaseNode):
