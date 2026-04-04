@@ -16,6 +16,110 @@ class ResponseFormat(str, Enum):
     TEXT = "text"
 
 
+class GPTModel(str, Enum):
+    """Available GPT models."""
+
+    GPT_4O = "gpt-4o"
+    GPT_4O_MINI = "gpt-4o-mini"
+    GPT_4_TURBO = "gpt-4-turbo"
+    GPT_4 = "gpt-4"
+    GPT_3_5_TURBO = "gpt-3.5-turbo"
+    O1 = "o1"
+    O1_MINI = "o1-mini"
+    O1_PRO = "o1-pro"
+    O3_MINI = "o3-mini"
+
+
+class ChatComplete(BaseNode):
+    """
+    Generate text using OpenAI's GPT models.
+    gpt, openai, chat, ai, text generation, llm, completion
+
+    Uses OpenAI's GPT models to generate responses from prompts.
+    Requires an OpenAI API key.
+
+    Use cases:
+    - Generate text responses to prompts
+    - Build conversational AI applications
+    - Code generation and explanation
+    - Analysis and summarization tasks
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: GPTModel = Field(
+        default=GPTModel.GPT_4O_MINI,
+        description="The GPT model to use for generation",
+    )
+
+    prompt: str = Field(default="", description="The prompt for text generation")
+
+    system_prompt: str = Field(
+        default="",
+        description="Optional system prompt to guide the model's behavior",
+    )
+
+    temperature: float = Field(
+        default=1.0,
+        ge=0.0,
+        le=2.0,
+        description="Sampling temperature. Higher values make output more random.",
+    )
+
+    max_tokens: int = Field(
+        default=1024,
+        ge=1,
+        le=16384,
+        description="Maximum number of tokens to generate",
+    )
+
+    async def process(self, context: ProcessingContext) -> str:
+        """
+        Generate a chat completion using OpenAI's GPT models.
+
+        Args:
+            context: The processing context.
+
+        Returns:
+            str: The generated text response.
+        """
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+
+        messages = []
+        if self.system_prompt:
+            messages.append({"role": "system", "content": self.system_prompt})
+        messages.append({"role": "user", "content": self.prompt})
+
+        response = await context.run_prediction(
+            node_id=self.id,
+            provider=Provider.OpenAI,
+            model=self.model.value,
+            run_prediction_function=run_openai,
+            params={
+                "messages": messages,
+                "temperature": self.temperature,
+                "max_tokens": self.max_tokens,
+            },
+        )
+
+        # Extract content from the response
+        if isinstance(response, dict) and "choices" in response:
+            try:
+                content = response["choices"][0]["message"]["content"]
+                return content if content else ""
+            except (KeyError, IndexError, TypeError) as e:
+                logger.warning("Could not extract content from response: %s", e)
+                return str(response)
+        else:
+            logger.warning("Unexpected response type: %s", type(response))
+            return str(response)
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["prompt", "model"]
+
+
 class Embedding(BaseNode):
     """
     Generate vector representations of text for semantic analysis.
