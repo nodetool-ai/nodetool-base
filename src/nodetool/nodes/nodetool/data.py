@@ -476,8 +476,10 @@ class RowIterator(BaseNode):
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
         df = await context.dataframe_to_pandas(self.dataframe)
-        for index, row in df.iterrows():
-            yield {"dict": row.to_dict(), "index": index}
+        # Using zip(df.index, df.to_dict('records')) avoids the significant overhead
+        # of df.iterrows() creating a new Series object per row.
+        for index, row in zip(df.index, df.to_dict("records")):
+            yield {"dict": row, "index": index}
 
 
 class FindRow(BaseNode):
@@ -598,8 +600,10 @@ class ForEachRow(BaseNode):
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
         df = await context.dataframe_to_pandas(self.dataframe)
-        for index, row in df.iterrows():
-            yield {"row": row.to_dict(), "index": index}
+        # Using zip(df.index, df.to_dict('records')) avoids the significant overhead
+        # of df.iterrows() creating a new Series object per row.
+        for index, row in zip(df.index, df.to_dict("records")):
+            yield {"row": row, "index": index}
 
 
 class LoadCSVAssets(BaseNode):
