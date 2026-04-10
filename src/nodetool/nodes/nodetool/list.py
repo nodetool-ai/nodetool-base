@@ -9,6 +9,7 @@ from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
 from typing import Any, AsyncGenerator, TypedDict
 
+
 class Length(BaseNode):
     """
     Calculates the length of a list.
@@ -78,10 +79,18 @@ class Slice(BaseNode):
     - Implement pagination
     - Get every nth element
     """
+
     values: list[Any] = Field(default=[], description="The input list to slice.")
-    start: int = Field(default=0, description="Starting index (inclusive). Negative values count from end.")
-    stop: int = Field(default=0, description="Ending index (exclusive). 0 means slice to end of list.")
-    step: int = Field(default=1, description="Step between elements. Negative for reverse order.")
+    start: int = Field(
+        default=0,
+        description="Starting index (inclusive). Negative values count from end.",
+    )
+    stop: int = Field(
+        default=0, description="Ending index (exclusive). 0 means slice to end of list."
+    )
+    step: int = Field(
+        default=1, description="Step between elements. Negative for reverse order."
+    )
 
     async def process(self, context: ProcessingContext) -> list[Any]:
         # Treat stop=0 as "no limit" (slice to end), matching common user expectation
@@ -275,8 +284,6 @@ class Sort(BaseNode):
         return sorted(self.values, reverse=(self.order == self.SortOrder.DESCENDING))
 
 
-
-
 class Intersection(BaseNode):
     """
     Finds common elements between two lists.
@@ -367,9 +374,13 @@ class Sum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot sum empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        try:
+            res = sum(self.values)
+            if not isinstance(res, (int, float)):
+                raise ValueError("All values must be numbers")
+            return res
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return sum(self.values)
 
 
 class Average(BaseNode):
@@ -387,9 +398,13 @@ class Average(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot average empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        try:
+            res = sum(self.values)
+            if not isinstance(res, (int, float)):
+                raise ValueError("All values must be numbers")
+            return res / len(self.values)
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return sum(self.values) / len(self.values)
 
 
 class Minimum(BaseNode):
@@ -407,9 +422,13 @@ class Minimum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot find minimum of empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        try:
+            res = min(self.values)
+            if not isinstance(res, (int, float)):
+                raise ValueError("All values must be numbers")
+            return res
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return min(self.values)
 
 
 class Maximum(BaseNode):
@@ -427,9 +446,13 @@ class Maximum(BaseNode):
     async def process(self, context: ProcessingContext) -> float:
         if not self.values:
             raise ValueError("Cannot find maximum of empty list")
-        if not all(isinstance(x, (int, float)) for x in self.values):
+        try:
+            res = max(self.values)
+            if not isinstance(res, (int, float)):
+                raise ValueError("All values must be numbers")
+            return res
+        except TypeError:
             raise ValueError("All values must be numbers")
-        return max(self.values)
 
 
 class Product(BaseNode):
