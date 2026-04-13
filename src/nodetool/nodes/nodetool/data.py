@@ -476,8 +476,9 @@ class RowIterator(BaseNode):
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
         df = await context.dataframe_to_pandas(self.dataframe)
-        for index, row in df.iterrows():
-            yield {"dict": row.to_dict(), "index": index}
+        # Using zip(index, to_dict('records')) is ~20x faster than df.iterrows()
+        for index, row_dict in zip(df.index, df.to_dict('records')):
+            yield {"dict": row_dict, "index": index}
 
 
 class FindRow(BaseNode):
@@ -598,8 +599,9 @@ class ForEachRow(BaseNode):
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
         df = await context.dataframe_to_pandas(self.dataframe)
-        for index, row in df.iterrows():
-            yield {"row": row.to_dict(), "index": index}
+        # Using zip(index, to_dict('records')) is ~20x faster than df.iterrows()
+        for index, row_dict in zip(df.index, df.to_dict('records')):
+            yield {"row": row_dict, "index": index}
 
 
 class LoadCSVAssets(BaseNode):
