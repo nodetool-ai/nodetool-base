@@ -5,3 +5,6 @@
 ## $(date +%Y-%m-%d) - Optimize CSV File Load/Save Operations
 **Learning:** Using `aiofiles.read()` and `.splitlines()` reads the entire file content into an in-memory string list before processing, causing a massive memory spike and significantly worse performance for large files.
 **Action:** When reading or writing potentially large structured formats like CSVs, offload the streaming I/O logic using standard synchronous tools (e.g., `csv.DictReader` and `csv.DictWriter` inside a `with open(...)` block) to `asyncio.to_thread` instead of buffering massive strings asynchronously.
+## 2026-04-13 - Replaced df.iterrows() with zip(df.index, df.to_dict('records'))
+**Learning:** Iterating over Pandas DataFrames using `iterrows()` in a Python loop is an anti-pattern for performance-critical pathing because Pandas constructs a distinct Series object for each row, adding huge overhead. Using `zip(df.index, df.to_dict('records'))` bulk-converts the data into Python dictionaries immediately, bypassing the Series wrapper and speeding up row iteration by ~20x.
+**Action:** When a Node workflow requires iterating and yielding dictionary representations of DataFrame rows, always use `df.to_dict('records')` paired with `zip(df.index, ...)` rather than looping with `iterrows()`.
