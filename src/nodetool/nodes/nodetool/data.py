@@ -18,7 +18,7 @@ class Schema(BaseNode):
     Define a schema for a dataframe.
     schema, dataframe, create
     """
-    
+
     columns: RecordType = Field(
         default=RecordType(),
         description="The columns to use in the dataframe.",
@@ -26,7 +26,7 @@ class Schema(BaseNode):
 
     async def process(self, context: ProcessingContext) -> RecordType:
         return self.columns
-    
+
 
 class Filter(BaseNode):
     """
@@ -136,12 +136,11 @@ class SaveDataframe(BaseNode):
         result = await context.dataframe_from_pandas(df, filename, parent_id)
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="dataframe"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="dataframe"
+            )
+        )
 
         return result
 
@@ -476,8 +475,11 @@ class RowIterator(BaseNode):
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
         df = await context.dataframe_to_pandas(self.dataframe)
-        for index, row in df.iterrows():
-            yield {"dict": row.to_dict(), "index": index}
+        # ⚡ Bolt Optimization: Replace df.iterrows() with zip(df.index, df.to_dict("records"))
+        # This converts the dataframe to dictionaries in bulk, which is ~10x faster
+        # by preventing Pandas from creating a new Series object for each row.
+        for index, row in zip(df.index, df.to_dict("records")):
+            yield {"dict": row, "index": index}
 
 
 class FindRow(BaseNode):
@@ -598,8 +600,11 @@ class ForEachRow(BaseNode):
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
         df = await context.dataframe_to_pandas(self.dataframe)
-        for index, row in df.iterrows():
-            yield {"row": row.to_dict(), "index": index}
+        # ⚡ Bolt Optimization: Replace df.iterrows() with zip(df.index, df.to_dict("records"))
+        # This converts the dataframe to dictionaries in bulk, which is ~10x faster
+        # by preventing Pandas from creating a new Series object for each row.
+        for index, row in zip(df.index, df.to_dict("records")):
+            yield {"row": row, "index": index}
 
 
 class LoadCSVAssets(BaseNode):
@@ -899,12 +904,11 @@ class SaveCSVDataframeFile(BaseNode):
         result = self.dataframe
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="dataframe"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="dataframe"
+            )
+        )
 
         return result
 
@@ -929,11 +933,13 @@ class FilterNone(BaseNode):
     @classmethod
     def is_streaming_input(cls) -> bool:
         return True
-    
+
     class OutputType(TypedDict):
         output: Any
 
-    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         async for handle, item in self.iter_any_input():
             if handle == "value":
                 if item is not None:
