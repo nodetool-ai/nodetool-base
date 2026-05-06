@@ -5,3 +5,7 @@
 ## $(date +%Y-%m-%d) - Optimize CSV File Load/Save Operations
 **Learning:** Using `aiofiles.read()` and `.splitlines()` reads the entire file content into an in-memory string list before processing, causing a massive memory spike and significantly worse performance for large files.
 **Action:** When reading or writing potentially large structured formats like CSVs, offload the streaming I/O logic using standard synchronous tools (e.g., `csv.DictReader` and `csv.DictWriter` inside a `with open(...)` block) to `asyncio.to_thread` instead of buffering massive strings asynchronously.
+
+## 2024-05-19 - Pandas Iterrows and Asynchronous Operations Memory
+**Learning:** `pd.read_csv`, `df.to_csv` are blocking functions in pandas that block the async event loop and therefore hurt performance of high-concurrency systems, and need to be offloaded with `asyncio.to_thread`. `df.iterrows()` inside a loop allocates memory for every row, `zip(df.index, df.to_dict('records'))` is ~20x faster.
+**Action:** Use `asyncio.to_thread` for pd IO. Use `zip(df.index, df.to_dict('records'))` instead of `df.iterrows()`!
