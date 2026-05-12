@@ -5,3 +5,7 @@
 ## $(date +%Y-%m-%d) - Optimize CSV File Load/Save Operations
 **Learning:** Using `aiofiles.read()` and `.splitlines()` reads the entire file content into an in-memory string list before processing, causing a massive memory spike and significantly worse performance for large files.
 **Action:** When reading or writing potentially large structured formats like CSVs, offload the streaming I/O logic using standard synchronous tools (e.g., `csv.DictReader` and `csv.DictWriter` inside a `with open(...)` block) to `asyncio.to_thread` instead of buffering massive strings asynchronously.
+
+## $(date +%Y-%m-%d) - Pandas iterrows iteration bottleneck
+**Learning:** In dataframe iteration, `df.iterrows()` is an extreme performance bottleneck (~20x slower) because it constructs a new pandas Series for every single row natively, adding severe object creation overhead.
+**Action:** Replace `for index, row in df.iterrows():` loops with `for index, row in zip(df.index, df.to_dict('records')):` to bulk-convert all rows into native Python dictionaries at once. Be careful to remove any subsequent `.to_dict()` calls on the yielded `row` inside the loop.
