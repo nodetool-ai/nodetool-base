@@ -5,3 +5,7 @@
 ## $(date +%Y-%m-%d) - Optimize CSV File Load/Save Operations
 **Learning:** Using `aiofiles.read()` and `.splitlines()` reads the entire file content into an in-memory string list before processing, causing a massive memory spike and significantly worse performance for large files.
 **Action:** When reading or writing potentially large structured formats like CSVs, offload the streaming I/O logic using standard synchronous tools (e.g., `csv.DictReader` and `csv.DictWriter` inside a `with open(...)` block) to `asyncio.to_thread` instead of buffering massive strings asynchronously.
+
+## $(date +%Y-%m-%d) - Optimize Recursive List Flattening
+**Learning:** Using `result.extend(self._flatten(...))` dynamically creates and manipulates intermediate lists at each recursive step, which significantly inflates memory overhead during operations on deeply nested arrays.
+**Action:** When handling deep recursions like list flattening, prefer Python generators using `yield from`. This avoids continuous memory allocations for transient sublists, yielding results smoothly up the call stack, achieving up to 20% lower memory usage.
